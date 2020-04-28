@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:background="#ff000000"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="设置"
+        android:textColor="#ffffffff"
+        android:textSize="@dimen/title_size" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/rl_voice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/item_pressed_bg"
+                android:paddingTop="10px"
+                android:paddingBottom="10px">
+
+                <ImageView
+                    android:id="@+id/image1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16.0px"
+                    android:src="@drawable/sound"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/text1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="20.0px"
+                    android:layout_toRightOf="@id/image1"
+                    android:text="声音设置"
+                    android:textColor="#ffffffff"
+                    android:textSize="28.0px" />
+
+                <ImageView
+                    android:layout_marginRight="20px"
+                    android:layout_alignParentRight="true"
+                    android:layout_width="30px"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/menu_go" />
+
+            </RelativeLayout>
+
+            <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/rl_wall_paper"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/item_pressed_bg2"
+                android:paddingTop="10px"
+                android:paddingBottom="10px">
+
+                <ImageView
+                    android:id="@+id/image2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16.0px"
+                    android:src="@drawable/wallpaper"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@id/text2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="20.0px"
+                    android:layout_toRightOf="@id/image2"
+                    android:text="壁纸设置"
+                    android:textColor="#ffffffff"
+                    android:textSize="28.0px" />
+
+                <ImageView
+                    android:layout_marginRight="20px"
+                    android:layout_alignParentRight="true"
+                    android:layout_width="30px"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/menu_go" />
+
+            </RelativeLayout>
+
+            <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/rl_update_version"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/item_pressed_bg"
+                android:paddingTop="10px"
+                android:paddingBottom="10px">
+
+                <ImageView
+                    android:id="@+id/image3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16.0px"
+                    android:src="@drawable/updata"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/text3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="20.0px"
+                    android:layout_toRightOf="@id/image3"
+                    android:text="版本更新"
+                    android:textColor="#ffffffff"
+                    android:textSize="28.0px" />
+
+                <ImageView
+                    android:layout_marginRight="20px"
+                    android:layout_alignParentRight="true"
+                    android:layout_width="30px"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/menu_go" />
+
+            </RelativeLayout>
+
+            <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/rl_about"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/item_pressed_bg2"
+                android:paddingTop="10px"
+                android:paddingBottom="10px">
+
+                <ImageView
+                    android:id="@+id/image4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16.0px"
+                    android:src="@drawable/about"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/text4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="20.0px"
+                    android:layout_toRightOf="@id/image4"
+                    android:text="关于设备"
+                    android:textColor="#ffffffff"
+                    android:textSize="28.0px" />
+
+                <ImageView
+                    android:layout_marginRight="20px"
+                    android:layout_alignParentRight="true"
+                    android:layout_width="30px"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/menu_go" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

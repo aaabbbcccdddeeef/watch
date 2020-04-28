@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main_ll"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:gravity="center_vertical"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="20px"
+        android:gravity="center_vertical">
+
+
+        <ImageView
+            android:id="@+id/signalStrength"
+            android:layout_width="20px"
+            android:layout_height="16px"
+            android:layout_marginLeft="08px"
+            android:layout_marginTop="2px" />
+
+        <TextView
+            android:id="@+id/signalStrengthText"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="4px"
+            android:layout_toRightOf="@id/signalStrength"
+            android:gravity="center"
+            android:text="未插卡"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+
+        <com.ctop.studentcard.view.BatteryView
+            android:id="@+id/battery_view"
+            android:layout_width="20px"
+            android:layout_height="5px"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="3dp"
+            android:layout_marginRight="08px" />
+
+        <TextView
+            android:id="@+id/buttery"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_toLeftOf="@id/battery_view"
+            android:gravity="center"
+            android:text="30%"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_background"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_mobile_company"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="运营商"
+            android:textColor="@android:color/white"
+            android:textSize="14.0px"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tv_time"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="08:23"
+            android:textColor="@android:color/white"
+            android:textSize="64.0px"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2020-04-23"
+                android:textColor="@android:color/white"
+                android:textSize="20.0px" />
+
+            <TextView
+                android:id="@+id/tv_week"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8.0px"
+                android:text="周六"
+                android:textColor="@color/aqua"
+                android:textSize="20.0px" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+
+            <ImageView
+                android:id="@+id/new_phone"
+                android:layout_width="30px"
+                android:layout_height="30px"
+                android:src="@mipmap/ic_phone"
+                android:visibility="gone" />
+
+
+            <ImageView
+                android:id="@+id/new_sms"
+                android:layout_width="30px"
+                android:layout_height="30px"
+                android:src="@mipmap/ic_sms"
+                android:visibility="gone" />
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="50px"
+            android:gravity="center"
+            android:text=""
+            android:visibility="invisible" />
+
+
+    </LinearLayout>
+
+</LinearLayout>

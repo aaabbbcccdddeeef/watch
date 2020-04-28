@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="320.0dip"
+    android:layout_height="320.0dip"
+    android:layout_gravity="center"
+    android:animateLayoutChanges="true"
+    android:background="#ff000000">
+
+
+        <TextView
+            android:id="@id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/title_height"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:text="@string/settings"
+            android:textColor="#ffffffff"
+            android:textSize="@dimen/title_size" />
+
+
+</RelativeLayout>

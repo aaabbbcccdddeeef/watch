@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/ll_all"
+    android:layout_margin="8dp"
+    android:background="@drawable/shap_sms_item">
+
+    <ImageView
+        android:id="@+id/no_read"
+        android:layout_marginLeft="4px"
+        android:layout_centerVertical="true"
+        android:src="@drawable/point"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <RelativeLayout
+        android:layout_marginLeft="10px"
+        android:id="@+id/sms_title_rl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+        <TextView
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/black"
+            android:text="通知"
+            android:textSize="28sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="16dp"
+            android:id="@+id/sms_time"
+            android:textColor="@color/black"
+            android:text="15:19"
+            android:textSize="26sp"
+            android:layout_alignParentRight="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:layout_marginLeft="10px"
+        android:layout_below="@id/sms_title_rl"
+        android:layout_margin="10dp"
+        android:textColor="@color/black"
+        android:id="@+id/sms_content"
+        android:textSize="28sp"
+        android:singleLine="true"
+        android:text="【通知】哈哈哈哈"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+</RelativeLayout>

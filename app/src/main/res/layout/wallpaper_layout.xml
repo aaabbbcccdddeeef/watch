@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:background="#ff000000">
+
+    <TextView
+        android:id="@id/title"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/title_height"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:text="@string/wallpaper"
+        android:textColor="#ffffffff"
+        android:textSize="@dimen/title_size" />
+
+    <androidx.viewpager.widget.ViewPager
+        android:layout_below="@id/title"
+        android:id="@+id/vp_wall"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</RelativeLayout>

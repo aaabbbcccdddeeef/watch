@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+   >
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="36.0dip"
+            android:layout_alignParentTop="true"
+            android:gravity="center"
+            android:text="音量"
+            android:textColor="#ffffffff"
+            android:textSize="@dimen/title_size" />
+
+
+        <RelativeLayout
+          android:layout_centerInParent="true"
+            android:id="@+id/view_volume"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10px"
+            >
+
+            <ImageView
+                android:id="@+id/lower"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/lower" />
+
+            <LinearLayout
+                android:id="@+id/middle_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="1.0dip"
+                android:layout_toRightOf="@id/lower"
+                android:background="@drawable/center_bg"
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@+id/volume_adjust"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/volume0" />
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/heigh"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="1.0dip"
+                android:layout_toRightOf="@id/middle_view"
+                android:src="@drawable/heigh_voice" />
+        </RelativeLayout>
+
+
+    </RelativeLayout>

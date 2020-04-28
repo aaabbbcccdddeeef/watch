@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="240.0px"
+    android:layout_height="240.0px"
+    android:background="@color/black"
+    android:orientation="vertical"
+    android:tag="layout/fragment_menu_1_0">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="0.0dip"
+        android:layout_weight="1.0">
+
+
+        <LinearLayout
+            android:id="@+id/layout_1"
+            android:layout_width="0.0dip"
+            android:layout_height="fill_parent"
+            android:layout_weight="1.0"
+            android:background="@drawable/selector_menu_item"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="0.0dip"
+                android:layout_weight="1.0">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10px"
+                    android:src="@drawable/selector_item_sms" />
+
+                <!--<TextView-->
+                <!--android:id="@+id/tv_sms_unread"-->
+                <!--android:layout_width="24.0px"-->
+                <!--android:layout_height="24.0px"-->
+                <!--android:layout_gravity="right"-->
+                <!--android:background="@drawable/shape_red"-->
+                <!--android:gravity="center"-->
+                <!--android:minEms="2"-->
+                <!--android:textColor="@color/white"-->
+                <!--android:textStyle="bold"-->
+                <!--android:visibility="invisible" />-->
+            </FrameLayout>
+
+            <TextView
+                style="@style/menuItem"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10px"
+                android:text="短信" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/layout_2"
+            android:layout_width="0.0dip"
+            android:layout_height="fill_parent"
+            android:layout_weight="1.0"
+            android:background="@drawable/selector_menu_item"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="0.0dip"
+                android:layout_weight="1.0">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10px"
+                    android:src="@drawable/selector_item_phone" />
+
+                <!--<TextView-->
+                <!--android:id="@+id/tv_phone_un_answer"-->
+                <!--android:layout_width="24.0px"-->
+                <!--android:layout_height="24.0px"-->
+                <!--android:layout_gravity="right"-->
+                <!--android:background="@drawable/shape_red"-->
+                <!--android:gravity="center"-->
+                <!--android:minEms="2"-->
+                <!--android:textColor="@color/white"-->
+                <!--android:textStyle="bold"-->
+                <!--android:visibility="invisible" />-->
+            </FrameLayout>
+
+            <TextView
+                style="@style/menuItem"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10px"
+                android:text="通话记录" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="0.0dip"
+        android:layout_weight="1.0">
+
+
+        <!--<LinearLayout-->
+        <!--android:id="@id/layout_4"-->
+        <!--android:layout_width="0.0dip"-->
+        <!--android:layout_height="fill_parent"-->
+        <!--android:layout_weight="1.0"-->
+        <!--android:background="@drawable/selector_menu_item"-->
+        <!--android:clickable="true"-->
+        <!--android:focusable="true"-->
+        <!--android:gravity="center"-->
+        <!--android:orientation="vertical">-->
+
+        <!--<ImageView-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="0.0dip"-->
+        <!--android:layout_weight="1.0"-->
+        <!--android:src="@drawable/selector_item_alipay" />-->
+
+        <!--<TextView-->
+        <!--style="@style/menuItem"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="支付宝" />-->
+        <!--</LinearLayout>-->
+
+        <LinearLayout
+            android:id="@+id/layout_3"
+            android:layout_width="0.0dip"
+            android:layout_height="fill_parent"
+            android:layout_weight="1.0"
+            android:background="@drawable/selector_menu_item"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="0.0dip"
+                android:layout_marginTop="10px"
+                android:layout_weight="1.0"
+                android:src="@drawable/selector_item_calculator" />
+
+            <TextView
+                style="@style/menuItem"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10px"
+                android:text="计算器" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@id/layout_4"
+            android:layout_width="0.0dip"
+            android:layout_height="fill_parent"
+            android:layout_weight="1.0"
+            android:background="@drawable/selector_menu_item"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="0.0dip"
+                android:layout_weight="1.0"  android:layout_marginTop="10px"
+                android:src="@drawable/health" />
+
+            <TextView
+                style="@style/menuItem"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="健康码"
+                android:layout_marginBottom="10px"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+</LinearLayout>

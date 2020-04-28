@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/black"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    android:tag="layout/activity_calculator_0">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="0.0dip"
+        android:layout_weight="1.0">
+
+        <TextView
+            android:id="@+id/tv_result"
+            android:layout_width="0.0dip"
+            android:layout_height="fill_parent"
+            android:layout_weight="3.0"
+            android:gravity="center|right"
+            android:paddingRight="8.0px"
+            android:singleLine="true"
+            android:textColor="@color/white"
+            android:textSize="34sp" />
+
+        <TextView
+            style="@style/calculator_clear"
+            android:layout_width="0.0dip"
+            android:layout_height="fill_parent"
+            android:layout_weight="1.0"
+            android:background="@drawable/selector_rect_orange"
+            android:onClick="clearAll"
+            android:text="C"
+            android:textColor="@color/white"
+            android:textSize="40sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="0.0dip"
+        android:layout_marginTop="2.0px"
+        android:layout_weight="1.0">
+
+        <TextView
+            style="@style/calculator_normal"
+            android:layout_width="0.0dip"
+            android:layout_height="fill_parent"
+            android:layout_weight="1.0"
+            android:onClick="append1"
+            android:text="1"
+            android:textSize="40sp"
+            android:textStyle="bold" />
+
+        <TextView
+            style="@style/calculator_normal"
+            android:layout_width="0.0dip"
+            android:layout_height="fill_parent"
+            android:layout_marginLeft="2.0px"
+            android:layout_weight="1.0"
+            android:onClick="append2"
+            android:text="2"
+            android:textSize="40sp"
+            android:textStyle="bold" />
+
+        <TextView
+            style="@style/calculator_normal"
+            android:layout_width="0.0dip"
+            android:layout_height="fill_parent"
+            android:layout_marginLeft="2.0px"
+            android:layout_weight="1.0"
+            android:onClick="append3"
+            android:text="3"
+            android:textSize="40sp"
+            android:textStyle="bold" />
+
+        <TextView
+            style="@style/calculator_result"
+            android:layout_width="0.0dip"
+            android:layout_height="fill_parent"
+            android:layout_marginLeft="2.0px"
+            android:layout_weight="1.0"
+            android:onClick="operatePlus"
+            android:text="+"
+            android:textSize="40sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="0.0dip"
+        android:layout_marginTop="2.0px"
+        android:layout_weight="1.0">
+
+        <TextView
+            style="@style/calculator_normal"
+            android:layout_width="0.0dip"
+            android:layout_height="fill_parent"
+            android:layout_weight="1.0"
+            android:onClick="append4"
+            android:text="4"
+            android:textSize="40sp"
+            android:textStyle="bold" />
+
+        <TextView
+            style="@style/calculator_normal"
+            android:layout_width="0.0dip"
+            android:layout_height="fill_parent"
+            android:layout_marginLeft="2.0px"
+            android:layout_weight="1.0"
+            android:onClick="append5"
+            android:text="5"
+            android:textSize="40sp"
+            android:textStyle="bold" />
+
+        <TextView
+            style="@style/calculator_normal"
+            android:layout_width="0.0dip"
+            android:layout_height="fill_parent"
+            android:layout_marginLeft="2.0px"
+            android:layout_weight="1.0"
+            android:onClick="append6"
+            android:text="6"
+            android:textSize="40sp"
+            android:textStyle="bold" />
+
+        <TextView
+            style="@style/calculator_result"
+            android:layout_width="0.0dip"
+            android:layout_height="fill_parent"
+            android:layout_marginLeft="2.0px"
+            android:layout_weight="1.0"
+            android:onClick="operateMinus"
+            android:text="-"
+            android:textSize="40sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="0.0dip"
+        android:layout_marginTop="2.0px"
+        android:layout_weight="1.0">
+
+        <TextView
+            style="@style/calculator_normal"
+            android:layout_width="0.0dip"
+            android:layout_height="fill_parent"
+            android:layout_weight="1.0"
+            android:onClick="append7"
+            android:text="7"
+            android:textSize="40sp"
+            android:textStyle="bold" />
+
+        <TextView
+            style="@style/calculator_normal"
+            android:layout_width="0.0dip"
+            android:layout_height="fill_parent"
+            android:layout_marginLeft="2.0px"
+            android:layout_weight="1.0"
+            android:onClick="append8"
+            android:text="8"
+            android:textSize="40sp"
+            android:textStyle="bold" />
+
+        <TextView
+            style="@style/calculator_normal"
+            android:layout_width="0.0dip"
+            android:layout_height="fill_parent"
+            android:layout_marginLeft="2.0px"
+            android:layout_weight="1.0"
+            android:onClick="append9"
+            android:text="9"
+            android:textSize="40sp"
+            android:textStyle="bold" />
+
+        <TextView
+            style="@style/calculator_result"
+            android:layout_width="0.0dip"
+            android:layout_height="fill_parent"
+            android:layout_marginLeft="2.0px"
+            android:layout_weight="1.0"
+            android:onClick="operateMultiply"
+            android:text="X"
+            android:textSize="40sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="0.0dip"
+        android:layout_marginTop="2.0px"
+        android:layout_weight="1.0">
+
+        <TextView
+            style="@style/calculator_normal"
+            android:layout_width="0.0dip"
+            android:layout_height="fill_parent"
+            android:layout_weight="1.0"
+            android:onClick="appendPoint"
+            android:text="."
+            android:textSize="40sp"
+            android:textStyle="bold" />
+
+        <TextView
+            style="@style/calculator_normal"
+            android:layout_width="0.0dip"
+            android:layout_height="fill_parent"
+            android:layout_marginLeft="2.0px"
+            android:layout_weight="1.0"
+            android:onClick="append0"
+            android:text="0"
+            android:textSize="40sp"
+            android:textStyle="bold" />
+
+        <TextView
+            style="@style/calculator_result"
+            android:layout_width="0.0dip"
+            android:layout_height="fill_parent"
+            android:layout_marginLeft="2.0px"
+            android:layout_weight="1.0"
+            android:onClick="operateDivide"
+            android:text="÷"
+            android:textSize="40sp"
+            android:textStyle="bold" />
+
+        <TextView
+            style="@style/calculator_result"
+            android:layout_width="0.0dip"
+            android:layout_height="fill_parent"
+            android:layout_marginLeft="2.0px"
+            android:layout_weight="1.0"
+            android:onClick="calculatorResult"
+            android:text="="
+            android:textSize="40sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+</LinearLayout>

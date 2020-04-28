@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center_horizontal"
+    android:background="#ff000000">
+
+    <TextView
+        android:id="@id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/title_height"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:text="@string/about_phone"
+        android:textColor="#ffffffff"
+        android:textSize="@dimen/title_size" />
+
+    <ImageView
+        android:id="@+id/qr_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title"
+        android:layout_centerHorizontal="true"
+         />
+
+    <TextView
+        android:id="@+id/tv_imei"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/qr_image"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="0.0px"
+        android:gravity="center"
+        android:text="imei:"
+        android:textColor="#ffffffff"
+        android:textSize="18.0px" />
+
+    <TextView
+        android:id="@+id/version_num"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_imei"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:textColor="#ffffffff"
+        android:text="设备版本："
+        android:textSize="18.0px" />
+
+
+</RelativeLayout>

@@ -1,0 +1,10 @@
+<resources>
+    <dimen name="title_height">36.0px</dimen>
+    <dimen name="title_size">20.0px</dimen>
+    <dimen name="marginLeft_width">10px</dimen>
+    <dimen name="marginTop_width">10px</dimen>
+    <dimen name="head_size">20.0px</dimen>
+    <dimen name="marginRight_text_width">12.0dip</dimen>
+    <dimen name="text_size">24.0px</dimen>
+
+</resources>

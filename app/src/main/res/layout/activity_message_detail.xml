@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_marginTop="34.0px"
+    android:layout_marginLeft="20dp"
+    android:layout_marginRight="20dp"
+    android:layout_marginBottom="20dp"
+    android:layout_height="match_parent"
+    android:background="@drawable/shap_sms_detail">
+
+    <TextView
+        android:padding="20dp"
+        android:id="@+id/tv_content"
+        android:text="fkja对方即可更健康打飞机高科技放空管就开发接口父控件开关机的结果开发接口龙岗街道反馈结果可贵鬼奴低分局钢化膜的负面GIFin"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:textColor="@color/black"
+        android:textSize="26.0sp" />
+
+</ScrollView>

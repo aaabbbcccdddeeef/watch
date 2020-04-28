@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.ctop.studentcard" >
+
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <!--  监听通话记录数据库的变化  -->
+    <uses-permission android:name="android.permission.READ_CALL_LOG" />
+    <uses-permission android:name="android.permission.WRITE_CALL_LOG" />
+
+    <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.CALL_PRIVILEGED" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.WRITE_CONTACTS" />
+    <uses-permission android:name="android.permission.MODIFY_PHONE_STATE" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.READ_LOGS" />
+
+
+    <!-- 联网 -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!-- 位置服务 -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <!-- 设备信息 -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <!-- wifi状态 -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <!-- 关机 -->
+    <uses-permission android:name="android.permission.SHUTDOWN" />
+    <!-- 重启的广播 -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <!-- 重启 -->
+
+    <uses-permission android:name="android.permission.REBOOT" />
+    <!-- 扫描其他的热点信息 -->
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <uses-permission android:name="android.permission.NEW_OUTGOING_CALL" />
+
+    <!-- 发短信 -->
+    <uses-permission android:name="android.permission.SEND_SMS" />
+    <uses-permission android:name="android.permission.READ_SMS" />
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <!-- 加权限禁止Home键 -->
+    <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
+    <!-- 闪光灯 -->
+    <uses-permission android:name="android.permission.FLASHLIGHT" />
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.autofocus"/>
+    <!-- 震动 -->
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <!-- 亮屏 -->
+    <uses-permission android:name="android.permission.USES_POLICY_FORCE_LOCK" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <!-- 移动信号 -->
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <!-- 壁纸 -->
+    <uses-permission android:name="android.permission.SET_WALLPAPER" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+    <!-- 科大讯飞aiui -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <!-- 禁止状态栏下滑 -->
+    <uses-permission android:name="android.permission.EXPAND_STATUS_BAR" />
+    <uses-permission android:name="android.permission.STATUS_BAR" />
+    <!-- 安装apk -->
+    <uses-permission android:name="android.permission.INSTALL_PACKAGES" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
+
+    <application
+        android:name="com.ctop.studentcard.base.BaseApplication"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity
+            android:name="com.ctop.studentcard.feature.MainActivity"
+            android:configChanges="mcc|mnc"
+            android:excludeFromRecents="true"
+            android:launchMode="singleTask" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.HOME" />
+                <category android:name="android.intent.category.MONKEY" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".feature.SecondActivity">
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <service android:name="com.ctop.studentcard.service.APKDownloadService" />
+        <service android:name="com.ctop.studentcard.service.ServerService" />
+
+        <activity android:name=".feature.menu.MenuIndexActivity" />
+        <activity android:name=".feature.calculator.CalculatorActivity" />
+        <activity android:name=".feature.message.MessageIndexActivity" />
+        <activity android:name=".feature.message.MessageDetailActivity" />
+        <activity android:name=".feature.phone.PhoneOutActivity" />
+        <activity android:name=".feature.phone.PhoneInActivity" />
+        <activity android:name=".feature.phone.record.CallRecordActivity" />
+        <activity android:name=".feature.phone.record.CallDetailActivity" />
+        <activity android:name=".feature.setting.wallpaper.WallpaperActivity" />
+        <activity android:name=".feature.setting.SettingActivity" />
+        <activity android:name=".feature.setting.sound.SoundActivity" />
+        <activity android:name=".feature.setting.sound.RingActivity" />
+        <activity android:name=".feature.setting.about.AboutActivity" />
+        <activity android:name=".feature.nlpchat.AIUIActivity" />
+        <activity android:name=".feature.nlpchat.ChatActivity" />
+        <activity android:name=".feature.message.DialogActivity" />
+        <activity android:name=".feature.CallNumberActivity" />
+
+
+        <receiver android:name="com.ctop.studentcard.broadcast.WifiReceiver">
+            <intent-filter android:priority="2147483647">
+                <action android:name="android.net.wifi.SCAN_RESULTS" />
+                <action android:name="android.net.wifi.STATE_CHANGE" />
+                <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
+                <action android:name="android.net.wifi.supplicant.STATE_CHANGE" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name="com.ctop.studentcard.broadcast.CallActiveReceiver">
+            <intent-filter android:priority="1">
+                <action android:name="com.ctop.studentcard.call.active" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name="com.ctop.studentcard.broadcast.BroadcastReceiverInCall">
+            <intent-filter android:priority="1">
+                <action android:name="android.intent.action.ACTION_PHONE_STATE_CHANGED" />
+                <action android:name="android.intent.action.NEW_OUTGOING_CALL" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name="com.ctop.studentcard.broadcast.BatteryBroadcastReceiver">
+            <intent-filter android:priority="1">
+                <action android:name="android.intent.action.BATTERY_CHANGED" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name="com.ctop.studentcard.broadcast.BootBroadcastReceiver">
+            <intent-filter>
+                <!-- 开机广播 -->
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <category android:name="android.intent.category.HOME" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name="com.ctop.studentcard.broadcast.ShutdownBroadcast">
+            <intent-filter>
+                <!-- 关机 -->
+                <action android:name="android.intent.action.ACTION_SHUTDOWN" />
+                <action android:name="android.intent.action.ACTION_REQUEST_SHUTDOWN" />
+
+                <category android:name="android.intent.category.HOME" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".broadcast.SmsReceiver">
+            <intent-filter android:priority="999">
+                <action android:name="android.provider.Telephony.SMS_RECEIVED"/>
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".broadcast.SmsMessageReceiver">
+            <intent-filter android:priority="999">
+                <action android:name="com.ctop.studentcard.SHOW_SCREEN_SMS"/>
+            </intent-filter>
+        </receiver>
+
+
+        <!--<receiver-->
+            <!--android:name=".ScreenOffAdminReceiver"-->
+            <!--android:label="@string/app_name"-->
+            <!--android:permission="android.permission.BIND_DEVICE_ADMIN" >-->
+            <!--<meta-data-->
+                <!--android:name="android.app.device_admin"-->
+                <!--android:resource="@xml/device_admin" />-->
+            <!--<intent-filter>-->
+                <!--<action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />-->
+            <!--</intent-filter>-->
+        <!--</receiver>-->
+
+        <receiver android:name=".broadcast.UpdateReceiver"
+            >
+            <intent-filter>
+                <!--   当有包被更新的时候，系统会发出此广播  -->
+                <action android:name="android.intent.action.PACKAGE_REPLACED"/>
+                <action android:name="android.intent.action.ACTION_PACKAGE_REPLACED"/>
+                <action android:name="android.intent.action.ACTION_PACKAGE_ADDED"/>
+                <action android:name="android.intent.action.ACTION_PACKAGE_REMOVED"/>
+                <data android:scheme="package"/>
+            </intent-filter>
+
+        </receiver>
+
+
+    </application>
+
+</manifest>

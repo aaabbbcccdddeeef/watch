@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:weightSum="1">
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.1"
+            android:text="提问:"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <TextView
+            android:id="@+id/editText2"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.5"
+            android:clickable="false"
+            android:cursorVisible="false"
+            android:focusable="false"
+            android:gravity="top|left"
+            android:scrollbars="vertical" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.1"
+            android:text="回答:"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="按住 录音" />
+
+            <!--<Button-->
+            <!--android:layout_width="169dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="结束 录音"-->
+            <!--android:onClick="stopRecognizer"-->
+            <!--android:id="@+id/button2" />-->
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="3px"
+        android:gravity="center"
+        android:text="智联语音助手"
+        android:textColor="@color/white"
+        android:textSize="20.0px" />
+
+    <TextView
+        android:id="@+id/tv_tip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="3px"
+        android:gravity="center"
+
+        android:text="请长按图标与小智对话"
+        android:textColor="@color/white"
+        android:textSize="20.0px" />
+
+
+    <ImageView
+        android:id="@+id/speak_iv_wait"
+        android:layout_width="120px"
+        android:layout_height="120px"
+
+        android:layout_centerInParent="true"
+        android:layout_gravity="center|center_vertical"
+        android:src="@drawable/speak_normal" />
+
+    <ImageView
+        android:id="@+id/speak_iv_ing"
+        android:layout_width="120px"
+        android:layout_height="120px"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center|center_vertical"
+        android:src="@drawable/speaking"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/speak_iv_analyze"
+        android:layout_width="120px"
+        android:layout_height="120px"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center|center_vertical"
+        android:src="@drawable/analyze"
+        android:visibility="gone" />
+
+
+    <TextView
+        android:id="@+id/tv_speak_result"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30px"
+        android:layout_marginTop="40px"
+        android:layout_marginRight="30px"
+        android:maxLines="5"
+        android:scrollbars="vertical"
+        android:singleLine="false"
+        android:text=""
+        android:textColor="@color/white"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/speak_iv_result"
+        android:layout_width="70px"
+        android:layout_height="70px"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="center|center_vertical"
+        android:layout_marginRight="10px"
+        android:layout_marginBottom="10px"
+        android:src="@drawable/speak_normal"
+        android:visibility="gone" />
+
+</RelativeLayout>
