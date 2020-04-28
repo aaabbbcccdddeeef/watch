@@ -104,6 +104,7 @@ public class NettyClient {
 
     public void disconnect() {
         if (mChannel != null) {
+            mChannel.disconnect();
             mChannel.close();
             mChannel.eventLoop().shutdownGracefully();
             group.shutdownGracefully();
