@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment;
 import com.ctop.studentcard.R;
 import com.ctop.studentcard.feature.nlpchat.ChatActivity;
 import com.ctop.studentcard.feature.setting.SettingActivity;
+import com.ctop.studentcard.feature.temperature.TemActivity;
 import com.ctop.studentcard.util.UIUtil;
 
 public class MenuItem2Fragment extends Fragment {
@@ -40,7 +41,8 @@ public class MenuItem2Fragment extends Fragment {
         });
         this.layout2.setOnClickListener(new View.OnClickListener() {
             public void onClick(View param1View) {
-                startActivity(new Intent(Settings.ACTION_SETTINGS));
+                Intent intent = new Intent( MenuItem2Fragment.this.getActivity(), TemActivity.class);
+                MenuItem2Fragment.this.startActivity(intent);
             }
         });
         this.layout3.setOnClickListener(new View.OnClickListener() {

@@ -47,8 +47,7 @@
             android:clickable="true"
             android:focusable="true"
             android:gravity="center"
-            android:orientation="vertical"
-            android:visibility="invisible">
+            android:orientation="vertical">
 
             <ImageView
 
@@ -60,7 +59,7 @@
                 style="@style/menuItem"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="set" />
+                android:text="测量体温" />
 
         </LinearLayout>
     </LinearLayout>

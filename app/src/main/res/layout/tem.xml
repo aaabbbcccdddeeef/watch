@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black"
+    android:gravity="center"
+    android:orientation="vertical">
+
+
+    <com.ctop.studentcard.feature.temperature.PercentCircle
+        android:id="@+id/percentCircle"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        app:circleBackground="@color/black"
+        app:ringColor="@color/jordy_blue"
+        app:textColor="@color/cerulean" />
+
+    <com.ctop.studentcard.feature.temperature.RippleView
+        android:layout_width="180dp"
+        android:layout_height="180dp"
+        app:cColor="#ffffff"
+        app:cDensity="80"
+        app:cIsAlpha="false"/>
+
+    <RelativeLayout
+        android:visibility="gone"
+        android:id="@+id/start_rl"
+        android:layout_width="150px"
+        android:layout_height="150px"
+        android:background="@drawable/shap_tem">
+
+        <TextView
+            android:id="@+id/tv_start"
+            android:layout_marginBottom="20px"
+            android:layout_width="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_height="wrap_content"
+            android:text="开始测温"
+            android:layout_marginTop="10px"
+            android:layout_centerHorizontal="true"
+            android:textColor="@color/white"
+            android:textSize="20px" />
+
+
+        <ImageView
+            android:layout_centerHorizontal="true"
+            android:layout_above="@id/tv_start"
+            android:src="@drawable/wenduji"
+            android:layout_width="wrap_content"
+            android:layout_height="60px" />
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/tem_rl"
+        android:layout_width="180px"
+        android:visibility="gone"
+android:layout_centerInParent="true"
+        android:layout_height="180px"
+        android:background="@drawable/shap_tem_green">
+
+        <TextView
+            android:id="@+id/tv_tem"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:layout_centerVertical="true"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="10px"
+            android:textStyle="bold"
+            android:layout_centerHorizontal="true"
+            android:textColor="@color/white"
+            android:textSize="36px" />
+
+
+        <TextView
+            android:layout_marginLeft="4px"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="度"
+            android:layout_centerVertical="true"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="10px"
+            android:layout_toRightOf="@id/tv_tem"
+            android:layout_centerHorizontal="true"
+            android:textColor="@color/white"
+            android:textSize="16px"
+            android:layout_alignBaseline="@id/tv_tem"/>
+
+
+        <ImageView
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/tv_tem"
+            android:src="@drawable/wenduji"
+            android:layout_width="wrap_content"
+            android:layout_height="60px" />
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

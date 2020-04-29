@@ -87,4 +87,6 @@
     <color name="shap_sms_see_color">#5EF952</color>
     <color name="speak_bg">#01021F</color>
     <color name="cal_shap">#253B4A</color>
+    <color name="tem_green">#7EAD4B</color>
+    <color name="tem_red">#ffff0000</color>
 </resources>

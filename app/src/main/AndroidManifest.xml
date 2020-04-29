@@ -122,6 +122,7 @@
         <activity android:name=".feature.nlpchat.ChatActivity" />
         <activity android:name=".feature.message.DialogActivity" />
         <activity android:name=".feature.CallNumberActivity" />
+        <activity android:name=".feature.temperature.TemActivity" />
 
 
         <receiver android:name="com.ctop.studentcard.broadcast.WifiReceiver">
@@ -182,6 +183,12 @@
             </intent-filter>
         </receiver>
 
+
+        <!--<receiver android:name=".broadcast.TemReceiver">-->
+            <!--<intent-filter android:priority="999">-->
+                <!--<action android:name="com.gwl.temperature.action.result"/>-->
+            <!--</intent-filter>-->
+        <!--</receiver>-->
 
         <!--<receiver-->
             <!--android:name=".ScreenOffAdminReceiver"-->

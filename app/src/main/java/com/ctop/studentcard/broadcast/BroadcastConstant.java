@@ -17,6 +17,9 @@ public class BroadcastConstant {
     public static final String SHUT_DOWN = "com.ctop.studentcard.action.shut_down";//
     //UPDATE
     public static final String UPDATE = "com.ctop.studentcard.action.update";//
+    //测温的广播
+    public static final String TEMPERATURE_START = "com.gwl.temperature.action.start";//
+    public static final String TEMPERATURE_RESULT = "com.gwl.temperature.action.result";//
 
 
 }
