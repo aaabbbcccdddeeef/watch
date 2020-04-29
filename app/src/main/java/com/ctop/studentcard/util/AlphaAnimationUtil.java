@@ -59,7 +59,7 @@ public class AlphaAnimationUtil {
         float curTranslationX = view.getTranslationX();
         ObjectAnimator animator = ObjectAnimator.ofFloat(view, "translationX",240f, 0f);
         animator.setDuration(3000);
-        animator.setInterpolator(new DecelerateInterpolator(10));//加速查值器，参数越大，速度越来越慢
+        animator.setInterpolator(new DecelerateInterpolator(5));//加速查值器，参数越大，速度越来越慢
         animator.start();
     }
 

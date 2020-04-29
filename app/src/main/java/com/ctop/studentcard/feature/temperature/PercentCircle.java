@@ -104,13 +104,13 @@ public class PercentCircle extends View {
         //当前百分比
         mCurrentPercent = 0;
 
-        //设置中心园的画笔
+        //设置对勾的画笔
         mBackgroundPaint = new Paint();
         mBackgroundPaint.setAntiAlias(true);
         mBackgroundPaint.setColor(mBackgroundColor);
         mBackgroundPaint.setStyle(Paint.Style.FILL);
 
-        //设置文字的画笔
+        //设置百分比文字的画笔
         mTextPaint = new Paint();
         mTextPaint.setColor(mTextColor);
         mTextPaint.setAntiAlias(true);
@@ -126,7 +126,7 @@ public class PercentCircle extends View {
         mRingPaintWhite.setStyle(Paint.Style.STROKE);
         mRingPaintWhite.setStrokeWidth(strokeWidth);
 
-        //设置外圆环的画笔
+        //设置蓝色圆环的画笔
         mRingPaint = new Paint();
         mRingPaint.setAntiAlias(true);
         mRingPaint.setColor(mRingColor);
@@ -177,9 +177,6 @@ public class PercentCircle extends View {
         if (mRadius > mCircleX) {
             mRadius = mCircleX;
             mRadius = (int) (mCircleX - 0.075 * mRadius);
-            mTextPaint.setStrokeWidth((float) (0.025 * mRadius));
-            mTextPaint.setTextSize(36);
-            mRingPaint.setStrokeWidth((float) (0.075 * mRadius));
             mTextSize = (int) mTextPaint.getTextSize();
         }
         mArcRectF = new RectF(mCircleX - mRadius, mCircleY - mRadius, mCircleX + mRadius, mCircleY + mRadius);
@@ -199,7 +196,7 @@ public class PercentCircle extends View {
     //线2的y轴增量
     private int line2Y = 0;
     //增量值
-    int step = 8;
+    int step = 5;
     //线的宽度
     private int lineThick = 12;
     //获取圆心的x坐标
@@ -259,10 +256,10 @@ public class PercentCircle extends View {
             }
             //每隔6毫秒界面刷新
             if (line2X <= radius){
-                postInvalidateDelayed(6);
+                postInvalidateDelayed(3);
             }else {
                 if(!alphaout){
-                    mHandler.sendEmptyMessage(0);
+                    mHandler.sendEmptyMessage(1);
                     alphaout = true;
                 }
             }

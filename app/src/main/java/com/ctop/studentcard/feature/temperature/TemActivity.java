@@ -22,6 +22,7 @@ import com.ctop.studentcard.util.LogUtil;
 public class TemActivity extends BaseActivity implements View.OnClickListener {
 
     private PercentCircle percentCircle;
+    private RippleView mRippleView;
     private RelativeLayout start_rl;
     private RelativeLayout tem_rl;
     private TextView tv_tem;
@@ -33,6 +34,12 @@ public class TemActivity extends BaseActivity implements View.OnClickListener {
         @Override
         public void handleMessage(Message msg) {
             if (msg.what == 0) {
+                percentCircle.setVisibility(View.VISIBLE);
+                percentCircle.setTargetPercent(100,mHandler);
+                mRippleView.setVisibility(View.GONE);
+
+            }else if(msg.what == 1){
+
                 AlphaAnimationUtil.startAlphaOut(percentCircle);
                 tem_rl.setVisibility(View.VISIBLE);
                 tv_tem.setText(valueTem);
@@ -48,6 +55,7 @@ public class TemActivity extends BaseActivity implements View.OnClickListener {
         setContentView(R.layout.tem);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         percentCircle = findViewById(R.id.percentCircle);
+        mRippleView = findViewById(R.id.rippleView);
         start_rl = findViewById(R.id.start_rl);
         tem_rl = findViewById(R.id.tem_rl);
         tv_tem = findViewById(R.id.tv_tem);
@@ -65,10 +73,10 @@ public class TemActivity extends BaseActivity implements View.OnClickListener {
     public void onClick(View v) {
         int id = v.getId();
         if (id == R.id.start_rl) {
-            percentCircle.setVisibility(View.VISIBLE);
             start_rl.setVisibility(View.GONE);
             tem_rl.setVisibility(View.GONE);
-            percentCircle.setTargetPercent(100,mHandler);
+            mRippleView.setVisibility(View.VISIBLE);
+            mRippleView.setRadius(70,mHandler);
             //注册温度结果广播
             temReceiver = new TemReceiver();
             final IntentFilter intentFilter = new IntentFilter(BroadcastConstant.TEMPERATURE_RESULT);

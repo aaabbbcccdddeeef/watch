@@ -8,24 +8,7 @@
     android:orientation="vertical">
 
 
-    <com.ctop.studentcard.feature.temperature.PercentCircle
-        android:id="@+id/percentCircle"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"
-        app:circleBackground="@color/black"
-        app:ringColor="@color/jordy_blue"
-        app:textColor="@color/cerulean" />
-
-    <com.ctop.studentcard.feature.temperature.RippleView
-        android:layout_width="180dp"
-        android:layout_height="180dp"
-        app:cColor="#ffffff"
-        app:cDensity="80"
-        app:cIsAlpha="false"/>
-
     <RelativeLayout
-        android:visibility="gone"
         android:id="@+id/start_rl"
         android:layout_width="150px"
         android:layout_height="150px"
@@ -52,6 +35,26 @@
             android:layout_height="60px" />
 
     </RelativeLayout>
+
+
+    <com.ctop.studentcard.feature.temperature.RippleView
+        android:layout_width="match_parent"
+        android:id="@+id/rippleView"
+        android:layout_height="match_parent"
+        app:cSpeed="2"
+        app:cColor="#ffffff"
+        android:visibility="gone"
+        app:cIsAlpha="false"/>
+
+    <com.ctop.studentcard.feature.temperature.PercentCircle
+        android:id="@+id/percentCircle"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        app:circleBackground="@color/black"
+        app:ringColor="@color/jordy_blue"
+        app:textColor="@color/cerulean" />
+
 
 
     <RelativeLayout
