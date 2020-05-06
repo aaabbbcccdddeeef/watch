@@ -21,6 +21,7 @@ public class Const {
     public static final String REPORT_SOS = "REPORT_SOS";//SOS 触发报警上报
     public static final String DEVICE_STATUS = "DEVICE_STATUS";//设备模式上报
     public static final String REPORT_SMS_READ = "REPORT_SMS_READ";//短消息已阅上报
+    public static final String REPORT_HEALTH = "REPORT_HEALTH";//上报 温度 心率
     //下发
     public static final String REMOTE_OPERATE_TERMINAL = "REMOTE_OPERATE_TERMINAL";//终端设备服务调用
     public static final String SET_NORMAL_BUTTON = "SET_NORMAL_BUTTON";//设置普通按键与SOS号码
@@ -38,6 +39,7 @@ public class Const {
     public static final String SET_CLOCK = "SET_CLOCK";//设置闹铃
     public static final String SET_CALL_DURATION = "SET_CALL_DURATION";//设置通话时长
     public static final String SEND_SMS = "SEND_SMS";//短消息
+    public static final String SET_HEALTH = "SET_HEALTH";//设置心率，温度的上报频率
 
     //设备请求
     public static final String GET_NORMAL_BUTTON = "GET_NORMAL_BUTTON";//按键获取
@@ -66,6 +68,9 @@ public class Const {
     //设置标记：检测到设备开机的发送上报
     public static boolean BOOTBROADCAST = false;
     //登陆是否成功
-    public static boolean LOGIN_SUCCESS = true;
+    public static boolean LOGIN_SUCCESS = false;
 
+
+    //平台下发获取测温数据时候，设置标记，测温结束后，标记复位
+    public static String ISSUED_TEM_WATERNUMBER = "";
 }

@@ -31,6 +31,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -46,6 +47,7 @@ import com.ctop.studentcard.bean.RegionalAlarmEntity;
 import com.ctop.studentcard.bean.RegionalReturn;
 import com.ctop.studentcard.bean.RequestContent;
 import com.ctop.studentcard.bean.SmsMessageReceive;
+import com.ctop.studentcard.bean.TemFrequency;
 import com.ctop.studentcard.broadcast.BroadcastConstant;
 import com.ctop.studentcard.broadcast.NetworkReceiver;
 import com.ctop.studentcard.broadcast.WifiReceiver;
@@ -65,6 +67,7 @@ import com.ctop.studentcard.util.PackDataUtil;
 import com.ctop.studentcard.util.PreferencesUtils;
 import com.ctop.studentcard.util.PropertiesUtil;
 import com.ctop.studentcard.util.SmsManagerUtils;
+import com.ctop.studentcard.util.TimeUtils;
 import com.ctop.studentcard.util.ai.KdxfSpeechSynthesizerUtil;
 
 /**
@@ -266,6 +269,7 @@ public class BaseSDK implements ChannelListener {
     }
 
     private ScheduledExecutorService mScheduledExecutorService;
+    private ExecutorService mExecutorService;
 
     private void timingLocation() {
         //先取消上一个任务，防止重复的任务
@@ -288,10 +292,13 @@ public class BaseSDK implements ChannelListener {
     int initialDelay = 0;
 
     private void executor(final String locationInfo) {
-        // 每隔1h向服务器发送位置信息
+        // 每隔10m向服务器发送位置信息
         mScheduledExecutorService.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
+                LogUtil.e("LOCATION_period==="+period);
+                LogUtil.e("LOCATION_name==="+Thread.currentThread().getName());
+
                 reportLocationInfo(locationInfo, new OnReceiveListener() {
                     @Override
                     public void onResponse(String msg) {
@@ -304,10 +311,11 @@ public class BaseSDK implements ChannelListener {
 
 
     private void executorGet(final String locationInfo) {
-        // 每隔1h向服务器发送位置信息
-        mScheduledExecutorService.scheduleAtFixedRate(new Runnable() {
+        mExecutorService.execute(new Runnable() {
             @Override
             public void run() {
+                LogUtil.e("LOCATION_periodGet==="+period);
+                LogUtil.e("LOCATION_get_name==="+Thread.currentThread().getName());
                 reportLocationInfoGet(locationInfo, new OnReceiveListener() {
                     @Override
                     public void onResponse(String msg) {
@@ -315,7 +323,7 @@ public class BaseSDK implements ChannelListener {
                     }
                 });
             }
-        }, 0, period, TimeUnit.SECONDS);
+        });
     }
 
 
@@ -324,15 +332,28 @@ public class BaseSDK implements ChannelListener {
             LogUtil.e("ScheduledExecutorService endExecutorScan");
 
             try {
-//                mScheduledExecutorService.shutdown();
-//                mScheduledExecutorService.awaitTermination(0,TimeUnit.SECONDS);
+                mScheduledExecutorService.shutdown();
+                mScheduledExecutorService.awaitTermination(0,TimeUnit.SECONDS);
                 mScheduledExecutorService.shutdownNow();
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
         }
+        if (mExecutorService != null) {
+            LogUtil.e("mExecutorService endExecutorScan");
+
+            try {
+                mExecutorService.shutdown();
+                mExecutorService.awaitTermination(0,TimeUnit.SECONDS);
+                mExecutorService.shutdownNow();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
         mScheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+        mExecutorService = Executors.newSingleThreadExecutor();
     }
 
     //上报位置信息
@@ -538,6 +559,20 @@ public class BaseSDK implements ChannelListener {
             }
         }).start();
     }
+
+
+    //上报 温度 心率
+    public void sendHealth(String data) {
+        //组装报文
+        final String request = PackDataUtil.packRequestStr(mContext, PackDataUtil.createWaterNumber(), Const.REPORT_HEALTH, Const.REPORT_THE_REQUEST, data);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                NettyClient.getInstance(mContext).sendMsgToServer(request, null);
+            }
+        }).start();
+    }
+
 
     //收到的消息
     @Override
@@ -819,6 +854,39 @@ public class BaseSDK implements ChannelListener {
 //                    //向主线程发送消息
 //                    handler.sendMessage(message);
 
+                }else if (response.getCmd().equals(Const.SET_HEALTH)) {//设置心率，温度的上报频率：参数标识@参数@
+                    //第一位:参数标识
+                    //10 心率上报频率设置
+                    //11 获取实时心率
+                    //20 温度上报频率设置
+                    //21 获取实时温度
+                    //12 获取实时温度和心率
+                    //第二位:参数
+                    //1=0900!1200#2=1200
+                    //其中0-6标识星期， 0表示星期日，1表示星期一6标识星期六，
+                    //每天最多可设置6组定时测温或者心率测试时间
+                    // 每个时间点之间用！符分割，每天用#分割
+                    try {
+                        String[] datas = data.split("@");
+                        if(datas[0].equals("10")){//心率上报频率设置
+
+                        }else if(datas[0].equals("11")){//获取实时心率
+
+                        }else if(datas[0].equals("20")){//温度上报频率设置
+                            TemFrequency temFrequency = TemFrequency.parseJson(datas[1]);
+                            PreferencesUtils.getInstance(mContext).setString("temFrequency", JsonUtil.toJSONString(temFrequency));
+                            String str = PackDataUtil.packRequestStr(BaseSDK.getBaseContext(), waterNumber, Const.SET_HEALTH, Const.RESPONSE_OF_ISSUED, "0@0@0");
+                            NettyClient.getInstance(mContext).sendMsgToServer(str, null);
+                        }else if(datas[0].equals("21")) {//获取实时温度
+                            Const.ISSUED_TEM_WATERNUMBER = waterNumber;
+                            //发送广播 获取实时温度
+                            Intent intent = new Intent();
+                            intent.setAction(BroadcastConstant.TEMPERATURE_START);
+                            mContext.sendBroadcast(intent);// 发送
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
 
 
@@ -1078,7 +1146,7 @@ public class BaseSDK implements ChannelListener {
                     if (GETGPS == true) {//已经在20秒内请求到位置信息
                         GETGPS = false;
                     } else {//20秒内没有收到GPS信息
-                        String locationInfo = NetworkUtil.packNetInfo(mContext, 0, 0, 0);
+                        String locationInfo = NetworkUtil.packNetInfo(mContext, 0, 0, "");
                         executor(locationInfo);
                     }
                 }
@@ -1103,7 +1171,7 @@ public class BaseSDK implements ChannelListener {
                     if (GETGPSGET == true) {//已经在20秒内请求到位置信息
                         GETGPSGET = false;
                     } else {//20秒内没有收到GPS信息
-                        String locationInfo = NetworkUtil.packNetInfo(mContext, 0, 0, 0);
+                        String locationInfo = NetworkUtil.packNetInfo(mContext, 0, 0, "");
                         executorGet(locationInfo);
                     }
                 }
@@ -1183,7 +1251,7 @@ public class BaseSDK implements ChannelListener {
         public void onLocationChanged(Location location) {
             latitude[0] = location.getLatitude();
             longitude[0] = location.getLongitude();
-            String locationInfo = NetworkUtil.packNetInfo(mContext, latitude[0], longitude[0], System.currentTimeMillis());
+            String locationInfo = NetworkUtil.packNetInfo(mContext, latitude[0], longitude[0], TimeUtils.getNowTimeString(TimeUtils.format6));
             executor(locationInfo);
             lastLongitude = PreferencesUtils.getInstance(mContext).getString(PreferencesUtils.OLD_GPS_LO, "");
             lastLatitude = PreferencesUtils.getInstance(mContext).getString(PreferencesUtils.OLD_GPS_LA, "");

@@ -9,6 +9,7 @@ import android.net.wifi.WifiManager;
 import android.os.Handler;
 import android.os.Message;
 import android.telephony.TelephonyManager;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.ctop.studentcard.bean.CellInfo;
@@ -393,7 +394,7 @@ public class NetworkUtil {
      *
      * gps位置信息@LBS数据@Wi-Fi数据
      */
-    public static String packNetInfo(Context context, double lan, double lon, long time) {
+    public static String packNetInfo(Context context, double lan, double lon, String time) {
         String netInfo = "";
         String bts = GSMCellLocation.getbts(context);
         String macs = otherWifiInfo();
@@ -405,12 +406,12 @@ public class NetworkUtil {
     }
 
 
-    public static String createGps(double lan, double lon, long time) {
+    public static String createGps(double lan, double lon, String time) {
         //gps位置信息,例子：0E108.88219N34.227438T201901919175835
         String gpsStr = "1E0N0T"+TimeUtils.getNowTimeString(TimeUtils.format6);
         String lanStr = "";//纬度
         String lonStr = "";//经度
-        if (time != 0l) {
+        if (TextUtils.isEmpty(time)) {
             String lanSix = String.format("%.6f", lan);
             if (lan > 0) {
                 lanStr = "N" + lanSix;

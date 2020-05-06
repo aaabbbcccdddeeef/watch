@@ -135,7 +135,7 @@ public class SmsReceiver extends BroadcastReceiver {
                                 if ("0".equals(itemsBeanList.get(i).getIsEffect())) continue;//不生效
                                 List<ClassModel.ItemsBean.PeriodBean> periodBeans = itemsBeanList.get(i).getPeriod();
                                 for (int j = 0; j < periodBeans.size(); j++) {
-                                    if (TimeUtils.getWeek().equals(periodBeans.get(i).getWeek())) {
+                                    if (TimeUtils.getWeekInCome().equals(periodBeans.get(i).getWeek())) {
                                         int awaitstartInt = Integer.parseInt(itemsBeanList.get(i).getStartTime());
                                         int awaitendInt = Integer.parseInt(itemsBeanList.get(i).getEndTime());
                                         String timeNow = TimeUtils.getNowTimeString(TimeUtils.format4);
@@ -190,7 +190,7 @@ public class SmsReceiver extends BroadcastReceiver {
                             boolean flagPeriod = false;
                             List<IncomingCall.PeriodBean> periodBeans = incomingCallOld.getPeriod();
                             for (int i = 0; i < periodBeans.size(); i++) {
-                                if (TimeUtils.getWeek().equals(periodBeans.get(i).getWeek())) {
+                                if (TimeUtils.getWeekInCome().equals(periodBeans.get(i).getWeek())) {
                                     flagPeriod = true;
                                 }
                             }

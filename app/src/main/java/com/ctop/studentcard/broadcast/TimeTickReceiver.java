@@ -15,6 +15,7 @@ import java.util.List;
 import com.ctop.studentcard.api.OnReceiveListener;
 import com.ctop.studentcard.base.BaseSDK;
 import com.ctop.studentcard.bean.ClickBean;
+import com.ctop.studentcard.bean.TemFrequency;
 import com.ctop.studentcard.feature.MainActivity;
 import com.ctop.studentcard.util.JsonUtil;
 import com.ctop.studentcard.util.LogUtil;
@@ -135,7 +136,7 @@ public class TimeTickReceiver extends BroadcastReceiver {
                 if ("1".equals(itemsBeanList.get(i).getIsEffect())) continue;//不生效
                 List<ClickBean.ItemsBean.PeriodBean> periodBeans = itemsBeanList.get(i).getPeriod();
                 for (int j = 0; j < periodBeans.size(); j++) {
-                    if (TimeUtils.getWeek().equals(periodBeans.get(i).getWeek())) {
+                    if (TimeUtils.getWeekInCome().equals(periodBeans.get(i).getWeek())) {
                         String timeNow = TimeUtils.getNowTimeString(TimeUtils.format4);
                         if (timeNow.equals(itemsBeanList.get(i).getTime())) {//
                             Vibrator vibrator = (Vibrator) context.getSystemService(context.VIBRATOR_SERVICE);
@@ -148,6 +149,30 @@ public class TimeTickReceiver extends BroadcastReceiver {
                 }
             }
 
+            //temFrequency
+            String temFrequencystr = PreferencesUtils.getInstance(context).getString("temFrequency", "");
+            TemFrequency mTemFrequency = JsonUtil.parseObject(temFrequencystr, TemFrequency.class);
+            if (null == mTemFrequency)
+                return;
+            List<TemFrequency.Frequency> items = mTemFrequency.getItems();
+            for(int i = 0;i<items.size();i++){
+                TemFrequency.Frequency frequency =  items.get(i);
+                String day = frequency.getDay();
+                if(day.equals(TimeUtils.getWeekInCome())){//日期相同
+                    List<String> times = frequency.getTimes();
+                    for(String time:times){
+                        if(time.equals(TimeUtils.getNowTimeString(TimeUtils.format4))){//时间相同
+                            //发送测温广播
+                            Intent intentTem = new Intent();
+                            intentTem.setAction(BroadcastConstant.TEMPERATURE_START);
+                            context.sendBroadcast(intentTem);// 发送
+                            LogUtil.e("开始：定时测温");
+                        }
+                    }
+
+                }
+
+            }
 
         }
     }

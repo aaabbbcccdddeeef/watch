@@ -63,29 +63,29 @@ public class TimeUtils {
     }
 
 
-    public static String getWeek() {
-        String week = "";
-        Date today = new Date();
-        Calendar c = Calendar.getInstance();
-        c.setTime(today);
-        int weekday = c.get(Calendar.DAY_OF_WEEK);
-        if (weekday == 1) {
-            week = "1";
-        } else if (weekday == 2) {
-            week = "2";
-        } else if (weekday == 3) {
-            week = "3";
-        } else if (weekday == 4) {
-            week = "4";
-        } else if (weekday == 5) {
-            week = "5";
-        } else if (weekday == 6) {
-            week = "6";
-        } else if (weekday == 7) {
-            week = "0";
-        }
-        return week;
-    }
+//    public static String getWeek() {
+//        String week = "";
+//        Date today = new Date();
+//        Calendar c = Calendar.getInstance();
+//        c.setTime(today);
+//        int weekday = c.get(Calendar.DAY_OF_WEEK);
+//        if (weekday == 1) {
+//            week = "1";
+//        } else if (weekday == 2) {
+//            week = "2";
+//        } else if (weekday == 3) {
+//            week = "3";
+//        } else if (weekday == 4) {
+//            week = "4";
+//        } else if (weekday == 5) {
+//            week = "5";
+//        } else if (weekday == 6) {
+//            week = "6";
+//        } else if (weekday == 7) {
+//            week = "0";
+//        }
+//        return week;
+//    }
 
     public static String getWeekInCome() {
         String week = "";

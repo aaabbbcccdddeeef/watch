@@ -184,11 +184,11 @@
         </receiver>
 
 
-        <!--<receiver android:name=".broadcast.TemReceiver">-->
-            <!--<intent-filter android:priority="999">-->
-                <!--<action android:name="com.gwl.temperature.action.result"/>-->
-            <!--</intent-filter>-->
-        <!--</receiver>-->
+        <receiver android:name=".broadcast.TemReceiver">
+            <intent-filter android:priority="999">
+                <action android:name="com.gwl.temperature.action.result"/>
+            </intent-filter>
+        </receiver>
 
         <!--<receiver-->
             <!--android:name=".ScreenOffAdminReceiver"-->

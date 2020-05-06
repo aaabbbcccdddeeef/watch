@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.ctop.studentcard.R;
 import com.ctop.studentcard.base.BaseActivity;
+import com.ctop.studentcard.base.BaseSDK;
 import com.ctop.studentcard.broadcast.BroadcastConstant;
 import com.ctop.studentcard.util.AlphaAnimationUtil;
 import com.ctop.studentcard.util.LogUtil;
@@ -26,7 +27,7 @@ public class TemActivity extends BaseActivity implements View.OnClickListener {
     private RelativeLayout start_rl;
     private RelativeLayout tem_rl;
     private TextView tv_tem;
-    private TemReceiver temReceiver;
+    private TemPostReceiver mTemPostReceiver;
     private String timeTem;
     private String valueTem;
 
@@ -78,9 +79,9 @@ public class TemActivity extends BaseActivity implements View.OnClickListener {
             mRippleView.setVisibility(View.VISIBLE);
             mRippleView.setRadius(70,mHandler);
             //注册温度结果广播
-            temReceiver = new TemReceiver();
-            final IntentFilter intentFilter = new IntentFilter(BroadcastConstant.TEMPERATURE_RESULT);
-            registerReceiver(temReceiver, intentFilter);
+            mTemPostReceiver = new TemPostReceiver();
+            final IntentFilter intentFilter = new IntentFilter(BroadcastConstant.TEMPERATURE_RESULT_POST);
+            registerReceiver(mTemPostReceiver, intentFilter);
             //发广播，请求测温
             sendBrodcast();
         }
@@ -93,13 +94,13 @@ public class TemActivity extends BaseActivity implements View.OnClickListener {
         LogUtil.e("sendTemBrodcast");
     }
 
-    class TemReceiver extends BroadcastReceiver {
+    class TemPostReceiver extends BroadcastReceiver {
 
         @Override
         public void onReceive(Context context, Intent intent) {
             LogUtil.e("TemReceiver" );
             String action = intent.getAction();
-            if (action.equals(BroadcastConstant.TEMPERATURE_RESULT)) {
+            if (action.equals(BroadcastConstant.TEMPERATURE_RESULT_POST)) {
                 valueTem = intent.getExtras().getString("value");
                 LogUtil.e("valueTem===" + valueTem);
                 tv_tem.setText(valueTem);
@@ -112,8 +113,8 @@ public class TemActivity extends BaseActivity implements View.OnClickListener {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(temReceiver != null){
-            unregisterReceiver(temReceiver);
+        if(mTemPostReceiver != null){
+            unregisterReceiver(mTemPostReceiver);
         }
     }
 

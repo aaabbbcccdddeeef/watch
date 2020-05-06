@@ -259,7 +259,7 @@ public class BroadcastReceiverInCall extends BroadcastReceiver {
                     }
                 }
                 if(!listNum.contains(incomePhoneNumber)){
-                    setResultData(null);
+                    rejectCall(context);
                 }
 
                 //跳转到接听activity

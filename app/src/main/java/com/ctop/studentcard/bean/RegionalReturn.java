@@ -9,6 +9,7 @@ import android.content.Context;
 import com.ctop.studentcard.util.LogUtil;
 import com.ctop.studentcard.util.NetworkUtil;
 import com.ctop.studentcard.util.PreferencesUtils;
+import com.ctop.studentcard.util.TimeUtils;
 import com.ctop.studentcard.util.crossBorder.CrossBorderUtil;
 import com.ctop.studentcard.util.crossBorder.PointEntity;
 
@@ -140,14 +141,14 @@ public class RegionalReturn implements Serializable {
                     LogUtil.e("进入圆形围栏报警，围栏号"+regionalAlarmEntity.getArea());
                     regionalReturn = new RegionalReturn();
                     regionalReturn.setCardType(regionalAlarmEntity.getReqType()+"");
-                    regionalReturn.setGpsString(NetworkUtil.createGps(latitude,longitude,System.currentTimeMillis()));
+                    regionalReturn.setGpsString(NetworkUtil.createGps(latitude,longitude, TimeUtils.getNowTimeString(TimeUtils.format6)));
                     regionalReturn.setInOrOut(0+"");
                     regionalReturn.setArea(regionalAlarmEntity.getArea());
                 }else if(!isInCircleNow&&isInCircleLast){
                     LogUtil.e("离开圆形围栏报警，围栏号"+regionalAlarmEntity.getArea());
                     regionalReturn = new RegionalReturn();
                     regionalReturn.setCardType(regionalAlarmEntity.getReqType()+"");
-                    regionalReturn.setGpsString(NetworkUtil.createGps(latitude,longitude,System.currentTimeMillis()));
+                    regionalReturn.setGpsString(NetworkUtil.createGps(latitude,longitude,TimeUtils.getNowTimeString(TimeUtils.format6)));
                     regionalReturn.setInOrOut(1+"");
                     regionalReturn.setArea(regionalAlarmEntity.getArea());
                 }
@@ -184,14 +185,14 @@ public class RegionalReturn implements Serializable {
                     LogUtil.e("进入多边形围栏报警，围栏号"+regionalAlarmEntity.getArea());
                     regionalReturn = new RegionalReturn();
                     regionalReturn.setCardType(regionalAlarmEntity.getReqType()+"");
-                    regionalReturn.setGpsString(NetworkUtil.createGps(latitude,longitude,System.currentTimeMillis()));
+                    regionalReturn.setGpsString(NetworkUtil.createGps(latitude,longitude,TimeUtils.getNowTimeString(TimeUtils.format6)));
                     regionalReturn.setInOrOut(1+"");
                     regionalReturn.setArea(regionalAlarmEntity.getArea());
                 }else if(!isInPolygonNow&&isInPolygonLast){
                     LogUtil.e("离开多边形围栏报警，围栏号"+regionalAlarmEntity.getArea());
                     regionalReturn = new RegionalReturn();
                     regionalReturn.setCardType(regionalAlarmEntity.getReqType()+"");
-                    regionalReturn.setGpsString(NetworkUtil.createGps(latitude,longitude,System.currentTimeMillis()));
+                    regionalReturn.setGpsString(NetworkUtil.createGps(latitude,longitude,TimeUtils.getNowTimeString(TimeUtils.format6)));
                     regionalReturn.setInOrOut(1+"");
                     regionalReturn.setArea(regionalAlarmEntity.getArea());
                 }

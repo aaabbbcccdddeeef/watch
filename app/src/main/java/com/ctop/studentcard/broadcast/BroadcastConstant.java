@@ -20,6 +20,7 @@ public class BroadcastConstant {
     //测温的广播
     public static final String TEMPERATURE_START = "com.gwl.temperature.action.start";//
     public static final String TEMPERATURE_RESULT = "com.gwl.temperature.action.result";//
+    public static final String TEMPERATURE_RESULT_POST = "com.gwl.temperature.action.result.post";//
 
 
 }
