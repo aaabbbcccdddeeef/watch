@@ -28,6 +28,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.ctop.studentcard.R;
 import com.ctop.studentcard.base.BaseSDK;
+import com.ctop.studentcard.bean.ClassModel;
 import com.ctop.studentcard.bean.PhoneNumber;
 import com.ctop.studentcard.broadcast.BroadcastConstant;
 import com.ctop.studentcard.feature.menu.MenuIndexActivity;
@@ -42,6 +43,7 @@ import com.ctop.studentcard.util.JsonUtil;
 import com.ctop.studentcard.util.KeyUtil;
 import com.ctop.studentcard.util.LogUtil;
 import com.ctop.studentcard.util.PreferencesUtils;
+import com.ctop.studentcard.util.TimeUtils;
 import com.ctop.studentcard.util.ai.KdxfSpeechSynthesizerUtil;
 import com.ctop.studentcard.util.calls.CallsUtil;
 
@@ -93,18 +95,20 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
                     KdxfSpeechSynthesizerUtil.getInstance(mContext,"请设置亲情号码");
                     return;
                 } else {
-                    PhoneNumber phoneNumber = JsonUtil.parseObject(phontNu, PhoneNumber.class);
-                    List<PhoneNumber.EachPhoneNumber> eachPhoneNumbers = phoneNumber.getItems();
-                    for (PhoneNumber.EachPhoneNumber eachPhoneNumber : eachPhoneNumbers) {
-                        if (eachPhoneNumber.getPhoneType().equals("1")) {
-                            Intent intent = new Intent(Intent.ACTION_CALL);
-//                            Uri data = Uri.parse("tel:" +"18309280898");
-                            Uri data = Uri.parse("tel:" + eachPhoneNumber.getPhoneNumber());
-                            intent.setData(data);
-                            startActivity(intent);
+                    if(needRejectCall()){
+                        Toast.makeText(mContext,"课堂时间内无法拨打电话",Toast.LENGTH_LONG).show();
+                    }else {
+                        PhoneNumber phoneNumber = JsonUtil.parseObject(phontNu, PhoneNumber.class);
+                        List<PhoneNumber.EachPhoneNumber> eachPhoneNumbers = phoneNumber.getItems();
+                        for (PhoneNumber.EachPhoneNumber eachPhoneNumber : eachPhoneNumbers) {
+                            if (eachPhoneNumber.getPhoneType().equals("1")) {
+                                Intent intent = new Intent(Intent.ACTION_CALL);
+                                Uri data = Uri.parse("tel:" + eachPhoneNumber.getPhoneNumber());
+                                intent.setData(data);
+                                startActivity(intent);
+                            }
                         }
                     }
-
                 }
             } else if (msg.what == 2) {
                 String phontNu = PreferencesUtils.getInstance(mContext).getString("phoneNumber", "");
@@ -112,18 +116,20 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
                     KdxfSpeechSynthesizerUtil.getInstance(mContext,"请设置亲情号码");
                     return;
                 } else {
-                    PhoneNumber phoneNumber = JsonUtil.parseObject(phontNu, PhoneNumber.class);
-                    List<PhoneNumber.EachPhoneNumber> eachPhoneNumbers = phoneNumber.getItems();
-                    for (PhoneNumber.EachPhoneNumber eachPhoneNumber : eachPhoneNumbers) {
-                        if (eachPhoneNumber.getPhoneType().equals("2")) {
-                            Intent intent = new Intent(Intent.ACTION_CALL);
-//                            Uri data = Uri.parse("tel:" +"18309280898");
-                            Uri data = Uri.parse("tel:" + eachPhoneNumber.getPhoneNumber());
-                            intent.setData(data);
-                            startActivity(intent);
+                    if(needRejectCall()){
+                        Toast.makeText(mContext,"课堂时间内无法拨打电话",Toast.LENGTH_LONG).show();
+                    }else {
+                        PhoneNumber phoneNumber = JsonUtil.parseObject(phontNu, PhoneNumber.class);
+                        List<PhoneNumber.EachPhoneNumber> eachPhoneNumbers = phoneNumber.getItems();
+                        for (PhoneNumber.EachPhoneNumber eachPhoneNumber : eachPhoneNumbers) {
+                            if (eachPhoneNumber.getPhoneType().equals("2")) {
+                                Intent intent = new Intent(Intent.ACTION_CALL);
+                                Uri data = Uri.parse("tel:" + eachPhoneNumber.getPhoneNumber());
+                                intent.setData(data);
+                                startActivity(intent);
+                            }
                         }
                     }
-
                 }
             } else if (msg.what == 3) {
                 String phontNu = PreferencesUtils.getInstance(mContext).getString("phoneNumber", "");
@@ -131,18 +137,20 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
                     KdxfSpeechSynthesizerUtil.getInstance(mContext,"请设置亲情号码");
                     return;
                 } else {
-                    PhoneNumber phoneNumber = JsonUtil.parseObject(phontNu, PhoneNumber.class);
-                    List<PhoneNumber.EachPhoneNumber> eachPhoneNumbers = phoneNumber.getItems();
-                    for (PhoneNumber.EachPhoneNumber eachPhoneNumber : eachPhoneNumbers) {
-                        if (eachPhoneNumber.getPhoneType().equals("3")) {
-                            Intent intent = new Intent(Intent.ACTION_CALL);
-//                            Uri data = Uri.parse("tel:" +"18309280898");
-                            Uri data = Uri.parse("tel:" + eachPhoneNumber.getPhoneNumber());
-                            intent.setData(data);
-                            startActivity(intent);
+                    if(needRejectCall()){
+                        Toast.makeText(mContext,"课堂时间内无法拨打电话",Toast.LENGTH_LONG).show();
+                    }else {
+                        PhoneNumber phoneNumber = JsonUtil.parseObject(phontNu, PhoneNumber.class);
+                        List<PhoneNumber.EachPhoneNumber> eachPhoneNumbers = phoneNumber.getItems();
+                        for (PhoneNumber.EachPhoneNumber eachPhoneNumber : eachPhoneNumbers) {
+                            if (eachPhoneNumber.getPhoneType().equals("3")) {
+                                Intent intent = new Intent(Intent.ACTION_CALL);
+                                Uri data = Uri.parse("tel:" + eachPhoneNumber.getPhoneNumber());
+                                intent.setData(data);
+                                startActivity(intent);
+                            }
                         }
                     }
-
                 }
             } else if (msg.what == 4) {
                 BaseSDK.getInstance().send_report_sos();
@@ -151,24 +159,25 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
                     KdxfSpeechSynthesizerUtil.getInstance(mContext,"请设置S O S号码");
                     return;
                 } else {
-                    PhoneNumber phoneNumber = JsonUtil.parseObject(phontNu, PhoneNumber.class);
-
-                    Intent intent = new Intent(Intent.ACTION_CALL);
-                    Uri data = Uri.parse("tel:" + phoneNumber.getSosNumber());
-//                            Uri data = Uri.parse("tel:" + eachPhoneNumber.getPhoneNumber());
-                    intent.setData(data);
-                    startActivity(intent);
-                    //上报设备模式
-                    LogUtil.e("上报设备模式8");
-                    BaseSDK.getInstance().send_device_status("3");
-                    //设置30分钟的实时模式
-                    PreferencesUtils.getInstance(mContext).setString("locationModeOld", PreferencesUtils.getInstance(mContext).getString("locationMode", "2"));
-                    PreferencesUtils.getInstance(mContext).setString("locationMode", "3");
-                    BaseSDK.getInstance().setPeriod(3 * 60);
-                    //计算结束时间 realTime
-                    long endTime = System.currentTimeMillis() + 30 * 60 * 1000;
-                    PreferencesUtils.getInstance(mContext).setLong("realTimeModeEnd", endTime);
-
+                    if(needRejectCall()){
+                        Toast.makeText(mContext,"课堂时间内无法拨打电话",Toast.LENGTH_LONG).show();
+                    }else {
+                        PhoneNumber phoneNumber = JsonUtil.parseObject(phontNu, PhoneNumber.class);
+                        Intent intent = new Intent(Intent.ACTION_CALL);
+                        Uri data = Uri.parse("tel:" + phoneNumber.getSosNumber());
+                        intent.setData(data);
+                        startActivity(intent);
+                        //上报设备模式
+                        LogUtil.e("上报设备模式8");
+                        BaseSDK.getInstance().send_device_status("3");
+                        //设置30分钟的实时模式
+                        PreferencesUtils.getInstance(mContext).setString("locationModeOld", PreferencesUtils.getInstance(mContext).getString("locationMode", "2"));
+                        PreferencesUtils.getInstance(mContext).setString("locationMode", "3");
+                        BaseSDK.getInstance().setPeriod(3 * 60);
+                        //计算结束时间 realTime
+                        long endTime = System.currentTimeMillis() + 30 * 60 * 1000;
+                        PreferencesUtils.getInstance(mContext).setLong("realTimeModeEnd", endTime);
+                    }
                 }
             } else if (msg.what == 5) {
                 handleTime();
@@ -419,31 +428,52 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
         }
     }
 
-//    protected void shwoButtonDialog() {
-//        final FullScrreenDialog selfDialog = new FullScrreenDialog(MainActivity.this);
-//        selfDialog.setTitle("提示");
-//        selfDialog.setOnButtonOnclickListener(new FullScrreenDialog.OnButtonOnclickListener() {
-//            @Override
-//            public void onButtonClick(int position) {
-//                if (position == 1) {
-//                    LogUtil.e("1");
-//                    mHandler.sendEmptyMessage(1);
-//                } else if (position == 2) {
-//                    LogUtil.e("2");
-//                    mHandler.sendEmptyMessage(2);
-//                } else if (position == 3) {
-//                    LogUtil.e("3");
-//                    mHandler.sendEmptyMessage(3);
-//                } else if (position == 4) {
-//                    LogUtil.e("4");
-//                    mHandler.sendEmptyMessage(4);
-//                }
-//                selfDialog.dismiss();
-//            }
-//        });
-//
-//        selfDialog.show();
-//    }
 
+    private boolean needRejectCall(){
+        boolean flag = false;
+        //课堂模式
+        String classModelString = PreferencesUtils.getInstance(mContext).getString("classModel", "");
+        ClassModel classModel = JsonUtil.parseObject(classModelString, ClassModel.class);
+        if (classModel != null) {
+            if (classModel.getItems().size() > 0) {
+                List<ClassModel.ItemsBean> itemsBeanList = classModel.getItems();
+                for (int i = 0; i < itemsBeanList.size(); i++) {
+                    if ("0".equals(itemsBeanList.get(i).getIsEffect())) continue;//不生效
+                    List<ClassModel.ItemsBean.PeriodBean> periodBeans = itemsBeanList.get(i).getPeriod();
+                    for (int j = 0; j < periodBeans.size(); j++) {
+                        if (TimeUtils.getWeekInCome().equals(periodBeans.get(j).getWeek())) {
+                            int awaitstartInt = Integer.parseInt(itemsBeanList.get(i).getStartTime());
+                            int awaitendInt = Integer.parseInt(itemsBeanList.get(i).getEndTime());
+                            String timeNow = TimeUtils.getNowTimeString(TimeUtils.format4);
+                            int timeNowInt = Integer.parseInt(timeNow);
+                            if (awaitstartInt < awaitendInt) {//同一天
+                                if (timeNowInt > awaitstartInt && timeNowInt < awaitendInt) {
+                                    flag = true;
+                                }
+                            } else {//不同天
+                                if (timeNowInt > awaitstartInt || timeNowInt < awaitendInt) {
+                                    flag = true;
+                                }
+                            }
+                        }
+                    }
+
+                }
+            }
+        }
+
+        //通话时长
+        int callTimeLongAlready = PreferencesUtils.getInstance(mContext).getInt("callTimeLongAlready", 0);
+        String callSetting = PreferencesUtils.getInstance(mContext).getString("callSetting", "");
+        int callTimeLong = PreferencesUtils.getInstance(mContext).getInt("callTimeLong", -1);
+        if ("0".equals(callSetting))
+            flag = true;
+        if (-1 != callTimeLong) {
+            if (callTimeLongAlready >= callTimeLong) {
+                flag = true;
+            }
+        }
+        return flag;
+    }
 
 }

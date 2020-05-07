@@ -101,7 +101,7 @@ public class TemActivity extends BaseActivity implements View.OnClickListener {
             LogUtil.e("TemReceiver" );
             String action = intent.getAction();
             if (action.equals(BroadcastConstant.TEMPERATURE_RESULT_POST)) {
-                valueTem = intent.getExtras().getString("value");
+                valueTem = intent.getStringExtra("value");
                 LogUtil.e("valueTem===" + valueTem);
                 tv_tem.setText(valueTem);
             }

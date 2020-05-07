@@ -83,28 +83,6 @@ public class BroadcastReceiverInCall extends BroadcastReceiver {
             doReceivePhone(context, intent);
         }
 
-//        if ((intent.getAction().equals(Intent.ACTION_NEW_OUTGOING_CALL) || (intent
-//                .getAction()
-//                .equals(TelephonyManager.ACTION_PHONE_STATE_CHANGED)))) {
-//
-//            String phoneState = intent.getExtras().getString(TelephonyManager.EXTRA_STATE);
-//
-//            if (intent.getAction().equals(Intent.ACTION_NEW_OUTGOING_CALL)) {
-//                LogUtil.d("Outgoing call");
-//
-//                if (TelephonyManager.EXTRA_STATE_OFFHOOK.equals(phoneState)) {
-//                    LogUtil.d("Incoming call/Outgng call Started");
-//
-//                }
-//                if (TelephonyManager.EXTRA_STATE_IDLE.equals(phoneState)) {
-//                    LogUtil.d("Call ended");
-//                }
-//                if (TelephonyManager.EXTRA_STATE_RINGING.equals(phoneState)) {
-//                    LogUtil.d("Call ringing");
-//                }
-//            }
-//
-//        }
     }
 
     /**
@@ -140,17 +118,6 @@ public class BroadcastReceiverInCall extends BroadcastReceiver {
                 String classModelString = PreferencesUtils.getInstance(context).getString("classModel", "");
                 ClassModel classModel = JsonUtil.parseObject(classModelString, ClassModel.class);
                 if (classModel != null) {
-                    //sos号码
-                    String phontNu = PreferencesUtils.getInstance(context).getString("phoneNumber", "");
-                    PhoneNumber phoneNumber = JsonUtil.parseObject(phontNu, PhoneNumber.class);
-                    //sos号码不可呼入
-//                    if (incomePhoneNumber.equals(phoneNumber.getSosNumber())) {
-//                        if ("0".equals(classModel.getSosInFlag())) {
-//                            rejectCall(context);
-//                            return;
-//                        }
-//                    }
-                    //普通号码
                     if (classModel.getItems().size() > 0) {
                         List<ClassModel.ItemsBean> itemsBeanList = classModel.getItems();
                         for (int i = 0; i < itemsBeanList.size(); i++) {
@@ -194,7 +161,10 @@ public class BroadcastReceiverInCall extends BroadcastReceiver {
                 if (incomingCallOld != null) {
                     //1、无限制 2、限制白名单以外的号码呼入 3、限制所有号码呼入
 //                    if (incomingCallOld.getCallLimit().equals("1")) ;
-                    if (incomingCallOld.getCallLimit().equals("3")) rejectCall(context);
+                    if (incomingCallOld.getCallLimit().equals("3")){
+                        rejectCall(context);
+                        return;
+                    }
                     if (incomingCallOld.getCallLimit().equals("2")) {
                         List<IncomingCall.AddPhoneBean> addPhoneBeanList = incomingCallOld.getAddPhone();
                         boolean flagPeriod = false;
@@ -226,14 +196,9 @@ public class BroadcastReceiverInCall extends BroadcastReceiver {
                                             }
                                         }
                                     }
-
                                 }
                             }
-                        } else {
-                            rejectCall(context);
-                            return;
                         }
-
                     }
                 }
                 //打进的号码，不是 按键号码 和 白名单 ，拒绝
@@ -260,6 +225,7 @@ public class BroadcastReceiverInCall extends BroadcastReceiver {
                 }
                 if(!listNum.contains(incomePhoneNumber)){
                     rejectCall(context);
+                    return;
                 }
 
                 //跳转到接听activity

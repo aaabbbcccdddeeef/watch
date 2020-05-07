@@ -34,6 +34,12 @@ public class TimeTickReceiver extends BroadcastReceiver {
             int randomSecond=(int)(Math.random()*60);
 //            if (timeNowUpdate.equals("1147")) {//凌晨2点到3点之间
             if (timeNowUpdate.equals("02"+randomSecond)) {//凌晨2点到3点之间
+                //如果现在是待机模式，需要开启tcp
+//                String state = PreferencesUtils.getInstance(context).getString("","");
+//                if(state.equals("3")){
+//                    sssssssssss
+//                }
+//                BaseSDK.getInstance().reconnectTcp();
                 //请求更新apk
                 BaseSDK.getInstance().geUpdate("1@", new OnReceiveListener() {
                     @Override

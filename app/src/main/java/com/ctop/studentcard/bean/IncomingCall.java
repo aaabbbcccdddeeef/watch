@@ -144,21 +144,12 @@ public class IncomingCall {
 
     public static IncomingCall parseJson(String json){
         IncomingCall incomingCall = new IncomingCall();
-        List<DeletePhoneBean> deletePhones = new ArrayList<>();
         List<AddPhoneBean> addPhoneBeans = new ArrayList<>();
-        List<PeriodBean> periodBeans = new ArrayList<>();
-
-        PeriodBean periodBean = new PeriodBean();
         String[] datas = json.split("@");
-        //deletePhone
-        String deletePhone = datas[0];
-        String[] phones = deletePhone.split("!");
-        for (int i = 0;i<phones.length;i++){
-            DeletePhoneBean deletePhoneBean = new DeletePhoneBean();
-            deletePhoneBean.setPhone(phones[i]);
-            deletePhones.add(deletePhoneBean);
+        if(datas[1].equals("0")){
+            incomingCall = null;
+            return incomingCall;
         }
-        incomingCall.setDeletePhone(deletePhones);
         //addPhone
         //13900000004=0600-2230+!13900000005=0300-0600+0900-1130+!
         String addPhone = datas[1];//13900000004=0600-2230+!13900000005=0300-0600+0900-1130+!

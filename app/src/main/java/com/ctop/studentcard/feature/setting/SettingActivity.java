@@ -107,7 +107,7 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
             if (action.equals(BroadcastConstant.UPDATE)) {//Action
 
                 boolean is_head = intent.getExtras().getBoolean("is_head");
-                if(is_head){
+                if(!is_head){
                     Toast.makeText(mContext,"正在更新，请勿操作",Toast.LENGTH_SHORT).show();
                 }else {
                     Toast.makeText(mContext,"已经是最新版本",Toast.LENGTH_SHORT).show();

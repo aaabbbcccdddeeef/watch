@@ -10,6 +10,7 @@ import com.ctop.studentcard.netty.NettyClient;
 import com.ctop.studentcard.util.Const;
 import com.ctop.studentcard.util.LogUtil;
 import com.ctop.studentcard.util.PackDataUtil;
+import com.ctop.studentcard.util.TimeUtils;
 
 public class TemReceiver extends BroadcastReceiver {
 
@@ -27,12 +28,14 @@ public class TemReceiver extends BroadcastReceiver {
                 Const.ISSUED_TEM_WATERNUMBER = "";
             } else {//上报：实时温度
                 //上报
-                BaseSDK.getInstance().sendHealth("0@" + valueTem + "@0");
+                BaseSDK.getInstance().sendHealth(
+                        TimeUtils.getNowTimeString(TimeUtils.format4)+"-"+ TimeUtils.getNowTimeString(TimeUtils.format4)+
+                                "0@" + valueTem + "@0");
                 //测温页面显示温度
-                Intent intent1 = new Intent();
-                intent.putExtra("value", valueTem);
-                intent1.setAction(BroadcastConstant.TEMPERATURE_RESULT_POST);
-                context.sendBroadcast(intent1);// 发送
+                Intent intentTem = new Intent();
+                intentTem.putExtra("value", valueTem);
+                intentTem.setAction(BroadcastConstant.TEMPERATURE_RESULT_POST);
+                context.sendBroadcast(intentTem);// 发送
             }
 
         }
