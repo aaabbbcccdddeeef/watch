@@ -196,7 +196,7 @@ public class PercentCircle extends View {
     //线2的y轴增量
     private int line2Y = 0;
     //增量值
-    int step = 5;
+    int step = 2;
     //线的宽度
     private int lineThick = 12;
     //获取圆心的x坐标
@@ -228,7 +228,7 @@ public class PercentCircle extends View {
             //当前角度+360
             mCurrentAngle += 3.6;
             //每10ms重画一次
-            postInvalidateDelayed(10);
+            postInvalidateDelayed(40);
         }
 
 //        canvas.drawRect(mArcRectF, mRingPaint);
@@ -256,7 +256,7 @@ public class PercentCircle extends View {
             }
             //每隔6毫秒界面刷新
             if (line2X <= radius){
-                postInvalidateDelayed(3);
+                postInvalidateDelayed(1);
             }else {
                 if(!alphaout){
                     mHandler.sendEmptyMessage(1);

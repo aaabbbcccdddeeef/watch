@@ -1,5 +1,6 @@
 package com.ctop.studentcard.feature.temperature;
 
+import android.animation.ObjectAnimator;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -9,6 +10,10 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.RotateAnimation;
+import android.view.animation.ScaleAnimation;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -31,15 +36,15 @@ public class TemActivity extends BaseActivity implements View.OnClickListener {
     private String timeTem;
     private String valueTem;
 
-    Handler mHandler = new Handler(){
+    Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             if (msg.what == 0) {
                 percentCircle.setVisibility(View.VISIBLE);
-                percentCircle.setTargetPercent(100,mHandler);
+                percentCircle.setTargetPercent(100, mHandler);
                 mRippleView.setVisibility(View.GONE);
 
-            }else if(msg.what == 1){
+            } else if (msg.what == 1) {
 
                 AlphaAnimationUtil.startAlphaOut(percentCircle);
                 tem_rl.setVisibility(View.VISIBLE);
@@ -74,16 +79,48 @@ public class TemActivity extends BaseActivity implements View.OnClickListener {
     public void onClick(View v) {
         int id = v.getId();
         if (id == R.id.start_rl) {
-            start_rl.setVisibility(View.GONE);
-            tem_rl.setVisibility(View.GONE);
-            mRippleView.setVisibility(View.VISIBLE);
-            mRippleView.setRadius(70,mHandler);
-            //注册温度结果广播
-            mTemPostReceiver = new TemPostReceiver();
-            final IntentFilter intentFilter = new IntentFilter(BroadcastConstant.TEMPERATURE_RESULT_POST);
-            registerReceiver(mTemPostReceiver, intentFilter);
-            //发广播，请求测温
-            sendBrodcast();
+
+            ScaleAnimation scaleAnimation = new ScaleAnimation(1f, 0f, 1f, 0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+            scaleAnimation.setFillAfter(true);
+            scaleAnimation.setDuration(4000L);
+
+            RotateAnimation rotateAnimation = new RotateAnimation(0f, 3600f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+            rotateAnimation.setFillAfter(true);
+            rotateAnimation.setDuration(4000L);
+
+            AnimationSet animationSet = new AnimationSet(false);
+            animationSet.addAnimation(scaleAnimation);
+            animationSet.addAnimation(rotateAnimation);
+            animationSet.setFillAfter(true);
+
+            start_rl.startAnimation(animationSet);
+            animationSet.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    start_rl.setVisibility(View.GONE);
+                    tem_rl.setVisibility(View.GONE);
+                    mRippleView.setVisibility(View.VISIBLE);
+                    mRippleView.setRadius(70, mHandler);
+                    //注册温度结果广播
+                    mTemPostReceiver = new TemPostReceiver();
+                    final IntentFilter intentFilter = new IntentFilter(BroadcastConstant.TEMPERATURE_RESULT_POST);
+                    registerReceiver(mTemPostReceiver, intentFilter);
+                    //发广播，请求测温
+                    sendBrodcast();
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
+
+
         }
     }
 
@@ -98,7 +135,7 @@ public class TemActivity extends BaseActivity implements View.OnClickListener {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            LogUtil.e("TemReceiver" );
+            LogUtil.e("TemReceiver");
             String action = intent.getAction();
             if (action.equals(BroadcastConstant.TEMPERATURE_RESULT_POST)) {
                 valueTem = intent.getStringExtra("value");
@@ -109,13 +146,17 @@ public class TemActivity extends BaseActivity implements View.OnClickListener {
     }
 
 
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(mTemPostReceiver != null){
+        if (mTemPostReceiver != null) {
             unregisterReceiver(mTemPostReceiver);
         }
     }
+
+    private void scaleDown(View view, ScaleAnimation scaleAnimation) {
+
+    }
+
 
 }

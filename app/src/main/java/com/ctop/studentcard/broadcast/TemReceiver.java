@@ -30,7 +30,7 @@ public class TemReceiver extends BroadcastReceiver {
                 //上报
                 BaseSDK.getInstance().sendHealth(
                         TimeUtils.getNowTimeString(TimeUtils.format4)+"-"+ TimeUtils.getNowTimeString(TimeUtils.format4)+
-                                "0@" + valueTem + "@0");
+                                "@0@" + valueTem + "@0");
                 //测温页面显示温度
                 Intent intentTem = new Intent();
                 intentTem.putExtra("value", valueTem);
