@@ -82,7 +82,7 @@ public class GSMCellLocation {
         int type = tm.getNetworkType();
         @SuppressLint("MissingPermission")
         String imsi = tm.getSubscriberId();
-        LogUtil.d("imsi: " + imsi);
+//        LogUtil.d("imsi: " + imsi);
         //为了区分移动、联通还是电信，推荐使用imsi来判断(万不得己的情况下用getNetworkType()判断，比如imsi为空时)
         if (imsi != null && !"".equals(imsi)) {
             LogUtil.d("imsi");
@@ -206,7 +206,7 @@ public class GSMCellLocation {
          */
         @SuppressLint("MissingPermission")
         String imsi = tm.getSubscriberId();
-        LogUtil.d("imsi: " + imsi);
+//        LogUtil.d("imsi: " + imsi);
         //为了区分移动、联通还是电信，推荐使用imsi来判断(万不得己的情况下用getNetworkType()判断，比如imsi为空时)
         if (imsi != null && !"".equals(imsi)) {
             LogUtil.d("imsi");

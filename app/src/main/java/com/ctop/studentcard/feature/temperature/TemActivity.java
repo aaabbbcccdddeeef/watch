@@ -1,6 +1,5 @@
 package com.ctop.studentcard.feature.temperature;
 
-import android.animation.ObjectAnimator;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -10,19 +9,20 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
-import android.view.animation.AnimationSet;
-import android.view.animation.RotateAnimation;
 import android.view.animation.ScaleAnimation;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ctop.studentcard.R;
 import com.ctop.studentcard.base.BaseActivity;
-import com.ctop.studentcard.base.BaseSDK;
 import com.ctop.studentcard.broadcast.BroadcastConstant;
 import com.ctop.studentcard.util.AlphaAnimationUtil;
+import com.ctop.studentcard.util.Const;
 import com.ctop.studentcard.util.LogUtil;
+import com.ctop.studentcard.util.ai.KdxfSpeechSynthesizerUtil;
 
 
 public class TemActivity extends BaseActivity implements View.OnClickListener {
@@ -33,7 +33,7 @@ public class TemActivity extends BaseActivity implements View.OnClickListener {
     private RelativeLayout tem_rl;
     private TextView tv_tem;
     private TemPostReceiver mTemPostReceiver;
-    private String timeTem;
+    private ImageView iv_tem_list;
     private String valueTem;
 
     Handler mHandler = new Handler() {
@@ -43,16 +43,27 @@ public class TemActivity extends BaseActivity implements View.OnClickListener {
                 percentCircle.setVisibility(View.VISIBLE);
                 percentCircle.setTargetPercent(100, mHandler);
                 mRippleView.setVisibility(View.GONE);
+                percentCircle.init();
 
             } else if (msg.what == 1) {
 
                 AlphaAnimationUtil.startAlphaOut(percentCircle);
+                percentCircle.setVisibility(View.GONE);
+                AlphaAnimationUtil.startAlphaIn(percentCircle);
                 tem_rl.setVisibility(View.VISIBLE);
                 tv_tem.setText(valueTem);
                 AlphaAnimationUtil.translationXIn(tem_rl);
+                hiddenViews();
+                iv_tem_list.setVisibility(View.VISIBLE);
+
+
             }
         }
     };
+
+    private void hiddenViews(){
+        percentCircle.setVisibility(View.GONE);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,9 +76,13 @@ public class TemActivity extends BaseActivity implements View.OnClickListener {
         start_rl = findViewById(R.id.start_rl);
         tem_rl = findViewById(R.id.tem_rl);
         tv_tem = findViewById(R.id.tv_tem);
+        iv_tem_list = findViewById(R.id.iv_tem_list);
+        iv_tem_list.setVisibility(View.GONE);
         percentCircle.setVisibility(View.GONE);
 
         start_rl.setOnClickListener(this);
+        tem_rl.setOnClickListener(this);
+        iv_tem_list.setOnClickListener(this);
     }
 
     @Override
@@ -79,22 +94,21 @@ public class TemActivity extends BaseActivity implements View.OnClickListener {
     public void onClick(View v) {
         int id = v.getId();
         if (id == R.id.start_rl) {
+            KdxfSpeechSynthesizerUtil.getInstance(this,"请设置亲情号码");
+            //注册温度结果广播
+            mTemPostReceiver = new TemPostReceiver();
+            final IntentFilter intentFilter = new IntentFilter(BroadcastConstant.TEMPERATURE_RESULT_POST);
+            registerReceiver(mTemPostReceiver, intentFilter);
+            //发广播，请求测温
+            sendBrodcast();
+            iv_tem_list.setVisibility(View.GONE);
 
-            ScaleAnimation scaleAnimation = new ScaleAnimation(1f, 0f, 1f, 0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-            scaleAnimation.setFillAfter(true);
-            scaleAnimation.setDuration(4000L);
+            //简单渐变动画
+            AlphaAnimation alphaAnimation = new AlphaAnimation(1, 0);//渐变度从0到1
+            alphaAnimation.setDuration(3000);//动画持续时间：2000毫秒
+            start_rl.startAnimation(alphaAnimation);
 
-            RotateAnimation rotateAnimation = new RotateAnimation(0f, 3600f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-            rotateAnimation.setFillAfter(true);
-            rotateAnimation.setDuration(4000L);
-
-            AnimationSet animationSet = new AnimationSet(false);
-            animationSet.addAnimation(scaleAnimation);
-            animationSet.addAnimation(rotateAnimation);
-            animationSet.setFillAfter(true);
-
-            start_rl.startAnimation(animationSet);
-            animationSet.setAnimationListener(new Animation.AnimationListener() {
+            alphaAnimation.setAnimationListener(new Animation.AnimationListener() {
                 @Override
                 public void onAnimationStart(Animation animation) {
 
@@ -105,13 +119,7 @@ public class TemActivity extends BaseActivity implements View.OnClickListener {
                     start_rl.setVisibility(View.GONE);
                     tem_rl.setVisibility(View.GONE);
                     mRippleView.setVisibility(View.VISIBLE);
-                    mRippleView.setRadius(70, mHandler);
-                    //注册温度结果广播
-                    mTemPostReceiver = new TemPostReceiver();
-                    final IntentFilter intentFilter = new IntentFilter(BroadcastConstant.TEMPERATURE_RESULT_POST);
-                    registerReceiver(mTemPostReceiver, intentFilter);
-                    //发广播，请求测温
-                    sendBrodcast();
+                    mRippleView.setRadius(80, mHandler);
                 }
 
                 @Override
@@ -119,12 +127,45 @@ public class TemActivity extends BaseActivity implements View.OnClickListener {
 
                 }
             });
+        } else if (id == R.id.tem_rl) {
+            iv_tem_list.setVisibility(View.GONE);
+            //发广播，请求测温
+            sendBrodcast();
+            //简单渐变动画
+            AlphaAnimation alphaAnimation = new AlphaAnimation(1, 0);//渐变度从0到1
+            alphaAnimation.setDuration(3000);//动画持续时间：2000毫秒
+            tem_rl.startAnimation(alphaAnimation);
 
+            alphaAnimation.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
 
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    start_rl.setVisibility(View.GONE);
+                    tem_rl.setVisibility(View.GONE);
+
+                    mRippleView.setVisibility(View.VISIBLE);
+                    mRippleView.setRadius(80, mHandler);
+                    mRippleView.setEndFlag(false);
+                    mRippleView.init();
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
+        } else if (id == R.id.iv_tem_list) {
+            startActivity(new Intent(this,TemListActivity.class));
         }
     }
 
     private void sendBrodcast() {
+        Const.BY_STUDENT = true;
         Intent intent = new Intent();
         intent.setAction(BroadcastConstant.TEMPERATURE_START);
         sendBroadcast(intent);// 发送

@@ -45,7 +45,7 @@ public class RippleView extends View {
     // 圆圈是否为渐变模式
     private boolean mIsAlpha;
     Circle mCircle;
-    boolean endFlag = false;
+    public boolean endFlag = false;
 
     public RippleView(Context context) {
         this(context, null);
@@ -68,7 +68,7 @@ public class RippleView extends View {
         init();
     }
 
-    private void init() {
+    public void init() {
         mContext = getContext();
 
         // 设置画笔样式
@@ -203,4 +203,7 @@ public class RippleView extends View {
     private Handler mHandler;
 
 
+    public void setEndFlag(boolean endFlag) {
+        this.endFlag = endFlag;
+    }
 }

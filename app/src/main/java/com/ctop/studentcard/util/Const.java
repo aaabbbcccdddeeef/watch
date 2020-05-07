@@ -73,4 +73,5 @@ public class Const {
 
     //平台下发获取测温数据时候，设置标记，测温结束后，标记复位
     public static String ISSUED_TEM_WATERNUMBER = "";
+    public static boolean BY_STUDENT = false;
 }

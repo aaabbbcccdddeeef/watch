@@ -48,12 +48,12 @@ public class MessageIndexActivity extends BaseActivity {
     }
 
     private void initData() {
-        smsMessageDao =  DaoManager.getInstance().getDaoSession().getSmsMessageDao();
-        smsMessageList =   smsMessageDao.queryBuilder().orderDesc(SmsMessageDao.Properties.Time).limit(20).list();
-        if(smsMessageList.size()>0){
+        smsMessageDao = DaoManager.getInstance().getDaoSession().getSmsMessageDao();
+        smsMessageList = smsMessageDao.queryBuilder().orderDesc(SmsMessageDao.Properties.Time).limit(20).list();
+        if (smsMessageList.size() > 0) {
             iv_empty.setVisibility(View.GONE);
             recyclerView.setVisibility(View.VISIBLE);
-            LinearLayoutManager layoutManager = new LinearLayoutManager(this, RecyclerView.VERTICAL,false);
+            LinearLayoutManager layoutManager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
             recyclerView.setLayoutManager(layoutManager);
             SmsAdapter adapter = new SmsAdapter(smsMessageList);
             recyclerView.setAdapter(adapter);
@@ -67,13 +67,10 @@ public class MessageIndexActivity extends BaseActivity {
                     startActivity(intent);
                 }
             });
-        }else {
+        } else {
             iv_empty.setVisibility(View.VISIBLE);
             recyclerView.setVisibility(View.GONE);
         }
-
     }
-
-
 
 }

@@ -123,6 +123,7 @@
         <activity android:name=".feature.message.DialogActivity" />
         <activity android:name=".feature.CallNumberActivity" />
         <activity android:name=".feature.temperature.TemActivity" />
+        <activity android:name=".feature.temperature.TemListActivity" />
 
 
         <receiver android:name="com.ctop.studentcard.broadcast.WifiReceiver">

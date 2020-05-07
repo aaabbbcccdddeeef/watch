@@ -46,6 +46,20 @@ public class AlphaAnimationUtil {
         animator.start();
     }
 
+    /**
+     * 淡ru
+     * */
+    public static void startAlphaIn(View view ){
+
+        if( null == view ){
+            return;
+        }
+        //属性动画
+        ObjectAnimator animator = ObjectAnimator.ofFloat(view, "alpha", 0f, 1f);
+        animator.setDuration(1000);
+        animator.start();
+    }
+
 
     /**
      * 平移

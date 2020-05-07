@@ -17,14 +17,12 @@ public class BatteryBroadcastReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        LogUtil.d("battery changed：");
         if (intent.getAction().equals(Intent.ACTION_BATTERY_CHANGED)) {
             // 当前电量
             int level =intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 1)*100;
             // 最大电量
             int scale = intent.getIntExtra(BatteryManager.EXTRA_SCALE, 1);
             int ret =  level/scale;
-            LogUtil.d("battery changed："+ret);
             sendBrodcast(context,ret+"%");
             if(ret<=5){//自动关机
                 BaseSDK.getInstance().sendAlarmPower("3@"+ret+"%", new OnReceiveListener() {

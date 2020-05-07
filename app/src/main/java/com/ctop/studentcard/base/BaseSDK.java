@@ -23,6 +23,7 @@ import android.os.Vibrator;
 import android.speech.tts.TextToSpeech;
 import android.text.TextUtils;
 import android.util.ArrayMap;
+import android.widget.Toast;
 
 import com.ctop.studentcard.api.OnReceiveListener;
 
@@ -256,6 +257,30 @@ public class BaseSDK implements ChannelListener {
         NettyClient.getInstance(mContext).userAuth(request, null);
     }
 
+
+    private Handler handlerGps = new Handler() {
+        public void handleMessage(android.os.Message msg) {
+            switch (msg.what) {
+                case 0:
+                    // 移除所有的msg.what为0等消息，保证只有一个循环消息队列再跑
+                    handlerGps.removeMessages(0);
+                    // app的功能逻辑处理
+
+                    // 再次发出msg，循环更新
+                    handlerGps.sendEmptyMessageDelayed(0, period);
+                    break;
+
+                case 1:
+                    // 直接移除，定时器停止
+                    handlerGps.removeMessages(0);
+                    break;
+
+                default:
+                    break;
+            }
+        };
+    };
+
     private void timingLocationInit(long per) {
         //先取消上一个任务，防止重复的任务
         endExecutorScan();
@@ -264,8 +289,18 @@ public class BaseSDK implements ChannelListener {
         } else {
             period = per;
         }
-        //定时器20秒钟没有获取到GPS的信息，则上报基站信息
-        findGPS();
+
+        // 每隔 10分钟 向服务器发送位置信息
+        mScheduledExecutorService.scheduleAtFixedRate(new Runnable() {
+            @Override
+            public void run() {
+                LogUtil.e("LOCATION_init===" + period);
+                LogUtil.e("LOCATION_name===" + Thread.currentThread().getName());
+                //定时器20秒钟没有获取到GPS的信息，则上报基站信息
+                findGPS();
+            }
+        }, initialDelay, period, TimeUnit.SECONDS);
+
     }
 
     private ScheduledExecutorService mScheduledExecutorService;
@@ -275,8 +310,17 @@ public class BaseSDK implements ChannelListener {
         //先取消上一个任务，防止重复的任务
         endExecutorScan();
         if (NetworkUtil.getConnectedType(mContext).equals(NetworkUtil.NetType.MOBILE)) {//流量
-            //定时器20秒钟没有获取到GPS的信息，则上报基站信息
-            findGPS();
+
+            // 每隔 10分钟 向服务器发送位置信息
+            mScheduledExecutorService.scheduleAtFixedRate(new Runnable() {
+                @Override
+                public void run() {
+                    LogUtil.e("LOCATION_位置上报频率下发===" + period);
+                    LogUtil.e("LOCATION_name===" + Thread.currentThread().getName());
+                    //定时器20秒钟没有获取到GPS的信息，则上报基站信息
+                    findGPS();
+                }
+            }, initialDelay, period, TimeUnit.SECONDS);
         }
     }
 
@@ -292,21 +336,12 @@ public class BaseSDK implements ChannelListener {
     int initialDelay = 0;
 
     private void executor(final String locationInfo) {
-        // 每隔10m向服务器发送位置信息
-        mScheduledExecutorService.scheduleAtFixedRate(new Runnable() {
+        reportLocationInfo(locationInfo, new OnReceiveListener() {
             @Override
-            public void run() {
-                LogUtil.e("LOCATION_period==="+period);
-                LogUtil.e("LOCATION_name==="+Thread.currentThread().getName());
+            public void onResponse(String msg) {
 
-                reportLocationInfo(locationInfo, new OnReceiveListener() {
-                    @Override
-                    public void onResponse(String msg) {
-
-                    }
-                });
             }
-        }, initialDelay, period, TimeUnit.SECONDS);
+        });
     }
 
 
@@ -1130,34 +1165,39 @@ public class BaseSDK implements ChannelListener {
 
 
     private void findGPS() {
-        String gpsstate = getLocation(mContext);
-        //去定位
-        if (gpsstate.equals("0")) {
-            new CountDownTimer(20000, 1000) {
-                @Override
-                public void onTick(long millisUntilFinished) {
-//                    LogUtil.e("CountDownTimer：onTick：" + millisUntilFinished);
-                }
-
-                @Override
-                public void onFinish() {
-                    LogUtil.e("CountDownTimer：onFinish");
-                    LogUtil.writeInFile(mContext, "CountDownTimer：onFinish, no location return!!!!!!!");
-                    if (GETGPS == true) {//已经在20秒内请求到位置信息
-                        GETGPS = false;
-                    } else {//20秒内没有收到GPS信息
-                        String locationInfo = NetworkUtil.packNetInfo(mContext, 0, 0, "");
-                        executor(locationInfo);
+        try{
+            getLocation(mContext); //去定位
+//            if (gpsstate.equals("0")) {
+                new CountDownTimer(20000, 1000) {
+                    @Override
+                    public void onTick(long millisUntilFinished) {
+                        LogUtil.e("CountDownTimer：onTick：" + millisUntilFinished);
                     }
-                }
-            }.start();
+
+                    @Override
+                    public void onFinish() {
+                        LogUtil.e("CountDownTimer：onFinish");
+                        LogUtil.writeInFile(mContext, "CountDownTimer：onFinish, no location return!!!!!!!");
+                        if (GETGPS == true) {//已经在20秒内请求到位置信息
+                            GETGPS = false;
+                        } else {//20秒内没有收到GPS信息
+                            String locationInfo = NetworkUtil.packNetInfo(mContext, 0, 0, "");
+                            executor(locationInfo);
+                        }
+                    }
+                }.start();
+//            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
+
+
     }
 
     private void findGPSGet() {
-        String gpsstate = getLocation(mContext);
+        getLocation(mContext);
         //去定位
-        if (gpsstate.equals("0")) {
+//        if (gpsstate.equals("0")) {
             new CountDownTimer(20000, 1000) {
                 @Override
                 public void onTick(long millisUntilFinished) {
@@ -1176,7 +1216,7 @@ public class BaseSDK implements ChannelListener {
                     }
                 }
             }.start();
-        }
+//        }
     }
 
     public static final double[] latitude = {0};
@@ -1188,25 +1228,25 @@ public class BaseSDK implements ChannelListener {
     public static boolean GETGPSGET = false;
 
     @SuppressLint("MissingPermission")
-    public String getLocation(Context context) {
+    public void getLocation(Context context) {
         LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         LocationListener mlocListener = new GPSListener();
-        List<String> list = locationManager.getAllProviders();
-        boolean hasGps = false;
-        for (String c : list) {
-            if (c.equals(LocationManager.GPS_PROVIDER)) {
-                hasGps = true;
-                break;
-            }
-        }
-        if (!hasGps) {
-            return "2";
-        }
-        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            return "2";
-        }
+//        List<String> list = locationManager.getAllProviders();
+//        boolean hasGps = false;
+//        for (String c : list) {
+//            if (c.equals(LocationManager.GPS_PROVIDER)) {
+//                hasGps = true;
+//                break;
+//            }
+//        }
+//        if (!hasGps) {
+//            return "2";
+//        }
+//        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+//            return "2";
+//        }
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 10, mlocListener);
-        return "0";
+//        return "0";
     }
 
     public void reconnectTcp() {
@@ -1262,22 +1302,22 @@ public class BaseSDK implements ChannelListener {
             GETGPS = true;
             GETGPSGET = true;
             LogUtil.writeInFile(mContext, "onLocationChanged ,has location return......");
-            LogUtil.e("getLocation:onLocationChanged");
+//            LogUtil.e("getLocation:onLocationChanged");
         }
 
         @Override
         public void onStatusChanged(String provider, int status, Bundle extras) {
-            LogUtil.e("getLocation:onStatusChanged");
+//            LogUtil.e("getLocation:onStatusChanged");
         }
 
         @Override
         public void onProviderEnabled(String provider) {
-            LogUtil.e("getLocation:onProviderEnabled");
+//            LogUtil.e("getLocation:onProviderEnabled");
         }
 
         @Override
         public void onProviderDisabled(String provider) {
-            LogUtil.e("getLocation:onProviderDisabled");
+//            LogUtil.e("getLocation:onProviderDisabled");
         }
     }
 

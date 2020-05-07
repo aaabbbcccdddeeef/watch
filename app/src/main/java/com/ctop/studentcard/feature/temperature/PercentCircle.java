@@ -57,9 +57,7 @@ public class PercentCircle extends View {
 
     public PercentCircle(Context context) {
         super(context);
-        init(context);
         init();
-
     }
 
     public PercentCircle(Context context, AttributeSet attrs) {
@@ -82,21 +80,19 @@ public class PercentCircle extends View {
 
         // Be sure to call recycle() when done with them
         typedArray.recycle();
-
-        init(context);
         init();
     }
 
     public PercentCircle(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init(context);
         init();
+
     }
 
-    float strokeWidth = 10;
+    float strokeWidth = 8;
 
-    private void init(Context context) {
-
+    public void init() {
+        alphaout = false;
         //圆环开始角度 -90° 正北方向
         mStartSweepValue = -90;
         //当前角度
@@ -135,6 +131,26 @@ public class PercentCircle extends View {
 
         //获得文字的字号 因为要设置文字在圆的中心位置
         mTextSize = (int) mTextPaint.getTextSize();
+
+
+        paint = new Paint();
+        //设置画笔颜色
+        paint.setColor(mRingColor);
+        //设置圆弧的宽度
+        paint.setStrokeWidth(lineThick);
+        //设置圆弧为空心
+        paint.setStyle(Paint.Style.STROKE);
+        //消除锯齿
+        paint.setAntiAlias(true);
+        //获取圆心的x坐标
+        center = (int) (240 / 2);
+        //圆弧半径
+        radius = (int) (240 / 2 - lineThick - step);
+        checkStartX = (int) (center - 240 / 5);
+        rectF = new RectF(center - radius,
+                center - radius,
+                center + radius,
+                center + radius);
     }
 
     // 主要是测量wrap_content时候的宽和高，因为宽高一样，只需要测量一次宽即可，高等于宽
@@ -196,7 +212,7 @@ public class PercentCircle extends View {
     //线2的y轴增量
     private int line2Y = 0;
     //增量值
-    int step = 2;
+    int step = 3;
     //线的宽度
     private int lineThick = 12;
     //获取圆心的x坐标
@@ -273,24 +289,4 @@ public class PercentCircle extends View {
         mHandler = handler;
     }
 
-    void init() {
-        paint = new Paint();
-        //设置画笔颜色
-        paint.setColor(mRingColor);
-        //设置圆弧的宽度
-        paint.setStrokeWidth(lineThick);
-        //设置圆弧为空心
-        paint.setStyle(Paint.Style.STROKE);
-        //消除锯齿
-        paint.setAntiAlias(true);
-        //获取圆心的x坐标
-        center = (int) (240 / 2);
-        //圆弧半径
-        radius = (int) (240 / 2 - lineThick - step);
-        checkStartX = (int) (center - 240 / 5);
-        rectF = new RectF(center - radius,
-                center - radius,
-                center + radius,
-                center + radius);
-    }
 }
