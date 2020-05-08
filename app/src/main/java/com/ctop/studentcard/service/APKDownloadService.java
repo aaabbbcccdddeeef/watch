@@ -433,7 +433,6 @@ public class APKDownloadService extends Service {
             } else {
                 LogUtil.showLog(TAG, "安装文件不存在");
             }
-
         }
 
         private void trustEveryone() {

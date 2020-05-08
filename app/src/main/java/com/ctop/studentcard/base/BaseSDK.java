@@ -90,7 +90,7 @@ public class BaseSDK implements ChannelListener {
     SendBack sendBack;
 //    private NetworkReceiver networkReceiver;
 
-    public  int period;
+    public int period;
 
     private int count_send_login = 0;
     AlarmManager alarmManager;
@@ -270,6 +270,7 @@ public class BaseSDK implements ChannelListener {
     int initialDelay = 0;
 
     private void executor(final String locationInfo) {
+        GPS_ING = false;
         reportLocationInfo(locationInfo, new OnReceiveListener() {
             @Override
             public void onResponse(String msg) {
@@ -279,6 +280,7 @@ public class BaseSDK implements ChannelListener {
     }
 
     private void executorGet(final String locationInfo) {
+        GPS_GET_ING = false;
         reportLocationInfoGet(locationInfo, new OnReceiveListener() {
             @Override
             public void onResponse(String msg) {
@@ -1061,6 +1063,7 @@ public class BaseSDK implements ChannelListener {
 
 
     public void findGPS() {
+        GPS_ING = true;
         try{
             getLocation(mContext); //去定位
 //            if (gpsstate.equals("0")) {
@@ -1091,6 +1094,7 @@ public class BaseSDK implements ChannelListener {
     }
 
     public void findGPSGet() {
+        GPS_GET_ING = true;
         getLocation(mContext);
         //去定位
 //        if (gpsstate.equals("0")) {
@@ -1121,7 +1125,9 @@ public class BaseSDK implements ChannelListener {
     public static String lastLatitude = "";
     public static String lastLongitude = "";
     public static boolean GETGPS = false;
+    public static boolean GPS_ING = false;
     public static boolean GETGPSGET = false;
+    public static boolean GPS_GET_ING = false;
 
     @SuppressLint("MissingPermission")
     public void getLocation(Context context) {
@@ -1185,20 +1191,31 @@ public class BaseSDK implements ChannelListener {
     class GPSListener implements LocationListener {
         @Override
         public void onLocationChanged(Location location) {
-            latitude[0] = location.getLatitude();
-            longitude[0] = location.getLongitude();
-            String locationInfo = NetworkUtil.packNetInfo(mContext, latitude[0], longitude[0], TimeUtils.getNowTimeString(TimeUtils.format6));
-            executor(locationInfo);
-            lastLongitude = PreferencesUtils.getInstance(mContext).getString(PreferencesUtils.OLD_GPS_LO, "");
-            lastLatitude = PreferencesUtils.getInstance(mContext).getString(PreferencesUtils.OLD_GPS_LA, "");
-            sendReport_cross_border(latitude[0], longitude[0]);
-            PreferencesUtils.getInstance(mContext).setString(PreferencesUtils.OLD_GPS_LO, location.getLongitude() + "");
-            PreferencesUtils.getInstance(mContext).setString(PreferencesUtils.OLD_GPS_LA, location.getLatitude() + "");
+            if(GPS_ING == true){
+                latitude[0] = location.getLatitude();
+                longitude[0] = location.getLongitude();
+                String locationInfo = NetworkUtil.packNetInfo(mContext, latitude[0], longitude[0], TimeUtils.getNowTimeString(TimeUtils.format6));
+                executor(locationInfo);
+                lastLongitude = PreferencesUtils.getInstance(mContext).getString(PreferencesUtils.OLD_GPS_LO, "");
+                lastLatitude = PreferencesUtils.getInstance(mContext).getString(PreferencesUtils.OLD_GPS_LA, "");
+                sendReport_cross_border(latitude[0], longitude[0]);
+                PreferencesUtils.getInstance(mContext).setString(PreferencesUtils.OLD_GPS_LO, location.getLongitude() + "");
+                PreferencesUtils.getInstance(mContext).setString(PreferencesUtils.OLD_GPS_LA, location.getLatitude() + "");
+                GETGPS = true;
+            }
 
-            GETGPS = true;
-            GETGPSGET = true;
-            LogUtil.writeInFile(mContext, "onLocationChanged ,has location return......");
-//            LogUtil.e("getLocation:onLocationChanged");
+            if(GPS_GET_ING == true){
+                latitude[0] = location.getLatitude();
+                longitude[0] = location.getLongitude();
+                String locationInfo = NetworkUtil.packNetInfo(mContext, latitude[0], longitude[0], TimeUtils.getNowTimeString(TimeUtils.format6));
+                executorGet(locationInfo);
+                lastLongitude = PreferencesUtils.getInstance(mContext).getString(PreferencesUtils.OLD_GPS_LO, "");
+                lastLatitude = PreferencesUtils.getInstance(mContext).getString(PreferencesUtils.OLD_GPS_LA, "");
+                sendReport_cross_border(latitude[0], longitude[0]);
+                PreferencesUtils.getInstance(mContext).setString(PreferencesUtils.OLD_GPS_LO, location.getLongitude() + "");
+                PreferencesUtils.getInstance(mContext).setString(PreferencesUtils.OLD_GPS_LA, location.getLatitude() + "");
+                GETGPSGET = true;
+            }
         }
 
         @Override
