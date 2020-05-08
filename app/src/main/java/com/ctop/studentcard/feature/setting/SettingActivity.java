@@ -76,7 +76,7 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
 
         }else if(id == R.id.rl_update_version){
             //电量
-            if (MainActivity.getSystemBattery(mContext) >= 50) {//电量大于50%
+//            if (MainActivity.getSystemBattery(mContext) >= 50) {//电量大于50%
                 //请求更新apk
                 BaseSDK.getInstance().geUpdate("1@", new OnReceiveListener() {
                     @Override
@@ -84,9 +84,9 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
                     }
                 });
                 Toast.makeText(mContext,"正在检测新版本更新",Toast.LENGTH_SHORT).show();
-            }else {
-                Toast.makeText(mContext,"电量少于50%，无法更新",Toast.LENGTH_SHORT).show();
-            }
+//            }else {
+//                Toast.makeText(mContext,"电量少于50%，无法更新",Toast.LENGTH_SHORT).show();
+//            }
 
         }else if(id == R.id.rl_about){
 

@@ -22,5 +22,9 @@ public class BroadcastConstant {
     public static final String TEMPERATURE_RESULT = "com.gwl.temperature.action.result";//
     public static final String TEMPERATURE_RESULT_POST = "com.gwl.temperature.action.result.post";//
 
+    //gps
+    public static final String GPS = "com.ctop.studentcard.gps";//
+    public static final String GPS_GET = "com.ctop.studentcard.gps_get";//
+
 
 }

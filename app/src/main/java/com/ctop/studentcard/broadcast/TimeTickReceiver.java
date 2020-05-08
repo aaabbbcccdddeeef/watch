@@ -64,7 +64,7 @@ public class TimeTickReceiver extends BroadcastReceiver {
                     if (locationModeOld.equals("1")) {//省电
                         PreferencesUtils.getInstance(context).setString("locationMode", "1");
                         PreferencesUtils.getInstance(context).setLong("locationModeStart", System.currentTimeMillis());
-                        BaseSDK.getInstance().setPeriod(9223372036854775807l);
+                        BaseSDK.getInstance().setPeriod(2147483647);
                         LogUtil.e("上报设备模式2");
                         BaseSDK.getInstance().send_device_status("1");
                         PreferencesUtils.getInstance(context).setString("locationModeOld", "1");

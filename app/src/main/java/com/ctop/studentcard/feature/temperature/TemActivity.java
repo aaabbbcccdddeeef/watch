@@ -94,7 +94,7 @@ public class TemActivity extends BaseActivity implements View.OnClickListener {
     public void onClick(View v) {
         int id = v.getId();
         if (id == R.id.start_rl) {
-            KdxfSpeechSynthesizerUtil.getInstance(this,"请设置亲情号码");
+            KdxfSpeechSynthesizerUtil.getInstance(this,"开始测量，请稍等");
             //注册温度结果广播
             mTemPostReceiver = new TemPostReceiver();
             final IntentFilter intentFilter = new IntentFilter(BroadcastConstant.TEMPERATURE_RESULT_POST);

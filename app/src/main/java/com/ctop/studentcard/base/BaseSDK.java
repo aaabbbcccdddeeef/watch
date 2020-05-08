@@ -2,6 +2,8 @@ package com.ctop.studentcard.base;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -50,6 +52,7 @@ import com.ctop.studentcard.bean.RequestContent;
 import com.ctop.studentcard.bean.SmsMessageReceive;
 import com.ctop.studentcard.bean.TemFrequency;
 import com.ctop.studentcard.broadcast.BroadcastConstant;
+import com.ctop.studentcard.broadcast.GpsReceiver;
 import com.ctop.studentcard.broadcast.NetworkReceiver;
 import com.ctop.studentcard.broadcast.WifiReceiver;
 import com.ctop.studentcard.greendao.DaoManager;
@@ -86,9 +89,11 @@ public class BaseSDK implements ChannelListener {
     private ArrayMap<String, OnReceiveListener> listenerArrayMap = new ArrayMap<>();
     SendBack sendBack;
 //    private NetworkReceiver networkReceiver;
-    private long period;
+
+    public  int period;
 
     private int count_send_login = 0;
+    AlarmManager alarmManager;
 
     Handler handler = new Handler() {
         public void handleMessage(android.os.Message msg) {
@@ -97,7 +102,7 @@ public class BaseSDK implements ChannelListener {
             } else if (msg.what == 1) {
                 timingLocationGet();//位置信息定时上传
             } else if (msg.what == 2) {
-                timingLocationInit(0l);
+                timingLocationInit(0);
             } else if (msg.what == 3) {
                 new CountDownTimer(120000, 1000) {
                     @Override
@@ -179,32 +184,9 @@ public class BaseSDK implements ChannelListener {
         mContext = context;
 
         connect();
-        initBroadcastReceiver();
-
+        alarmManager = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
     }
 
-    private void initBroadcastReceiver() {
-
-//        IntentFilter wifiFilter = new IntentFilter();
-//        wifiFilter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
-//        wifiFilter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
-//        wifiFilter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
-//        wifiFilter.addAction(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION);
-//        registerWifiReceiver(wifiFilter);
-
-//        networkReceiver = new NetworkReceiver();
-//        IntentFilter filter1 = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
-//        mContext.registerReceiver(networkReceiver, filter1);
-    }
-
-//    WifiReceiver wifiReceiver;
-
-//    public void registerWifiReceiver(IntentFilter intentFilter) {
-//        if (null == wifiReceiver) {
-//            wifiReceiver = new WifiReceiver();
-//        }
-//        mContext.registerReceiver(wifiReceiver, intentFilter);
-//    }
 
     public void connect() {
         LogUtil.e("go to connect");
@@ -258,79 +240,31 @@ public class BaseSDK implements ChannelListener {
     }
 
 
-    private Handler handlerGps = new Handler() {
-        public void handleMessage(android.os.Message msg) {
-            switch (msg.what) {
-                case 0:
-                    // 移除所有的msg.what为0等消息，保证只有一个循环消息队列再跑
-                    handlerGps.removeMessages(0);
-                    // app的功能逻辑处理
-
-                    // 再次发出msg，循环更新
-                    handlerGps.sendEmptyMessageDelayed(0, period);
-                    break;
-
-                case 1:
-                    // 直接移除，定时器停止
-                    handlerGps.removeMessages(0);
-                    break;
-
-                default:
-                    break;
-            }
-        };
-    };
-
-    private void timingLocationInit(long per) {
+    private void timingLocationInit(int per) {
         //先取消上一个任务，防止重复的任务
-        endExecutorScan();
+        canalAlarm(mContext,BroadcastConstant.GPS);
         if (per == 0) {
-            period = 10 * 60;
+            period = 10 * 60 ;
+//            period =  60 ;
         } else {
             period = per;
         }
+        LogUtil.e("LOCATION_init===" + period);
 
-        // 每隔 10分钟 向服务器发送位置信息
-        mScheduledExecutorService.scheduleAtFixedRate(new Runnable() {
-            @Override
-            public void run() {
-                LogUtil.e("LOCATION_init===" + period);
-                LogUtil.e("LOCATION_name===" + Thread.currentThread().getName());
-                //定时器20秒钟没有获取到GPS的信息，则上报基站信息
-                findGPS();
-            }
-        }, initialDelay, period, TimeUnit.SECONDS);
+        setAlarmTime(mContext,System.currentTimeMillis(),BroadcastConstant.GPS, initialDelay);
+
+
 
     }
-
-    private ScheduledExecutorService mScheduledExecutorService;
-    private ExecutorService mExecutorService;
 
     private void timingLocation() {
         //先取消上一个任务，防止重复的任务
-        endExecutorScan();
-        if (NetworkUtil.getConnectedType(mContext).equals(NetworkUtil.NetType.MOBILE)) {//流量
-
-            // 每隔 10分钟 向服务器发送位置信息
-            mScheduledExecutorService.scheduleAtFixedRate(new Runnable() {
-                @Override
-                public void run() {
-                    LogUtil.e("LOCATION_位置上报频率下发===" + period);
-                    LogUtil.e("LOCATION_name===" + Thread.currentThread().getName());
-                    //定时器20秒钟没有获取到GPS的信息，则上报基站信息
-                    findGPS();
-                }
-            }, initialDelay, period, TimeUnit.SECONDS);
-        }
+        canalAlarm(mContext,BroadcastConstant.GPS);
+        setAlarmTime(mContext,System.currentTimeMillis(),BroadcastConstant.GPS,  initialDelay);
     }
 
     private void timingLocationGet() {
-        //先取消上一个任务，防止重复的任务
-        endExecutorScan();
-        if (NetworkUtil.getConnectedType(mContext).equals(NetworkUtil.NetType.MOBILE)) {//流量
-            //定时器20秒钟没有获取到GPS的信息，则上报基站信息
-            findGPSGet();
-        }
+        setAlarmTime(mContext,System.currentTimeMillis(),BroadcastConstant.GPS_GET,  initialDelay);
     }
 
     int initialDelay = 0;
@@ -344,51 +278,13 @@ public class BaseSDK implements ChannelListener {
         });
     }
 
-
     private void executorGet(final String locationInfo) {
-        mExecutorService.execute(new Runnable() {
+        reportLocationInfoGet(locationInfo, new OnReceiveListener() {
             @Override
-            public void run() {
-                LogUtil.e("LOCATION_periodGet==="+period);
-                LogUtil.e("LOCATION_get_name==="+Thread.currentThread().getName());
-                reportLocationInfoGet(locationInfo, new OnReceiveListener() {
-                    @Override
-                    public void onResponse(String msg) {
+            public void onResponse(String msg) {
 
-                    }
-                });
             }
         });
-    }
-
-
-    private void endExecutorScan() {
-        if (mScheduledExecutorService != null) {
-            LogUtil.e("ScheduledExecutorService endExecutorScan");
-
-            try {
-                mScheduledExecutorService.shutdown();
-                mScheduledExecutorService.awaitTermination(0,TimeUnit.SECONDS);
-                mScheduledExecutorService.shutdownNow();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-        }
-        if (mExecutorService != null) {
-            LogUtil.e("mExecutorService endExecutorScan");
-
-            try {
-                mExecutorService.shutdown();
-                mExecutorService.awaitTermination(0,TimeUnit.SECONDS);
-                mExecutorService.shutdownNow();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-        }
-        mScheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-        mExecutorService = Executors.newSingleThreadExecutor();
     }
 
     //上报位置信息
@@ -698,7 +594,7 @@ public class BaseSDK implements ChannelListener {
                     if (type.equals("1")) {
                         PreferencesUtils.getInstance(mContext).setString("locationMode", "1");
                         PreferencesUtils.getInstance(mContext).setLong("locationModeStart", System.currentTimeMillis());
-                        period = 9223372036854775807l;
+                        period = 2147483;
                         initialDelay = 2147483647;
                     } else if (type.equals("2")) {
                         PreferencesUtils.getInstance(mContext).setString("locationMode", "2");
@@ -737,7 +633,7 @@ public class BaseSDK implements ChannelListener {
                         String str = PackDataUtil.packRequestStr(BaseSDK.getBaseContext(), waterNumber, Const.SET_REDAY_MODE, Const.RESPONSE_OF_ISSUED, "0");
                         NettyClient.getInstance(mContext).sendMsgToServer(str, null);
                         stopTcp();
-                        period = 9223372036854775807l;
+                        period = 2147483647;
                         initialDelay = 2147483647;
                     } else {
                         PreferencesUtils.getInstance(mContext).setString("locationMode", "0");
@@ -1164,7 +1060,7 @@ public class BaseSDK implements ChannelListener {
     }
 
 
-    private void findGPS() {
+    public void findGPS() {
         try{
             getLocation(mContext); //去定位
 //            if (gpsstate.equals("0")) {
@@ -1194,7 +1090,7 @@ public class BaseSDK implements ChannelListener {
 
     }
 
-    private void findGPSGet() {
+    public void findGPSGet() {
         getLocation(mContext);
         //去定位
 //        if (gpsstate.equals("0")) {
@@ -1332,7 +1228,7 @@ public class BaseSDK implements ChannelListener {
         return period;
     }
 
-    public void setPeriod(long period) {
+    public void setPeriod(int period) {
         this.period = period;
     }
 
@@ -1340,4 +1236,23 @@ public class BaseSDK implements ChannelListener {
     public boolean getConnectStatus() {
         return NettyClient.getInstance(mContext).getConnectStatus();
     }
+
+    public void setAlarmTime(Context context, long timeInMillis,String action, int interval) {
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+
+        Intent intent = new Intent(action);
+        PendingIntent sender = PendingIntent.getBroadcast(context, 0, intent,PendingIntent.FLAG_CANCEL_CURRENT);
+
+        //参数2是开始时间、参数3是允许系统延迟的时间
+        alarmManager.setWindow(AlarmManager.RTC, timeInMillis, interval, sender);
+
+    }
+
+    public void canalAlarm(Context context, String action) {
+        Intent intent = new Intent(action);
+        PendingIntent pi = PendingIntent.getBroadcast(context, 0, intent,PendingIntent.FLAG_CANCEL_CURRENT);
+        AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        am.cancel(pi);
+    }
+
 }

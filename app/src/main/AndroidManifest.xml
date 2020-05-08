@@ -191,6 +191,14 @@
             </intent-filter>
         </receiver>
 
+
+        <receiver android:name=".broadcast.GpsReceiver">
+            <intent-filter android:priority="999">
+                <action android:name="com.ctop.studentcard.gps"/>
+                <action android:name="com.ctop.studentcard.gps_get"/>
+            </intent-filter>
+        </receiver>
+
         <!--<receiver-->
             <!--android:name=".ScreenOffAdminReceiver"-->
             <!--android:label="@string/app_name"-->

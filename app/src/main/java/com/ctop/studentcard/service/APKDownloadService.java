@@ -275,10 +275,13 @@ public class APKDownloadService extends Service {
                 LogUtil.e("下载完毕");
 
                 if (downloadUrl.substring(downloadUrl.lastIndexOf("/")).contains(".apk")) {
-                    installApk(mContext, apkFile);
+                    try{
+                        installApk(mContext, apkFile);
 //            //安装apk
 //                    OSUtils.installApk(mContext, apkFile.getAbsolutePath());
-
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
                 }else {
                     intent = IntentUtil.openFile(apkFile.getPath());
                     startActivity(intent);
@@ -289,17 +292,17 @@ public class APKDownloadService extends Service {
 
             taskRecord.remove(this.taskId); // 去除已经完成的记录
 
-            TimerTask deleteTask = new TimerTask() {
-                @Override
-                public void run() {
-                    if (apkFile != null && apkFile.exists()) {
-                        apkFile.delete();
-                        stopSelf(taskId); // 关闭服务
-                    }
-                }
-            };
-            Timer timer = new Timer();
-            timer.schedule(deleteTask, 60 * 60 * 1000); // 60分钟之后删除下载的APK
+//            TimerTask deleteTask = new TimerTask() {
+//                @Override
+//                public void run() {
+//                    if (apkFile != null && apkFile.exists()) {
+//                        apkFile.delete();
+//                        stopSelf(taskId); // 关闭服务
+//                    }
+//                }
+//            };
+//            Timer timer = new Timer();
+//            timer.schedule(deleteTask, 60 * 60 * 1000); // 60分钟之后删除下载的APK
 
 
         }
