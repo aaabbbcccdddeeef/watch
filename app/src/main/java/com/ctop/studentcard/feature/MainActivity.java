@@ -37,6 +37,7 @@ import com.ctop.studentcard.feature.setting.wallpaper.WallpaperActivity;
 import com.ctop.studentcard.greendao.DaoManager;
 import com.ctop.studentcard.greendao.SmsMessage;
 import com.ctop.studentcard.greendao.SmsMessageDao;
+import com.ctop.studentcard.util.AppConst;
 import com.ctop.studentcard.util.DeviceUtil;
 import com.ctop.studentcard.util.GSMCellLocation;
 import com.ctop.studentcard.util.JsonUtil;
@@ -171,8 +172,8 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
                         LogUtil.e("上报设备模式8");
                         BaseSDK.getInstance().send_device_status("3");
                         //设置30分钟的实时模式
-                        PreferencesUtils.getInstance(mContext).setString("locationModeOld", PreferencesUtils.getInstance(mContext).getString("locationMode", "2"));
-                        PreferencesUtils.getInstance(mContext).setString("locationMode", "3");
+                        PreferencesUtils.getInstance(mContext).setString("locationModeOld", PreferencesUtils.getInstance(mContext).getString("locationMode",  AppConst.MODEL_BALANCE));
+                        PreferencesUtils.getInstance(mContext).setString("locationMode", AppConst.MODEL_REAL_TIME);
                         BaseSDK.getInstance().setPeriod(3 * 60);
                         //计算结束时间 realTime
                         long endTime = System.currentTimeMillis() + 30 * 60 * 1000;
@@ -213,7 +214,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
     }
 
     private void initData() {
-        PreferencesUtils.getInstance(mContext).setString("locationMode", "2");//初始化：定位模式：平衡模式
+        PreferencesUtils.getInstance(mContext).setString("locationMode",  AppConst.MODEL_BALANCE);//初始化：定位模式：平衡模式
         PreferencesUtils.getInstance(mContext).setLong("locationModeStart", System.currentTimeMillis());//初始化：定位模式：开始时间
     }
 

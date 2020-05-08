@@ -20,7 +20,7 @@ import com.ctop.studentcard.R;
 import com.ctop.studentcard.base.BaseActivity;
 import com.ctop.studentcard.broadcast.BroadcastConstant;
 import com.ctop.studentcard.util.AlphaAnimationUtil;
-import com.ctop.studentcard.util.Const;
+import com.ctop.studentcard.util.AppConst;
 import com.ctop.studentcard.util.LogUtil;
 import com.ctop.studentcard.util.ai.KdxfSpeechSynthesizerUtil;
 
@@ -165,7 +165,7 @@ public class TemActivity extends BaseActivity implements View.OnClickListener {
     }
 
     private void sendBrodcast() {
-        Const.BY_STUDENT = true;
+        AppConst.BY_STUDENT = true;
         Intent intent = new Intent();
         intent.setAction(BroadcastConstant.TEMPERATURE_START);
         sendBroadcast(intent);// 发送

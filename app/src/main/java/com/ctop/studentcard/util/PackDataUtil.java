@@ -53,7 +53,7 @@ public class PackDataUtil {
             String body = SecurityAES.getInstance().decryptT(returnStr, aes_key, aes_vector);
             LogUtil.e("receive body: " + body);
             String[] stringBody = body.split(",");
-            if(stringBody[3].equals(Const.LOCATION_INFO_GET)){
+            if(stringBody[3].equals(AppConst.LOCATION_INFO_GET)){
                 String six = stringBody[6].replace("]", "");
                 requestContent = new RequestContent(stringBody[0], stringBody[1], stringBody[2], stringBody[3], stringBody[4], stringBody[5], six,"0");
             }else {

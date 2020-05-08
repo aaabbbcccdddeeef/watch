@@ -2,47 +2,29 @@ package com.ctop.studentcard.feature.phone;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothProfile;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.Message;
 import android.os.PowerManager;
-import android.os.RemoteException;
 import android.telephony.TelephonyManager;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.internal.telephony.ITelephony;
 import com.ctop.studentcard.R;
 import com.ctop.studentcard.base.BaseActivity;
-import com.ctop.studentcard.base.BaseSDK;
-import com.ctop.studentcard.broadcast.BroadcastConstant;
 import com.ctop.studentcard.broadcast.BroadcastReceiverInCall;
-import com.ctop.studentcard.feature.MainActivity;
-import com.ctop.studentcard.netty.NettyClient;
-import com.ctop.studentcard.util.Const;
-import com.ctop.studentcard.util.KeyUtil;
 import com.ctop.studentcard.util.LogUtil;
-import com.ctop.studentcard.util.PackDataUtil;
-import com.ctop.studentcard.util.PropertiesUtil;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Date;

@@ -6,26 +6,19 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.pm.PackageManager;
-import android.hardware.Camera;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
-import android.net.ConnectivityManager;
 import android.net.Uri;
-import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Vibrator;
-import android.speech.tts.TextToSpeech;
 import android.text.TextUtils;
 import android.util.ArrayMap;
-import android.widget.Toast;
 
 import com.ctop.studentcard.api.OnReceiveListener;
 
@@ -34,10 +27,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 import com.ctop.studentcard.api.Iback;
 import com.ctop.studentcard.api.InstructionCallBack;
@@ -52,9 +41,6 @@ import com.ctop.studentcard.bean.RequestContent;
 import com.ctop.studentcard.bean.SmsMessageReceive;
 import com.ctop.studentcard.bean.TemFrequency;
 import com.ctop.studentcard.broadcast.BroadcastConstant;
-import com.ctop.studentcard.broadcast.GpsReceiver;
-import com.ctop.studentcard.broadcast.NetworkReceiver;
-import com.ctop.studentcard.broadcast.WifiReceiver;
 import com.ctop.studentcard.greendao.DaoManager;
 import com.ctop.studentcard.greendao.SmsMessage;
 import com.ctop.studentcard.greendao.SmsMessageDao;
@@ -62,7 +48,7 @@ import com.ctop.studentcard.netty.ChannelListener;
 import com.ctop.studentcard.netty.NettyClient;
 import com.ctop.studentcard.netty.SendBack;
 import com.ctop.studentcard.service.APKDownloadService;
-import com.ctop.studentcard.util.Const;
+import com.ctop.studentcard.util.AppConst;
 import com.ctop.studentcard.util.DeviceUtil;
 import com.ctop.studentcard.util.JsonUtil;
 import com.ctop.studentcard.util.LogUtil;
@@ -116,7 +102,7 @@ public class BaseSDK implements ChannelListener {
                         //组装报文
                         String waterNumber = PackDataUtil.createWaterNumber();
                         String login_code = PropertiesUtil.getInstance().getLoginString(mContext);
-                        String request = PackDataUtil.packRequestStr(mContext, waterNumber, Const.LOGIN, Const.REPORT_THE_REQUEST, login_code);
+                        String request = PackDataUtil.packRequestStr(mContext, waterNumber, AppConst.LOGIN, AppConst.REPORT_THE_REQUEST, login_code);
                         NettyClient.getInstance(mContext).userAuth(request, null);
                     }
                 }.start();
@@ -132,7 +118,7 @@ public class BaseSDK implements ChannelListener {
                         //组装报文
                         String waterNumber = PackDataUtil.createWaterNumber();
                         String login_code = PropertiesUtil.getInstance().getLoginString(mContext);
-                        String request = PackDataUtil.packRequestStr(mContext, waterNumber, Const.LOGIN, Const.REPORT_THE_REQUEST, login_code);
+                        String request = PackDataUtil.packRequestStr(mContext, waterNumber, AppConst.LOGIN, AppConst.REPORT_THE_REQUEST, login_code);
                         NettyClient.getInstance(mContext).userAuth(request, null);
                     }
                 }.start();
@@ -235,7 +221,7 @@ public class BaseSDK implements ChannelListener {
         //组装报文
         String waterNumber = PackDataUtil.createWaterNumber();
         String login_code = PropertiesUtil.getInstance().getLoginString(mContext);
-        String request = PackDataUtil.packRequestStr(mContext, waterNumber, Const.LOGIN, Const.REPORT_THE_REQUEST, login_code);
+        String request = PackDataUtil.packRequestStr(mContext, waterNumber, AppConst.LOGIN, AppConst.REPORT_THE_REQUEST, login_code);
         NettyClient.getInstance(mContext).userAuth(request, null);
     }
 
@@ -293,7 +279,7 @@ public class BaseSDK implements ChannelListener {
     public void reportLocationInfo(String data, final OnReceiveListener onReceiveListener) {
         //组装报文
         String waterNumber = PackDataUtil.createWaterNumber();
-        final String request = PackDataUtil.packRequestStr(mContext, waterNumber, Const.REPORT_LOCATION_INFO, Const.REPORT_THE_REQUEST, data);
+        final String request = PackDataUtil.packRequestStr(mContext, waterNumber, AppConst.REPORT_LOCATION_INFO, AppConst.REPORT_THE_REQUEST, data);
         listenerArrayMap.put(waterNumber, onReceiveListener);
         NettyClient.getInstance(mContext).sendMsgToServer(request, onReceiveListener);
     }
@@ -302,7 +288,7 @@ public class BaseSDK implements ChannelListener {
     public void reportLocationInfoGet(String data, final OnReceiveListener onReceiveListener) {
         //组装报文
         String waterNumber = PreferencesUtils.getInstance(mContext).getString("LOCATION_INFO_GET", "");
-        final String request = PackDataUtil.packRequestStr(mContext, waterNumber, Const.LOCATION_INFO_GET, Const.RESPONSE_OF_ISSUED, data);
+        final String request = PackDataUtil.packRequestStr(mContext, waterNumber, AppConst.LOCATION_INFO_GET, AppConst.RESPONSE_OF_ISSUED, data);
         listenerArrayMap.put(waterNumber, onReceiveListener);
         NettyClient.getInstance(mContext).sendMsgToServer(request, onReceiveListener);
     }
@@ -311,7 +297,7 @@ public class BaseSDK implements ChannelListener {
     public void sendAlarmPower(String data, final OnReceiveListener onReceiveListener) {
         //组装报文
         String waterNumber = PackDataUtil.createWaterNumber();
-        final String request = PackDataUtil.packRequestStr(mContext, waterNumber, Const.ALARM_POWER, Const.REPORT_THE_REQUEST, data);
+        final String request = PackDataUtil.packRequestStr(mContext, waterNumber, AppConst.ALARM_POWER, AppConst.REPORT_THE_REQUEST, data);
         listenerArrayMap.put(waterNumber, onReceiveListener);
         new Thread(new Runnable() {
             @Override
@@ -325,7 +311,7 @@ public class BaseSDK implements ChannelListener {
     public void sendBootAndShutdown(String data, final OnReceiveListener onReceiveListener) {
         //组装报文
         String waterNumber = PackDataUtil.createWaterNumber();
-        final String request = PackDataUtil.packRequestStr(mContext, waterNumber, Const.ALARM_POWER, Const.REPORT_THE_REQUEST, data);
+        final String request = PackDataUtil.packRequestStr(mContext, waterNumber, AppConst.ALARM_POWER, AppConst.REPORT_THE_REQUEST, data);
         listenerArrayMap.put(waterNumber, onReceiveListener);
         new Thread(new Runnable() {
             @Override
@@ -339,7 +325,7 @@ public class BaseSDK implements ChannelListener {
     public void sendCustom(String data, final OnReceiveListener onReceiveListener) {
         //组装报文
         String waterNumber = PackDataUtil.createWaterNumber();
-        final String request = PackDataUtil.packRequestStr(mContext, waterNumber, Const.DEVICE_DATA_TRANSPORT, Const.REPORT_THE_REQUEST, data);
+        final String request = PackDataUtil.packRequestStr(mContext, waterNumber, AppConst.DEVICE_DATA_TRANSPORT, AppConst.REPORT_THE_REQUEST, data);
         listenerArrayMap.put(waterNumber, onReceiveListener);
         new Thread(new Runnable() {
             @Override
@@ -356,7 +342,7 @@ public class BaseSDK implements ChannelListener {
         if (regionalReturn != null) {
             //组装报文  父母卡类型@进入某区域或离开某区域@位置信息@区域编号
             String data = regionalReturn.getCardType() + "@" + regionalReturn.getInOrOut() + "@" + regionalReturn.getGpsString() + "@" + regionalReturn.getArea();
-            final String request = PackDataUtil.packRequestStr(mContext, PackDataUtil.createWaterNumber(), Const.REPORT_CROSS_BORDER, Const.REPORT_THE_REQUEST, data);
+            final String request = PackDataUtil.packRequestStr(mContext, PackDataUtil.createWaterNumber(), AppConst.REPORT_CROSS_BORDER, AppConst.REPORT_THE_REQUEST, data);
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -370,7 +356,7 @@ public class BaseSDK implements ChannelListener {
     public void sendCallRecord(String data) {
         if (!TextUtils.isEmpty(data)) {
             //组装报文
-            final String request = PackDataUtil.packRequestStr(mContext, PackDataUtil.createWaterNumber(), Const.REPORT_CALL_LOG, Const.REPORT_THE_REQUEST, data);
+            final String request = PackDataUtil.packRequestStr(mContext, PackDataUtil.createWaterNumber(), AppConst.REPORT_CALL_LOG, AppConst.REPORT_THE_REQUEST, data);
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -383,7 +369,7 @@ public class BaseSDK implements ChannelListener {
     //SOS 触发报警上报
     public void send_report_sos() {
         //组装报文
-        final String request = PackDataUtil.packRequestStr(mContext, PackDataUtil.createWaterNumber(), Const.REPORT_SOS, Const.REPORT_THE_REQUEST, "1");
+        final String request = PackDataUtil.packRequestStr(mContext, PackDataUtil.createWaterNumber(), AppConst.REPORT_SOS, AppConst.REPORT_THE_REQUEST, "1");
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -400,7 +386,7 @@ public class BaseSDK implements ChannelListener {
         long startMode = PreferencesUtils.getInstance(mContext).getLong("locationModeStart", 0l);
         long durationOld = (System.currentTimeMillis() - startMode) / 60000;
         String data = locationModeOld + "@" + mode + "@" + System.currentTimeMillis() + "@" + durationOld;
-        final String request = PackDataUtil.packRequestStr(mContext, PackDataUtil.createWaterNumber(), Const.DEVICE_STATUS, Const.REPORT_THE_REQUEST, data);
+        final String request = PackDataUtil.packRequestStr(mContext, PackDataUtil.createWaterNumber(), AppConst.DEVICE_STATUS, AppConst.REPORT_THE_REQUEST, data);
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -413,7 +399,7 @@ public class BaseSDK implements ChannelListener {
     //短消息已阅上报
     public void send_report_sms_read(String data) {
         //组装报文
-        final String request = PackDataUtil.packRequestStr(mContext, PackDataUtil.createWaterNumber(), Const.REPORT_SMS_READ, Const.REPORT_THE_REQUEST, data);
+        final String request = PackDataUtil.packRequestStr(mContext, PackDataUtil.createWaterNumber(), AppConst.REPORT_SMS_READ, AppConst.REPORT_THE_REQUEST, data);
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -427,7 +413,7 @@ public class BaseSDK implements ChannelListener {
     public void getSmsPort(String data, final OnReceiveListener onReceiveListener) {
         //组装报文
         String waterNumber = PackDataUtil.createWaterNumber();
-        final String request = PackDataUtil.packRequestStr(mContext, waterNumber, Const.GET_SMS_PORT, Const.REPORT_THE_REQUEST, data);
+        final String request = PackDataUtil.packRequestStr(mContext, waterNumber, AppConst.GET_SMS_PORT, AppConst.REPORT_THE_REQUEST, data);
         listenerArrayMap.put(waterNumber, onReceiveListener);
         new Thread(new Runnable() {
             @Override
@@ -441,7 +427,7 @@ public class BaseSDK implements ChannelListener {
     public void geUpdate(String data, final OnReceiveListener onReceiveListener) {
         //组装报文
         String waterNumber = PackDataUtil.createWaterNumber();
-        final String request = PackDataUtil.packRequestStr(mContext, waterNumber, Const.GET_SERVICE_MSG, Const.REPORT_THE_REQUEST, data);
+        final String request = PackDataUtil.packRequestStr(mContext, waterNumber, AppConst.GET_SERVICE_MSG, AppConst.REPORT_THE_REQUEST, data);
         listenerArrayMap.put(waterNumber, onReceiveListener);
         new Thread(new Runnable() {
             @Override
@@ -455,7 +441,7 @@ public class BaseSDK implements ChannelListener {
     public void getIncomingCall(String data, final OnReceiveListener onReceiveListener) {
         //组装报文
         String waterNumber = PackDataUtil.createWaterNumber();
-        final String request = PackDataUtil.packRequestStr(mContext, waterNumber, Const.GET_INCOMING_CALL, Const.REPORT_THE_REQUEST, data);
+        final String request = PackDataUtil.packRequestStr(mContext, waterNumber, AppConst.GET_INCOMING_CALL, AppConst.REPORT_THE_REQUEST, data);
         listenerArrayMap.put(waterNumber, onReceiveListener);
         new Thread(new Runnable() {
             @Override
@@ -469,7 +455,7 @@ public class BaseSDK implements ChannelListener {
     public void getNormalButton(String data, final OnReceiveListener onReceiveListener) {
         //组装报文
         String waterNumber = PackDataUtil.createWaterNumber();
-        final String request = PackDataUtil.packRequestStr(mContext, waterNumber, Const.GET_NORMAL_BUTTON, Const.REPORT_THE_REQUEST, data);
+        final String request = PackDataUtil.packRequestStr(mContext, waterNumber, AppConst.GET_NORMAL_BUTTON, AppConst.REPORT_THE_REQUEST, data);
         listenerArrayMap.put(waterNumber, onReceiveListener);
         new Thread(new Runnable() {
             @Override
@@ -483,7 +469,7 @@ public class BaseSDK implements ChannelListener {
     public void getClassModel(String data, final OnReceiveListener onReceiveListener) {
         //组装报文
         String waterNumber = PackDataUtil.createWaterNumber();
-        final String request = PackDataUtil.packRequestStr(mContext, waterNumber, Const.GET_CLASS_MODEL, Const.REPORT_THE_REQUEST, data);
+        final String request = PackDataUtil.packRequestStr(mContext, waterNumber, AppConst.GET_CLASS_MODEL, AppConst.REPORT_THE_REQUEST, data);
         listenerArrayMap.put(waterNumber, onReceiveListener);
         new Thread(new Runnable() {
             @Override
@@ -497,7 +483,7 @@ public class BaseSDK implements ChannelListener {
     //上报 温度 心率
     public void sendHealth(String data) {
         //组装报文
-        final String request = PackDataUtil.packRequestStr(mContext, PackDataUtil.createWaterNumber(), Const.REPORT_HEALTH, Const.REPORT_THE_REQUEST, data);
+        final String request = PackDataUtil.packRequestStr(mContext, PackDataUtil.createWaterNumber(), AppConst.REPORT_HEALTH, AppConst.REPORT_THE_REQUEST, data);
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -517,17 +503,17 @@ public class BaseSDK implements ChannelListener {
             String data = response.getData();
             data = data.replace("]", "");
             final String waterNumber = response.getWaterNumber();
-            if (response.getMessageType().equals(Const.ISSUED_THE_REQUEST)) {//服务器主动下发
-                if (response.getCmd().equals(Const.REMOTE_OPERATE_TERMINAL)) {//终端设备服务调用
+            if (response.getMessageType().equals(AppConst.ISSUED_THE_REQUEST)) {//服务器主动下发
+                if (response.getCmd().equals(AppConst.REMOTE_OPERATE_TERMINAL)) {//终端设备服务调用
                     //重启终端@恢复除平台地址以外的出厂设置@关机
                     //0=不执行，1=执行
-                    String str = PackDataUtil.packRequestStr(BaseSDK.getBaseContext(), waterNumber, Const.REMOTE_OPERATE_TERMINAL, Const.RESPONSE_OF_ISSUED, "0");
+                    String str = PackDataUtil.packRequestStr(BaseSDK.getBaseContext(), waterNumber, AppConst.REMOTE_OPERATE_TERMINAL, AppConst.RESPONSE_OF_ISSUED, "0");
                     NettyClient.getInstance(mContext).sendMsgToServer(str, null);
                     String[] strings = data.split("@");
                     if (strings[1].equals("1")) {//恢复除平台地址以外的出厂设置
                         PreferencesUtils.getInstance(mContext).setString("phoneNumber", "");
                         PreferencesUtils.getInstance(mContext).setString("locationModeOld", "");
-                        PreferencesUtils.getInstance(mContext).setString("locationMode", "");
+                        PreferencesUtils.getInstance(mContext).setString("locationMode", AppConst.MODEL_BALANCE);
                         PreferencesUtils.getInstance(mContext).setLong("locationModeStart", 0l);
                         PreferencesUtils.getInstance(mContext).setLong("realTimeModeEnd", 0l);
                         PreferencesUtils.getInstance(mContext).setString("awaitModeStart", "");
@@ -540,22 +526,22 @@ public class BaseSDK implements ChannelListener {
                     if (strings[0].equals("1")) {//重启终端
                         DeviceUtil.reboot(mContext);
                     }
-                } else if (response.getCmd().equals(Const.SET_NORMAL_BUTTON)) {//设置普通按键与SOS号码
+                } else if (response.getCmd().equals(AppConst.SET_NORMAL_BUTTON)) {//设置普通按键与SOS号码
                     //0=13900000000!1=!2=13900000002!3=13900000003!4=13900000004!5=13900000005!
                     PhoneNumber phoneNumber = PhoneNumber.parseJson(data);
                     PreferencesUtils.getInstance(mContext).setString("phoneNumber", JsonUtil.toJSONString(phoneNumber));
 
-                    String str = PackDataUtil.packRequestStr(BaseSDK.getBaseContext(), waterNumber, Const.REPORT_HEARTBEAT, Const.RESPONSE_OF_ISSUED, "0");
+                    String str = PackDataUtil.packRequestStr(BaseSDK.getBaseContext(), waterNumber, AppConst.REPORT_HEARTBEAT, AppConst.RESPONSE_OF_ISSUED, "0");
                     NettyClient.getInstance(mContext).sendMsgToServer(str, null);
-                } else if (response.getCmd().equals(Const.DEVICE_DATA_TRANSPORT)) {//自定义下发
+                } else if (response.getCmd().equals(AppConst.DEVICE_DATA_TRANSPORT)) {//自定义下发
                     sendBack.getSend(response.getData(), new Iback() {
                         @Override
                         public void returnToServer(String ret) {
-                            String str = PackDataUtil.packRequestStr(BaseSDK.getBaseContext(), waterNumber, Const.DEVICE_DATA_TRANSPORT, Const.RESPONSE_OF_ISSUED, ret);
+                            String str = PackDataUtil.packRequestStr(BaseSDK.getBaseContext(), waterNumber, AppConst.DEVICE_DATA_TRANSPORT, AppConst.RESPONSE_OF_ISSUED, ret);
                             NettyClient.getInstance(mContext).sendMsgToServer(str, null);
                         }
                     });
-                } else if (response.getCmd().equals(Const.SET_REGIONAL_ALARM)) {//设置区域报警
+                } else if (response.getCmd().equals(AppConst.SET_REGIONAL_ALARM)) {//设置区域报警
                     //取出本地数据
                     Set regionalAlarmEntityList = PreferencesUtils.getInstance(mContext).getStringSet("regionalAlarm", new HashSet<String>());
                     RegionalAlarmEntity regionalAlarmEntity = RegionalAlarmEntity.parseJson(data);
@@ -583,9 +569,9 @@ public class BaseSDK implements ChannelListener {
                             }
                         }
                     }
-                    String str = PackDataUtil.packRequestStr(BaseSDK.getBaseContext(), waterNumber, Const.SET_REGIONAL_ALARM, Const.RESPONSE_OF_ISSUED, "0");
+                    String str = PackDataUtil.packRequestStr(BaseSDK.getBaseContext(), waterNumber, AppConst.SET_REGIONAL_ALARM, AppConst.RESPONSE_OF_ISSUED, "0");
                     NettyClient.getInstance(mContext).sendMsgToServer(str, null);
-                } else if (response.getCmd().equals(Const.SET_LOCATION_MODE)) {//定位模式
+                } else if (response.getCmd().equals(AppConst.SET_LOCATION_MODE)) {//定位模式
                     //定位模式@工作时长
                     // 1省电模式不上报位置
                     // 2平衡模式20min/次
@@ -594,18 +580,18 @@ public class BaseSDK implements ChannelListener {
                     String type = strings[0];
                     int num = Integer.parseInt(strings[1]);
                     if (type.equals("1")) {
-                        PreferencesUtils.getInstance(mContext).setString("locationMode", "1");
+                        PreferencesUtils.getInstance(mContext).setString("locationMode", AppConst.MODEL_POWER_SAVING);
                         PreferencesUtils.getInstance(mContext).setLong("locationModeStart", System.currentTimeMillis());
                         period = 2147483;
                         initialDelay = 2147483647;
                     } else if (type.equals("2")) {
-                        PreferencesUtils.getInstance(mContext).setString("locationMode", "2");
+                        PreferencesUtils.getInstance(mContext).setString("locationMode",  AppConst.MODEL_BALANCE);
                         PreferencesUtils.getInstance(mContext).setLong("locationModeStart", System.currentTimeMillis());
                         period = 20 * 60 * 60;
                         initialDelay = 0;
                     } else if (type.equals("3")) {
-                        PreferencesUtils.getInstance(mContext).setString("locationModeOld", PreferencesUtils.getInstance(mContext).getString("locationMode", "2"));
-                        PreferencesUtils.getInstance(mContext).setString("locationMode", "3");
+                        PreferencesUtils.getInstance(mContext).setString("locationModeOld", PreferencesUtils.getInstance(mContext).getString("locationMode",  AppConst.MODEL_BALANCE));
+                        PreferencesUtils.getInstance(mContext).setString("locationMode", AppConst.MODEL_REAL_TIME);
                         PreferencesUtils.getInstance(mContext).setLong("locationModeStart", System.currentTimeMillis());
                         period = 3 * 60;
                         initialDelay = 0;
@@ -614,9 +600,9 @@ public class BaseSDK implements ChannelListener {
                         PreferencesUtils.getInstance(mContext).setLong("realTimeModeEnd", endTime);
                     }
                     handler.sendEmptyMessage(6);
-                    String str = PackDataUtil.packRequestStr(BaseSDK.getBaseContext(), waterNumber, Const.SET_LOCATION_MODE, Const.RESPONSE_OF_ISSUED, "0");
+                    String str = PackDataUtil.packRequestStr(BaseSDK.getBaseContext(), waterNumber, AppConst.SET_LOCATION_MODE, AppConst.RESPONSE_OF_ISSUED, "0");
                     NettyClient.getInstance(mContext).sendMsgToServer(str, null);
-                } else if (response.getCmd().equals(Const.SET_REDAY_MODE)) {//设置待机模式
+                } else if (response.getCmd().equals(AppConst.SET_REDAY_MODE)) {//设置待机模式
                     //开关@待机时间段
                     // tcp断开
                     //默认2300-0600    1@2200-0600
@@ -625,38 +611,38 @@ public class BaseSDK implements ChannelListener {
                     String[] startEnd = strings[1].split("-");
                     String type = strings[0];
                     if (type.equals("1")) {
-                        String locationModeNow = PreferencesUtils.getInstance(mContext).getString("locationMode", "2");
+                        String locationModeNow = PreferencesUtils.getInstance(mContext).getString("locationMode",  AppConst.MODEL_BALANCE);
                         if (locationModeNow.equals("3")) {//实时模式
                             return;
                         }
-                        PreferencesUtils.getInstance(mContext).setString("locationMode", "4");
+                        PreferencesUtils.getInstance(mContext).setString("locationMode", AppConst.MODEL_AWAIT);
                         PreferencesUtils.getInstance(mContext).setString("awaitModeStart", startEnd[0]);
                         PreferencesUtils.getInstance(mContext).setString("awaitModeEnd", startEnd[1]);
-                        String str = PackDataUtil.packRequestStr(BaseSDK.getBaseContext(), waterNumber, Const.SET_REDAY_MODE, Const.RESPONSE_OF_ISSUED, "0");
+                        String str = PackDataUtil.packRequestStr(BaseSDK.getBaseContext(), waterNumber, AppConst.SET_REDAY_MODE, AppConst.RESPONSE_OF_ISSUED, "0");
                         NettyClient.getInstance(mContext).sendMsgToServer(str, null);
                         stopTcp();
                         period = 2147483647;
                         initialDelay = 2147483647;
                     } else {
-                        PreferencesUtils.getInstance(mContext).setString("locationMode", "0");
+                        PreferencesUtils.getInstance(mContext).setString("locationMode", AppConst.MODEL_BALANCE);
                         PreferencesUtils.getInstance(mContext).setString("awaitModeStart", "");
                         PreferencesUtils.getInstance(mContext).setString("awaitModeEnd", "");
                     }
                     handler.sendEmptyMessage(6);
 
-                } else if (response.getCmd().equals(Const.FREQUENCY_LOCATION_SET)) {//位置上报频率下发
-                    String str = PackDataUtil.packRequestStr(BaseSDK.getBaseContext(), waterNumber, Const.FREQUENCY_LOCATION_SET, Const.RESPONSE_OF_ISSUED, "0");
+                } else if (response.getCmd().equals(AppConst.FREQUENCY_LOCATION_SET)) {//位置上报频率下发
+                    String str = PackDataUtil.packRequestStr(BaseSDK.getBaseContext(), waterNumber, AppConst.FREQUENCY_LOCATION_SET, AppConst.RESPONSE_OF_ISSUED, "0");
                     NettyClient.getInstance(mContext).sendMsgToServer(str, null);
                     period = Integer.valueOf(data) * 60;
                     initialDelay = 0;
                     handler.sendEmptyMessage(6);
-                } else if (response.getCmd().equals(Const.SET_INCOMING_CALL)) {//设置呼入号码
+                } else if (response.getCmd().equals(AppConst.SET_INCOMING_CALL)) {//设置呼入号码
                     IncomingCall incomingCallNew = IncomingCall.parseJson(data);
                     //覆盖之前的数据
                     PreferencesUtils.getInstance(mContext).setString("incomingCall", JsonUtil.toJSONString(incomingCallNew));
-                    String str = PackDataUtil.packRequestStr(BaseSDK.getBaseContext(), waterNumber, Const.SET_INCOMING_CALL, Const.RESPONSE_OF_ISSUED, "0");
+                    String str = PackDataUtil.packRequestStr(BaseSDK.getBaseContext(), waterNumber, AppConst.SET_INCOMING_CALL, AppConst.RESPONSE_OF_ISSUED, "0");
                     NettyClient.getInstance(mContext).sendMsgToServer(str, null);
-                } else if (response.getCmd().equals(Const.SET_SERVER_INFO)) {//设置服务信息
+                } else if (response.getCmd().equals(AppConst.SET_SERVER_INFO)) {//设置服务信息
                     String[] strings = data.split("@");
                     if (!TextUtils.isEmpty(strings[0]))
                         PropertiesUtil.getInstance().setProperties(mContext, "host", strings[0]);
@@ -665,14 +651,14 @@ public class BaseSDK implements ChannelListener {
                     //重启tcp
                     NettyClient.getInstance(mContext).stopTcp();
                     NettyClient.getInstance(mContext).connect();
-                } else if (response.getCmd().equals(Const.LOCATION_INFO_GET)) {//实时位置获取
+                } else if (response.getCmd().equals(AppConst.LOCATION_INFO_GET)) {//实时位置获取
                     PreferencesUtils.getInstance(mContext).setString("LOCATION_INFO_GET", waterNumber);
                     handler.sendEmptyMessage(1);
-                } else if (response.getCmd().equals(Const.SET_HEARTBEAT)) {//设置终端心跳
+                } else if (response.getCmd().equals(AppConst.SET_HEARTBEAT)) {//设置终端心跳
                     setHeart(Integer.valueOf(data));
-                    String str = PackDataUtil.packRequestStr(BaseSDK.getBaseContext(), waterNumber, Const.SET_HEARTBEAT, Const.RESPONSE_OF_ISSUED, "0");
+                    String str = PackDataUtil.packRequestStr(BaseSDK.getBaseContext(), waterNumber, AppConst.SET_HEARTBEAT, AppConst.RESPONSE_OF_ISSUED, "0");
                     NettyClient.getInstance(mContext).sendMsgToServer(str, null);
-                } else if (response.getCmd().equals(Const.SET_MODEL)) {//设置情景模式
+                } else if (response.getCmd().equals(AppConst.SET_MODEL)) {//设置情景模式
                     //课堂模式 > 情景模式 > 其他模式
                     //静音@响玲@限制呼入@限制呼出
                     ContextualModel contextualModel = ContextualModel.parseJson(data);
@@ -683,20 +669,20 @@ public class BaseSDK implements ChannelListener {
                     if ("1".equals(contextualModel.getRing())) {//响铃
                         DeviceUtil.silentSwitchOff(mContext);
                     }
-                } else if (response.getCmd().equals(Const.REQUEST_CALL)) {//安全防护
+                } else if (response.getCmd().equals(AppConst.REQUEST_CALL)) {//安全防护
                     DeviceUtil.callSOSPhone(mContext);
-                    String str = PackDataUtil.packRequestStr(BaseSDK.getBaseContext(), waterNumber, Const.REQUEST_CALL, Const.RESPONSE_OF_ISSUED, "0");
+                    String str = PackDataUtil.packRequestStr(BaseSDK.getBaseContext(), waterNumber, AppConst.REQUEST_CALL, AppConst.RESPONSE_OF_ISSUED, "0");
                     NettyClient.getInstance(mContext).sendMsgToServer(str, null);
-                } else if (response.getCmd().equals(Const.SET_CLASS_MODEL)) {//课堂模式
+                } else if (response.getCmd().equals(AppConst.SET_CLASS_MODEL)) {//课堂模式
                     ClassModel classModel = ClassModel.parseJson(data);
                     PreferencesUtils.getInstance(mContext).setString("classModel", JsonUtil.toJSONString(classModel));
-                    String str = PackDataUtil.packRequestStr(BaseSDK.getBaseContext(), waterNumber, Const.SET_CLASS_MODEL, Const.RESPONSE_OF_ISSUED, "0");
+                    String str = PackDataUtil.packRequestStr(BaseSDK.getBaseContext(), waterNumber, AppConst.SET_CLASS_MODEL, AppConst.RESPONSE_OF_ISSUED, "0");
                     NettyClient.getInstance(mContext).sendMsgToServer(str, null);
-                } else if (response.getCmd().equals(Const.SET_CLOCK)) {//设置闹铃
+                } else if (response.getCmd().equals(AppConst.SET_CLOCK)) {//设置闹铃
                     //1=0900!1+2+3!0@2=1000!1+2+3!1
                     ClickBean clickBean = ClickBean.parseJson(data);
                     PreferencesUtils.getInstance(mContext).setString("clickBean", JsonUtil.toJSONString(clickBean));
-                } else if (response.getCmd().equals(Const.SET_CALL_DURATION)) {//设置通话时长
+                } else if (response.getCmd().equals(AppConst.SET_CALL_DURATION)) {//设置通话时长
                     //新增/删除@时长(分钟)：1@110  1 设置 0 删除
                     String[] strings = data.split("@");
                     String callsetting = strings[0];
@@ -704,7 +690,7 @@ public class BaseSDK implements ChannelListener {
                     PreferencesUtils.getInstance(mContext).setString("callSetting", callsetting);
                     PreferencesUtils.getInstance(mContext).setInt("callTimeLong", Integer.valueOf(calltimeLong));
 
-                } else if (response.getCmd().equals(Const.SEND_SMS)) {//短消息
+                } else if (response.getCmd().equals(AppConst.SEND_SMS)) {//短消息
                     //1 短信类型：0 紧急消息 1通知 2作业 3考勤 4消费 5普通消息
                     //2 消息编号：uuid
                     //3 播报还是屏显：0语音播报1屏幕显示2语音播报并屏幕显示
@@ -715,7 +701,7 @@ public class BaseSDK implements ChannelListener {
                     //8 短信内容
                     //4@990cb152f17248a98458527f2e79ad87@0@1@0@0@0@好好好
                     try {
-                        String str = PackDataUtil.packRequestStr(BaseSDK.getBaseContext(), waterNumber, Const.SEND_SMS, Const.RESPONSE_OF_ISSUED, "0");
+                        String str = PackDataUtil.packRequestStr(BaseSDK.getBaseContext(), waterNumber, AppConst.SEND_SMS, AppConst.RESPONSE_OF_ISSUED, "0");
                         NettyClient.getInstance(mContext).sendMsgToServer(str, null);
                         SmsMessageReceive smsMessageReceive = SmsMessageReceive.parseJson(data);
                         //存本地数据库
@@ -787,7 +773,7 @@ public class BaseSDK implements ChannelListener {
 //                    //向主线程发送消息
 //                    handler.sendMessage(message);
 
-                }else if (response.getCmd().equals(Const.SET_HEALTH)) {//设置心率，温度的上报频率：参数标识@参数@
+                }else if (response.getCmd().equals(AppConst.SET_HEALTH)) {//设置心率，温度的上报频率：参数标识@参数@
                     //第一位:参数标识
                     //10 心率上报频率设置
                     //11 获取实时心率
@@ -808,10 +794,10 @@ public class BaseSDK implements ChannelListener {
                         }else if(datas[0].equals("20")){//温度上报频率设置
                             TemFrequency temFrequency = TemFrequency.parseJson(datas[1]);
                             PreferencesUtils.getInstance(mContext).setString("temFrequency", JsonUtil.toJSONString(temFrequency));
-                            String str = PackDataUtil.packRequestStr(BaseSDK.getBaseContext(), waterNumber, Const.SET_HEALTH, Const.RESPONSE_OF_ISSUED, "0@0@0");
+                            String str = PackDataUtil.packRequestStr(BaseSDK.getBaseContext(), waterNumber, AppConst.SET_HEALTH, AppConst.RESPONSE_OF_ISSUED, "0@0@0");
                             NettyClient.getInstance(mContext).sendMsgToServer(str, null);
                         }else if(datas[0].equals("21")) {//获取实时温度
-                            Const.ISSUED_TEM_WATERNUMBER = waterNumber;
+                            AppConst.ISSUED_TEM_WATERNUMBER = waterNumber;
                             //发送广播 获取实时温度
                             Intent intent = new Intent();
                             intent.setAction(BroadcastConstant.TEMPERATURE_START);
@@ -823,19 +809,19 @@ public class BaseSDK implements ChannelListener {
                 }
 
 
-            } else if (response.getMessageType().equals(Const.RESPONSE_OF_REPORT)) {//上报的响应回复
+            } else if (response.getMessageType().equals(AppConst.RESPONSE_OF_REPORT)) {//上报的响应回复
                 LogUtil.e("this is 上报的响应回复:" + data);
-                if (response.getCmd().equals(Const.LOGIN)) {//判断是否登录成功
+                if (response.getCmd().equals(AppConst.LOGIN)) {//判断是否登录成功
                     String[] strings = data.split("@");//0@0@0  成功
                     if (PropertiesUtil.getInstance().isWeixiao(mContext)) {
                         if (!strings[0].equals("2")) {
-                            Const.LOGIN_SUCCESS = true;
+                            AppConst.LOGIN_SUCCESS = true;
                             PreferencesUtils.getInstance(mContext).setBoolean("loginLater", false);//
                             LogUtil.e("登陆成功");
                             handler.sendEmptyMessage(2);//上报GPS数据
-                            LogUtil.d("Const.BOOTBROADCAST：" + Const.BOOTBROADCAST);
-                            if (Const.BOOTBROADCAST) {
-                                Const.BOOTBROADCAST = false;
+                            LogUtil.d("AppConst.BOOTBROADCAST：" + AppConst.BOOTBROADCAST);
+                            if (AppConst.BOOTBROADCAST) {
+                                AppConst.BOOTBROADCAST = false;
                                 String dataButtery = "4@" + DeviceUtil.getBattery();
                                 BaseSDK.getInstance().sendBootAndShutdown(dataButtery, new OnReceiveListener() {
                                     @Override
@@ -873,7 +859,7 @@ public class BaseSDK implements ChannelListener {
                             });
                         }else {//需要发送短信
                             LogUtil.e("登陆失败，发送短信");
-                            Const.LOGIN_SUCCESS = false;
+                            AppConst.LOGIN_SUCCESS = false;
                             if (count_send_login >= 10) {
                                 stopTcp();
                                 return;
@@ -885,13 +871,13 @@ public class BaseSDK implements ChannelListener {
                         }
                     } else {
                         if (strings[0].equals("0") && strings[1].equals("0") && strings[2].equals("0")) {
-                            Const.LOGIN_SUCCESS = true;
+                            AppConst.LOGIN_SUCCESS = true;
                             PreferencesUtils.getInstance(mContext).setBoolean("loginLater", false);//
                             LogUtil.e("登陆成功");
                             handler.sendEmptyMessage(2);//上报GPS数据
-                            LogUtil.d("Const.BOOTBROADCAST：" + Const.BOOTBROADCAST);
-                            if (Const.BOOTBROADCAST) {
-                                Const.BOOTBROADCAST = false;
+                            LogUtil.d("AppConst.BOOTBROADCAST：" + AppConst.BOOTBROADCAST);
+                            if (AppConst.BOOTBROADCAST) {
+                                AppConst.BOOTBROADCAST = false;
                                 String dataButtery = "4@" + DeviceUtil.getBattery();
                                 BaseSDK.getInstance().sendBootAndShutdown(dataButtery, new OnReceiveListener() {
                                     @Override
@@ -928,18 +914,18 @@ public class BaseSDK implements ChannelListener {
                                 }
                             });
                         } else if (strings[0].equals("1")) {//设备认为登录失败，会在下一次心跳时间（5 分钟后）重新发送登录报文
-                            Const.LOGIN_SUCCESS = false;
+                            AppConst.LOGIN_SUCCESS = false;
                             LogUtil.e("设备认为登录失败，5分钟以后重复登陆");
                             PreferencesUtils.getInstance(mContext).setBoolean("loginLater", true);//
                             //5分钟以后重复登陆
                             handler.sendEmptyMessage(4);
 
                         } else if (strings[0].equals("2")) {//终端不会再向平台发送信息，除非重启设备
-                            Const.LOGIN_SUCCESS = false;
+                            AppConst.LOGIN_SUCCESS = false;
                             stopTcp();
                         } else if (strings[2].equals("1")) {//需要发送短信
                             LogUtil.e("登陆失败，发送短信");
-                            Const.LOGIN_SUCCESS = false;
+                            AppConst.LOGIN_SUCCESS = false;
                             if (count_send_login >= 10) {
                                 stopTcp();
                                 return;
@@ -951,9 +937,9 @@ public class BaseSDK implements ChannelListener {
                         }
                     }
 
-                } else if (response.getCmd().equals(Const.REPORT_HEARTBEAT)) {
+                } else if (response.getCmd().equals(AppConst.REPORT_HEARTBEAT)) {
                     LogUtil.e("heart return");
-                } else if (response.getCmd().equals(Const.GET_SERVICE_MSG)) {//更新
+                } else if (response.getCmd().equals(AppConst.GET_SERVICE_MSG)) {//更新
                     try {
                         if (data.substring(0, data.length() - 1).length() > 1) {
                             Intent intent = new Intent(mContext, APKDownloadService.class);
@@ -967,14 +953,14 @@ public class BaseSDK implements ChannelListener {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                } else if (response.getCmd().equals(Const.GET_SMS_PORT)) {//获取端口
+                } else if (response.getCmd().equals(AppConst.GET_SMS_PORT)) {//获取端口
                     //异常应答：0无设置  1非平台用户  2其他异常
                     if (data.equals("0") || data.equals("1") || data.equals("2")) {
                         LogUtil.e("异常应答:" + data);
                     } else {
                         PreferencesUtils.getInstance(mContext).setString("smsPort", data);
                     }
-                } else if (response.getCmd().equals(Const.GET_NORMAL_BUTTON)) {//按键
+                } else if (response.getCmd().equals(AppConst.GET_NORMAL_BUTTON)) {//按键
                     //异常应答：0无设置  1非平台用户  2其他异常
                     if (data.equals("0") || data.equals("1") || data.equals("2")) {
                         LogUtil.e("异常应答:" + data);
@@ -983,10 +969,10 @@ public class BaseSDK implements ChannelListener {
                         PhoneNumber phoneNumber = PhoneNumber.parseJson(data);
                         PreferencesUtils.getInstance(mContext).setString("phoneNumber", JsonUtil.toJSONString(phoneNumber));
 
-                        String str = PackDataUtil.packRequestStr(BaseSDK.getBaseContext(), waterNumber, Const.REPORT_HEARTBEAT, Const.RESPONSE_OF_ISSUED, "0");
+                        String str = PackDataUtil.packRequestStr(BaseSDK.getBaseContext(), waterNumber, AppConst.REPORT_HEARTBEAT, AppConst.RESPONSE_OF_ISSUED, "0");
                         NettyClient.getInstance(mContext).sendMsgToServer(str, null);
                     }
-                } else if (response.getCmd().equals(Const.GET_CLASS_MODEL)) {//课堂模式
+                } else if (response.getCmd().equals(AppConst.GET_CLASS_MODEL)) {//课堂模式
                     //异常应答：0无设置  1非平台用户  2其他异常
                     if (data.equals("0") || data.equals("1") || data.equals("2")) {
                         LogUtil.e("异常应答:" + data);
@@ -994,7 +980,7 @@ public class BaseSDK implements ChannelListener {
                         ClassModel classModel = ClassModel.parseJson(data);
                         PreferencesUtils.getInstance(mContext).setString("classModel", JsonUtil.toJSONString(classModel));
                     }
-                } else if (response.getCmd().equals(Const.GET_INCOMING_CALL)) {//呼入号码
+                } else if (response.getCmd().equals(AppConst.GET_INCOMING_CALL)) {//呼入号码
                     //异常应答：0无设置  1非平台用户  2其他异常
                     if (data.equals("0") || data.equals("1") || data.equals("2")) {
                         LogUtil.e("异常应答:" + data);

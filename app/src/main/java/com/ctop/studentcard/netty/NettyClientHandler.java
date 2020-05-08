@@ -1,7 +1,7 @@
 package com.ctop.studentcard.netty;
 
 import com.ctop.studentcard.base.BaseSDK;
-import com.ctop.studentcard.util.Const;
+import com.ctop.studentcard.util.AppConst;
 import com.ctop.studentcard.util.DeviceUtil;
 import com.ctop.studentcard.util.LogUtil;
 import com.ctop.studentcard.util.PackDataUtil;
@@ -68,10 +68,10 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<ByteBuf> {
 			IdleStateEvent event = (IdleStateEvent) evt;
 			if (event.state() == IdleState.ALL_IDLE){
 				try{
-                    if (Const.LOGIN_SUCCESS) {
+                    if (AppConst.LOGIN_SUCCESS) {
                         LogUtil.e("send heart");
                         String waterNumber = PackDataUtil.createWaterNumber();
-                        String data = PackDataUtil.packRequestStr(BaseSDK.getBaseContext(),waterNumber, Const.REPORT_HEARTBEAT, Const.REPORT_THE_REQUEST, DeviceUtil.getBattery());
+                        String data = PackDataUtil.packRequestStr(BaseSDK.getBaseContext(),waterNumber, AppConst.REPORT_HEARTBEAT, AppConst.REPORT_THE_REQUEST, DeviceUtil.getBattery());
                         ctx.channel().writeAndFlush(data).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
                     }
 				} catch (Exception e){

@@ -4,7 +4,20 @@ package com.ctop.studentcard.util;
  * Created by dgl on 08/04/2019.
  */
 
-public class Const {
+public class AppConst {
+
+    /**
+     * 模式
+     * 0待机模式
+     * 1省电模式
+     * 2平衡模式
+     * 3实时模式
+     */
+    public static final String MODEL_AWAIT = "0";//待机模式
+    public static final String MODEL_POWER_SAVING = "1";//省电模式
+    public static final String MODEL_BALANCE = "2";//平衡模式
+    public static final String MODEL_REAL_TIME = "3";//实时模式
+
 
     /**
      * 接口标识
@@ -15,7 +28,7 @@ public class Const {
     public static final String ALARM_POWER = "ALARM_POWER";//电量上报
     public static final String REPORT_LOCATION_INFO = "REPORT_LOCATION_INFO";//位置信息上报
     public static final String REPORT_HEARTBEAT = "REPORT_HEARTBEAT";//心跳保活
-//    public static final String TURN_ONOFF_TERMINAL = "TURN_ONOFF_TERMINAL";//设备开关机报警
+    //    public static final String TURN_ONOFF_TERMINAL = "TURN_ONOFF_TERMINAL";//设备开关机报警
     public static final String REPORT_CROSS_BORDER = "REPORT_CROSS_BORDER";//越界上报
     public static final String REPORT_CALL_LOG = "REPORT_CALL_LOG";//通话记录上报
     public static final String REPORT_SOS = "REPORT_SOS";//SOS 触发报警上报
@@ -47,7 +60,6 @@ public class Const {
     public static final String GET_INCOMING_CALL = "GET_INCOMING_CALL";//呼入号码获取
     public static final String GET_SMS_PORT = "GET_SMS_PORT";//端口获取
     public static final String GET_SERVICE_MSG = "GET_SERVICE_MSG";//更新apk
-
 
 
     //自定义接口

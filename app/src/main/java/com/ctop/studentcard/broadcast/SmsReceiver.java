@@ -19,6 +19,7 @@ import com.ctop.studentcard.bean.PhoneNumber;
 import com.ctop.studentcard.bean.SmsMessageReceive;
 import com.ctop.studentcard.greendao.DaoManager;
 import com.ctop.studentcard.greendao.SmsMessageDao;
+import com.ctop.studentcard.util.AppConst;
 import com.ctop.studentcard.util.DeviceUtil;
 import com.ctop.studentcard.util.JsonUtil;
 import com.ctop.studentcard.util.LogUtil;
@@ -71,7 +72,7 @@ public class SmsReceiver extends BroadcastReceiver {
                     PreferencesUtils.getInstance(context).setString("awaitModeEnd", "");
                     PreferencesUtils.getInstance(context).setString("locationModeOld", "4");
                     LogUtil.e("上报设备模式5");
-                    BaseSDK.getInstance().send_device_status(PreferencesUtils.getInstance(context).getString("locationMode", "2"));
+                    BaseSDK.getInstance().send_device_status(PreferencesUtils.getInstance(context).getString("locationMode",  AppConst.MODEL_BALANCE));
 
                     BaseSDK.getInstance().sendSMS(context,number.toString(),"Done, connect in 5 seconds");
                     return;
