@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.ctop.studentcard" >
+    package="com.ctop.studentcard"  android:sharedUserId="android.uid.system">
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -109,8 +109,6 @@
         <activity android:name=".feature.calculator.CalculatorActivity" />
         <activity android:name=".feature.message.MessageIndexActivity" />
         <activity android:name=".feature.message.MessageDetailActivity" />
-        <activity android:name=".feature.phone.PhoneOutActivity" />
-        <activity android:name=".feature.phone.PhoneInActivity" />
         <activity android:name=".feature.phone.record.CallRecordActivity" />
         <activity android:name=".feature.phone.record.CallDetailActivity" />
         <activity android:name=".feature.setting.wallpaper.WallpaperActivity" />

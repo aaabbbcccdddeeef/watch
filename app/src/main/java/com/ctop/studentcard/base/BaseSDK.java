@@ -80,6 +80,7 @@ public class BaseSDK implements ChannelListener {
 
     private int count_send_login = 0;
     AlarmManager alarmManager;
+    boolean await_stoptcp = false;
 
     Handler handler = new Handler() {
         public void handleMessage(android.os.Message msg) {
@@ -231,11 +232,11 @@ public class BaseSDK implements ChannelListener {
         canalAlarm(mContext,BroadcastConstant.GPS);
         if (per == 0) {
             period = 10 * 60 ;
-//            period =  60 ;
         } else {
             period = per;
         }
         LogUtil.e("LOCATION_init===" + period);
+        LogUtil.e("LOCATION_initialDelay===" + initialDelay);
 
         setAlarmTime(mContext,System.currentTimeMillis(),BroadcastConstant.GPS, initialDelay);
 
@@ -263,6 +264,11 @@ public class BaseSDK implements ChannelListener {
 
             }
         });
+
+        if(await_stoptcp){
+            await_stoptcp = false;
+            stopTcp();
+        }
     }
 
     private void executorGet(final String locationInfo) {
@@ -579,22 +585,25 @@ public class BaseSDK implements ChannelListener {
                     String[] strings = data.split("@");
                     String type = strings[0];
                     int num = Integer.parseInt(strings[1]);
-                    if (type.equals("1")) {
+                    if (type.equals(AppConst.MODEL_POWER_SAVING)) {
                         PreferencesUtils.getInstance(mContext).setString("locationMode", AppConst.MODEL_POWER_SAVING);
                         PreferencesUtils.getInstance(mContext).setLong("locationModeStart", System.currentTimeMillis());
-                        period = 2147483;
-                        initialDelay = 2147483647;
-                    } else if (type.equals("2")) {
+                        canalAlarm(mContext,BroadcastConstant.GPS);
+                    } else if (type.equals(AppConst.MODEL_BALANCE)) {
                         PreferencesUtils.getInstance(mContext).setString("locationMode",  AppConst.MODEL_BALANCE);
                         PreferencesUtils.getInstance(mContext).setLong("locationModeStart", System.currentTimeMillis());
                         period = 20 * 60 * 60;
                         initialDelay = 0;
-                    } else if (type.equals("3")) {
+                        canalAlarm(mContext,BroadcastConstant.GPS);
+                        setAlarmTime(mContext,System.currentTimeMillis(),BroadcastConstant.GPS, initialDelay);
+                    } else if (type.equals(AppConst.MODEL_REAL_TIME)) {
                         PreferencesUtils.getInstance(mContext).setString("locationModeOld", PreferencesUtils.getInstance(mContext).getString("locationMode",  AppConst.MODEL_BALANCE));
                         PreferencesUtils.getInstance(mContext).setString("locationMode", AppConst.MODEL_REAL_TIME);
                         PreferencesUtils.getInstance(mContext).setLong("locationModeStart", System.currentTimeMillis());
                         period = 3 * 60;
                         initialDelay = 0;
+                        canalAlarm(mContext,BroadcastConstant.GPS);
+                        setAlarmTime(mContext,System.currentTimeMillis(),BroadcastConstant.GPS, initialDelay);
                         //计算结束时间 realTime
                         long endTime = System.currentTimeMillis() + num * 60 * 1000;
                         PreferencesUtils.getInstance(mContext).setLong("realTimeModeEnd", endTime);
@@ -612,23 +621,29 @@ public class BaseSDK implements ChannelListener {
                     String type = strings[0];
                     if (type.equals("1")) {
                         String locationModeNow = PreferencesUtils.getInstance(mContext).getString("locationMode",  AppConst.MODEL_BALANCE);
-                        if (locationModeNow.equals("3")) {//实时模式
+                        if (locationModeNow.equals(AppConst.MODEL_REAL_TIME)) {//实时模式
+                            PreferencesUtils.getInstance(mContext).setString("locationModeOld", AppConst.MODEL_AWAIT);
                             return;
                         }
                         PreferencesUtils.getInstance(mContext).setString("locationMode", AppConst.MODEL_AWAIT);
                         PreferencesUtils.getInstance(mContext).setString("awaitModeStart", startEnd[0]);
                         PreferencesUtils.getInstance(mContext).setString("awaitModeEnd", startEnd[1]);
+                        //上报一次位置
+                        canalAlarm(mContext,BroadcastConstant.GPS);
+                        setAlarmTime(mContext,System.currentTimeMillis(),BroadcastConstant.GPS, initialDelay);
+
+
                         String str = PackDataUtil.packRequestStr(BaseSDK.getBaseContext(), waterNumber, AppConst.SET_REDAY_MODE, AppConst.RESPONSE_OF_ISSUED, "0");
                         NettyClient.getInstance(mContext).sendMsgToServer(str, null);
-                        stopTcp();
-                        period = 2147483647;
-                        initialDelay = 2147483647;
+
+                        await_stoptcp = true;//关闭tcp
+
                     } else {
                         PreferencesUtils.getInstance(mContext).setString("locationMode", AppConst.MODEL_BALANCE);
                         PreferencesUtils.getInstance(mContext).setString("awaitModeStart", "");
                         PreferencesUtils.getInstance(mContext).setString("awaitModeEnd", "");
                     }
-                    handler.sendEmptyMessage(6);
+//                    handler.sendEmptyMessage(6);
 
                 } else if (response.getCmd().equals(AppConst.FREQUENCY_LOCATION_SET)) {//位置上报频率下发
                     String str = PackDataUtil.packRequestStr(BaseSDK.getBaseContext(), waterNumber, AppConst.FREQUENCY_LOCATION_SET, AppConst.RESPONSE_OF_ISSUED, "0");
@@ -636,7 +651,7 @@ public class BaseSDK implements ChannelListener {
                     period = Integer.valueOf(data) * 60;
                     initialDelay = 0;
                     handler.sendEmptyMessage(6);
-                } else if (response.getCmd().equals(AppConst.SET_INCOMING_CALL)) {//设置呼入号码
+                } else if (response.getCmd().equals(AppConst.SET_INCOMING_CALL)) {//设置呼入号码 白名单
                     IncomingCall incomingCallNew = IncomingCall.parseJson(data);
                     //覆盖之前的数据
                     PreferencesUtils.getInstance(mContext).setString("incomingCall", JsonUtil.toJSONString(incomingCallNew));
@@ -669,6 +684,8 @@ public class BaseSDK implements ChannelListener {
                     if ("1".equals(contextualModel.getRing())) {//响铃
                         DeviceUtil.silentSwitchOff(mContext);
                     }
+                    String str = PackDataUtil.packRequestStr(BaseSDK.getBaseContext(), waterNumber, AppConst.SET_MODEL, AppConst.RESPONSE_OF_ISSUED, "0");
+                    NettyClient.getInstance(mContext).sendMsgToServer(str, null);
                 } else if (response.getCmd().equals(AppConst.REQUEST_CALL)) {//安全防护
                     DeviceUtil.callSOSPhone(mContext);
                     String str = PackDataUtil.packRequestStr(BaseSDK.getBaseContext(), waterNumber, AppConst.REQUEST_CALL, AppConst.RESPONSE_OF_ISSUED, "0");
@@ -986,28 +1003,7 @@ public class BaseSDK implements ChannelListener {
                         LogUtil.e("异常应答:" + data);
                     } else {
                         IncomingCall incomingCallNew = IncomingCall.parseJson(data);
-                        //取出本地数据
-                        String incomingCallString = PreferencesUtils.getInstance(mContext).getString("incomingCall", "");
-                        IncomingCall incomingCallOld = JsonUtil.parseObject(incomingCallString, IncomingCall.class);
-                        if (incomingCallOld != null) {
-                            //修改本地的数据
-                            List<IncomingCall.AddPhoneBean> addPhoneBeanListNew = new ArrayList<>();
-                            List<IncomingCall.AddPhoneBean> addPhoneBeanListOld = incomingCallOld.getAddPhone();
-                            addPhoneBeanListNew.addAll(addPhoneBeanListOld);
-                            List<IncomingCall.DeletePhoneBean> deletePhoneBeanList = incomingCallNew.getDeletePhone();
-                            for (int i = 0; i < addPhoneBeanListOld.size(); i++) {
-                                for (int j = 0; j < deletePhoneBeanList.size(); j++) {
-                                    if (addPhoneBeanListOld.get(i).getPhone().equals(deletePhoneBeanList.get(j).getPhone())) {
-                                        addPhoneBeanListNew.remove(addPhoneBeanListOld.get(i));
-                                    }
-                                }
-                            }
-                            addPhoneBeanListNew.addAll(incomingCallNew.getAddPhone());
-                            incomingCallOld.setAddPhone(addPhoneBeanListNew);
-                            incomingCallOld.setPeriod(incomingCallNew.getPeriod());
-                            incomingCallOld.setCallLimit(incomingCallNew.getCallLimit());
-                            PreferencesUtils.getInstance(mContext).setString("incomingCall", JsonUtil.toJSONString(incomingCallOld));
-                        }
+                        PreferencesUtils.getInstance(mContext).setString("incomingCall", JsonUtil.toJSONString(incomingCallNew));
                     }
                 } else {
                     OnReceiveListener listener = listenerArrayMap.remove(waterNumber);

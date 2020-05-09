@@ -42,7 +42,7 @@ public class AppConst {
     public static final String SET_REGIONAL_ALARM = "SET_REGIONAL_ALARM";//设置区域报警
     public static final String SET_LOCATION_MODE = "SET_LOCATION_MODE";//设置定位模式
     public static final String SET_REDAY_MODE = "SET_REDAY_MODE";//设置待机模式
-    public static final String SET_INCOMING_CALL = "SET_INCOMING_CALL";//设置呼入号码
+    public static final String SET_INCOMING_CALL = "SET_INCOMING_CALL";//设置呼入号码 白名单
     public static final String SET_SERVER_INFO = "SET_SERVER_INFO";//设置服务信息
     public static final String LOCATION_INFO_GET = "LOCATION_INFO_GET";//实时位置获取
     public static final String SET_HEARTBEAT = "SET_HEARTBEAT";//设置终端心跳
@@ -57,7 +57,7 @@ public class AppConst {
     //设备请求
     public static final String GET_NORMAL_BUTTON = "GET_NORMAL_BUTTON";//按键获取
     public static final String GET_CLASS_MODEL = "GET_CLASS_MODEL";//课堂模式获取
-    public static final String GET_INCOMING_CALL = "GET_INCOMING_CALL";//呼入号码获取
+    public static final String GET_INCOMING_CALL = "GET_INCOMING_CALL";//呼入号码获取 白名单
     public static final String GET_SMS_PORT = "GET_SMS_PORT";//端口获取
     public static final String GET_SERVICE_MSG = "GET_SERVICE_MSG";//更新apk
 

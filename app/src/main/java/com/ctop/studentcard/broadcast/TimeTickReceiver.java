@@ -24,6 +24,7 @@ import com.ctop.studentcard.util.NetworkUtil;
 import com.ctop.studentcard.util.PreferencesUtils;
 import com.ctop.studentcard.util.TimeUtils;
 
+
 public class TimeTickReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -57,7 +58,7 @@ public class TimeTickReceiver extends BroadcastReceiver {
             // 2平衡模式20min/次
             // 3实时模式3min/次
             String locationMode = PreferencesUtils.getInstance(context).getString("locationMode", AppConst.MODEL_BALANCE);
-            if (locationMode.equals("3")) {//是 实时模式
+            if (locationMode.equals(AppConst.MODEL_REAL_TIME)) {//是 实时模式
                 long realTimeModeEnd = PreferencesUtils.getInstance(context).getLong("realTimeModeEnd", 0l);
                 if (System.currentTimeMillis() >= realTimeModeEnd) {//实时模式 结束
                     //上报设备模式
@@ -80,6 +81,17 @@ public class TimeTickReceiver extends BroadcastReceiver {
 
                         PreferencesUtils.getInstance(context).setString("locationModeOld", AppConst.MODEL_BALANCE);
                         PreferencesUtils.getInstance(context).setLong("realTimeModeEnd", 0);
+                    } else if (locationModeOld.equals(AppConst.MODEL_AWAIT)) {//待机
+                        PreferencesUtils.getInstance(context).setString("locationMode", AppConst.MODEL_AWAIT);
+                        PreferencesUtils.getInstance(context).setLong("locationModeStart", System.currentTimeMillis());
+
+                        BaseSDK.getInstance().canalAlarm(context,BroadcastConstant.GPS);
+
+                        LogUtil.e("上报设备模式3-0");
+                        BaseSDK.getInstance().send_device_status(AppConst.MODEL_BALANCE);
+                        BaseSDK.getInstance().stopTcp();
+                        PreferencesUtils.getInstance(context).setString("locationModeOld", AppConst.MODEL_BALANCE);
+                        PreferencesUtils.getInstance(context).setLong("realTimeModeEnd", 0);
                     }
                 }
             }
@@ -95,33 +107,38 @@ public class TimeTickReceiver extends BroadcastReceiver {
              */
             String awaitstart = PreferencesUtils.getInstance(context).getString("awaitModeStart", "");
             String awaitend = PreferencesUtils.getInstance(context).getString("awaitModeEnd", "");
+            String locationModeNow = PreferencesUtils.getInstance(context).getString("locationMode", AppConst.MODEL_BALANCE);
             if (!TextUtils.isEmpty(awaitstart)) {
                 int awaitstartInt = Integer.parseInt(awaitstart);
                 int awaitendInt = Integer.parseInt(awaitend);
                 String timeNow = TimeUtils.getNowTimeString(TimeUtils.format4);
                 int timeNowInt = Integer.parseInt(timeNow);
                 if (awaitstartInt < awaitendInt) {//同一天
-                    if (timeNowInt > awaitstartInt && timeNowInt < awaitendInt) {
-                        PreferencesUtils.getInstance(context).setString("locationModeOld", PreferencesUtils.getInstance(context).getString("locationMode",  AppConst.MODEL_BALANCE));
-                        LogUtil.e("上报设备模式4");
-                        BaseSDK.getInstance().send_device_status(AppConst.MODEL_AWAIT);
-                        BaseSDK.getInstance().stopTcp();
+                    if (timeNowInt > awaitstartInt && timeNowInt < awaitendInt) {//处于 待机 时间段内
+                        if(!locationModeNow.equals(AppConst.MODEL_AWAIT)){
+                            PreferencesUtils.getInstance(context).setString("locationModeOld", PreferencesUtils.getInstance(context).getString("locationMode",  AppConst.MODEL_BALANCE));
+                            LogUtil.e("上报设备模式4");
+                            BaseSDK.getInstance().send_device_status(AppConst.MODEL_AWAIT);
+                            BaseSDK.getInstance().stopTcp();
+                        }
                     } else {
-                        if (NetworkUtil.isAvailable(context)) {
+                        if(locationModeNow.equals(AppConst.MODEL_AWAIT)) {
                             BaseSDK.getInstance().init(context);
                             PreferencesUtils.getInstance(context).setString("locationModeOld", AppConst.MODEL_AWAIT);
                             LogUtil.e("上报设备模式5");
-                            BaseSDK.getInstance().send_device_status(PreferencesUtils.getInstance(context).getString("locationMode",  AppConst.MODEL_BALANCE));
+                            BaseSDK.getInstance().send_device_status(PreferencesUtils.getInstance(context).getString("locationMode", AppConst.MODEL_BALANCE));
                         }
                     }
                 } else {//不同天
                     if (timeNowInt > awaitstartInt || timeNowInt < awaitendInt) {
-                        PreferencesUtils.getInstance(context).setString("locationModeOld", PreferencesUtils.getInstance(context).getString("locationMode",  AppConst.MODEL_BALANCE));
-                        LogUtil.e("上报设备模式6");
-                        BaseSDK.getInstance().send_device_status(AppConst.MODEL_AWAIT);
-                        BaseSDK.getInstance().stopTcp();
+                        if(!locationModeNow.equals(AppConst.MODEL_AWAIT)) {
+                            PreferencesUtils.getInstance(context).setString("locationModeOld", PreferencesUtils.getInstance(context).getString("locationMode", AppConst.MODEL_BALANCE));
+                            LogUtil.e("上报设备模式6");
+                            BaseSDK.getInstance().send_device_status(AppConst.MODEL_AWAIT);
+                            BaseSDK.getInstance().stopTcp();
+                        }
                     } else {
-                        if (NetworkUtil.isAvailable(context)) {
+                        if(locationModeNow.equals(AppConst.MODEL_AWAIT)) {
                             BaseSDK.getInstance().init(context);
                             PreferencesUtils.getInstance(context).setString("locationModeOld", AppConst.MODEL_AWAIT);
                             LogUtil.e("上报设备模式7");
@@ -133,51 +150,53 @@ public class TimeTickReceiver extends BroadcastReceiver {
 
             //闹钟
             String clickBeanString = PreferencesUtils.getInstance(context).getString("clickBean", "");
-            ClickBean clickBean = JsonUtil.parseObject(clickBeanString, ClickBean.class);
-            if (null == clickBean)
-                return;
-            List<ClickBean.ItemsBean> itemsBeanList = clickBean.getItems();
-            for (int i = 0; i < itemsBeanList.size(); i++) {
-                if ("1".equals(itemsBeanList.get(i).getIsEffect())) continue;//不生效
-                List<ClickBean.ItemsBean.PeriodBean> periodBeans = itemsBeanList.get(i).getPeriod();
-                for (int j = 0; j < periodBeans.size(); j++) {
-                    if (TimeUtils.getWeekInCome().equals(periodBeans.get(i).getWeek())) {
-                        String timeNow = TimeUtils.getNowTimeString(TimeUtils.format4);
-                        if (timeNow.equals(itemsBeanList.get(i).getTime())) {//
-                            Vibrator vibrator = (Vibrator) context.getSystemService(context.VIBRATOR_SERVICE);
-                            vibrator.vibrate(30 * 1000);//震动30秒
-                            Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
-                            Ringtone r = RingtoneManager.getRingtone(context, notification);
-                            r.play();//播放闹铃
+            if(!TextUtils.isEmpty(clickBeanString)){
+                ClickBean clickBean = JsonUtil.parseObject(clickBeanString, ClickBean.class);
+                List<ClickBean.ItemsBean> itemsBeanList = clickBean.getItems();
+                for (int i = 0; i < itemsBeanList.size(); i++) {
+                    if ("1".equals(itemsBeanList.get(i).getIsEffect())) continue;//不生效
+                    List<ClickBean.ItemsBean.PeriodBean> periodBeans = itemsBeanList.get(i).getPeriod();
+                    for (int j = 0; j < periodBeans.size(); j++) {
+                        if (TimeUtils.getWeekInCome().equals(periodBeans.get(i).getWeek())) {
+                            String timeNow = TimeUtils.getNowTimeString(TimeUtils.format4);
+                            if (timeNow.equals(itemsBeanList.get(i).getTime())) {//
+                                Vibrator vibrator = (Vibrator) context.getSystemService(context.VIBRATOR_SERVICE);
+                                vibrator.vibrate(30 * 1000);//震动30秒
+                                Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+                                Ringtone r = RingtoneManager.getRingtone(context, notification);
+                                r.play();//播放闹铃
+                            }
                         }
                     }
                 }
             }
+
 
             //temFrequency
             String temFrequencystr = PreferencesUtils.getInstance(context).getString("temFrequency", "");
-            TemFrequency mTemFrequency = JsonUtil.parseObject(temFrequencystr, TemFrequency.class);
-            if (null == mTemFrequency)
-                return;
-            List<TemFrequency.Frequency> items = mTemFrequency.getItems();
-            for(int i = 0;i<items.size();i++){
-                TemFrequency.Frequency frequency =  items.get(i);
-                String day = frequency.getDay();
-                if(day.equals(TimeUtils.getWeekInCome())){//日期相同
-                    List<String> times = frequency.getTimes();
-                    for(String time:times){
-                        if(time.equals(TimeUtils.getNowTimeString(TimeUtils.format4))){//时间相同
-                            //发送测温广播
-                            Intent intentTem = new Intent();
-                            intentTem.setAction(BroadcastConstant.TEMPERATURE_START);
-                            context.sendBroadcast(intentTem);// 发送
-                            LogUtil.e("开始：定时测温");
+            if(!TextUtils.isEmpty(temFrequencystr)){
+                TemFrequency mTemFrequency = JsonUtil.parseObject(temFrequencystr, TemFrequency.class);
+                List<TemFrequency.Frequency> items = mTemFrequency.getItems();
+                for(int i = 0;i<items.size();i++){
+                    TemFrequency.Frequency frequency =  items.get(i);
+                    String day = frequency.getDay();
+                    if(day.equals(TimeUtils.getWeekInCome())){//日期相同
+                        List<String> times = frequency.getTimes();
+                        for(String time:times){
+                            if(time.equals(TimeUtils.getNowTimeString(TimeUtils.format4))){//时间相同
+                                //发送测温广播
+                                Intent intentTem = new Intent();
+                                intentTem.setAction(BroadcastConstant.TEMPERATURE_START);
+                                context.sendBroadcast(intentTem);// 发送
+                                LogUtil.e("开始：定时测温");
+                            }
                         }
+
                     }
 
                 }
-
             }
+
 
         }
     }

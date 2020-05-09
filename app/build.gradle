@@ -9,6 +9,12 @@ android {
             keyAlias = 'key0'
             keyPassword 'zhihui'
         }
+        android {
+            storeFile file('/Users/dugaolong/Documents/guizhou/git-apps/watch/platform.keystore')
+            storePassword 'android'
+            keyPassword 'android'
+            keyAlias = 'platform'
+        }
     }
     compileSdkVersion 28
     defaultConfig {
@@ -39,7 +45,7 @@ android {
     }
     defaultConfig {
         vectorDrawables.useSupportLibrary = true
-        signingConfig signingConfigs.release
+        signingConfig signingConfigs.android
     }
     greendao {
         schemaVersion 1 //数据库版本号

@@ -115,8 +115,8 @@ public class SmsReceiver extends BroadcastReceiver {
                     // //课堂模式 > 情景模式 > 其他模式
                     //课堂模式
                     String classModelString = PreferencesUtils.getInstance(context).getString("classModel", "");
+                    if (!classModelString.equals("")) {
                     ClassModel classModel = JsonUtil.parseObject(classModelString, ClassModel.class);
-                    if (classModel != null) {
                         //sos号码
                         String phontNu = PreferencesUtils.getInstance(context).getString("phoneNumber", "");
                         PhoneNumber phoneNumber = JsonUtil.parseObject(phontNu, PhoneNumber.class);
@@ -167,8 +167,8 @@ public class SmsReceiver extends BroadcastReceiver {
 
                     //情景模式：取出本地数据
                     String contextualModelString = PreferencesUtils.getInstance(context).getString("contextualModel", "");
-                    ContextualModel contextualModel = JsonUtil.parseObject(contextualModelString, ContextualModel.class);
-                    if (contextualModel != null) {
+                    if (!contextualModelString.equals("")) {
+                        ContextualModel contextualModel = JsonUtil.parseObject(contextualModelString, ContextualModel.class);
                         if (contextualModel.getRing().equals("1") && contextualModel.getInBound().equals("0")) {
 //                            mHandler.sendMessage(msg);
                             sendSmsWhatAndObj(context, 5, waterNumber, body.toString(), "1");
@@ -178,8 +178,8 @@ public class SmsReceiver extends BroadcastReceiver {
                     }
                     //呼入限制：取出本地数据
                     String incomingCallString = PreferencesUtils.getInstance(context).getString("incomingCall", "");
-                    IncomingCall incomingCallOld = JsonUtil.parseObject(incomingCallString, IncomingCall.class);
-                    if (incomingCallOld != null) {
+                    if (!incomingCallString.equals("")) {
+                        IncomingCall incomingCallOld = JsonUtil.parseObject(incomingCallString, IncomingCall.class);
                         //1、无限制 2、限制白名单以外的号码呼入 3、限制所有号码呼入
                         if (incomingCallOld.getCallLimit().equals("1")) {
 //                            mHandler.sendMessage(msg);

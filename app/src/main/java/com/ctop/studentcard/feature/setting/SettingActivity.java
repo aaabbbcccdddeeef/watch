@@ -16,8 +16,6 @@ import com.ctop.studentcard.api.OnReceiveListener;
 import com.ctop.studentcard.base.BaseActivity;
 import com.ctop.studentcard.base.BaseSDK;
 import com.ctop.studentcard.broadcast.BroadcastConstant;
-import com.ctop.studentcard.feature.MainActivity;
-import com.ctop.studentcard.feature.phone.PhoneInActivity;
 import com.ctop.studentcard.feature.setting.about.AboutActivity;
 import com.ctop.studentcard.feature.setting.sound.SoundActivity;
 import com.ctop.studentcard.feature.setting.wallpaper.WallpaperActivity;

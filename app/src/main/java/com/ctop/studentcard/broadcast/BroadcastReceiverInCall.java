@@ -3,10 +3,6 @@ package com.ctop.studentcard.broadcast;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
-import android.provider.ContactsContract;
-import android.telecom.Call;
-import android.telecom.TelecomManager;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 
@@ -18,9 +14,6 @@ import com.ctop.studentcard.bean.ClassModel;
 import com.ctop.studentcard.bean.ContextualModel;
 import com.ctop.studentcard.bean.IncomingCall;
 import com.ctop.studentcard.bean.PhoneNumber;
-import com.ctop.studentcard.feature.phone.PhoneInActivity;
-import com.ctop.studentcard.feature.phone.PhoneOutActivity;
-import com.ctop.studentcard.util.FinishActivityManager;
 import com.ctop.studentcard.util.JsonUtil;
 import com.ctop.studentcard.util.LogUtil;
 import com.ctop.studentcard.util.PreferencesUtils;
@@ -37,7 +30,7 @@ public class BroadcastReceiverInCall extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
-        LogUtil.e("action:" + action.toString());
+        LogUtil.e("action:" + action);
         if (intent.getAction().equals(Intent.ACTION_NEW_OUTGOING_CALL)) {//呼出
             lastetActionState = Intent.ACTION_NEW_OUTGOING_CALL;
             String phoneData = getResultData();
@@ -68,13 +61,6 @@ public class BroadcastReceiverInCall extends BroadcastReceiver {
                 setResultData(null);
             }
 
-            //跳转到接听activity
-            if (!TextUtils.isEmpty(phoneData)) {
-                Intent intent1 = new Intent(context, PhoneOutActivity.class);
-                intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent1.putExtra("phoneNumber", phoneData);
-                context.startActivity(intent1);
-            }
 
         } else if (action.equals(TelephonyManager.ACTION_PHONE_STATE_CHANGED)) {//呼入电话
             if (lastetActionState.equals(Intent.ACTION_NEW_OUTGOING_CALL)) {
@@ -86,7 +72,7 @@ public class BroadcastReceiverInCall extends BroadcastReceiver {
     }
 
     /**
-     * 处理电话广播.
+     * 处理  呼入电话
      *
      * @param context
      * @param intent
@@ -102,7 +88,7 @@ public class BroadcastReceiverInCall extends BroadcastReceiver {
         LogUtil.i("state====" + telephony.getCallState());
         // 如果当前状态为空闲,上次状态为响铃中的话,则认为是未接来电
         if (lastetState == TelephonyManager.CALL_STATE_RINGING && state == TelephonyManager.CALL_STATE_IDLE) {
-            noReceiveCall();
+//            noReceiveCall();
             return;
         }
         //最后改变当前值
@@ -116,8 +102,9 @@ public class BroadcastReceiverInCall extends BroadcastReceiver {
                 //课堂模式 > 情景模式 > 其他模式
                 LogUtil.i("有电话 进入");
                 String classModelString = PreferencesUtils.getInstance(context).getString("classModel", "");
-                ClassModel classModel = JsonUtil.parseObject(classModelString, ClassModel.class);
-                if (classModel != null) {
+                if (!classModelString.equals("")) {
+                     ClassModel classModel = JsonUtil.parseObject(classModelString, ClassModel.class);
+
                     if (classModel.getItems().size() > 0) {
                         List<ClassModel.ItemsBean> itemsBeanList = classModel.getItems();
                         for (int i = 0; i < itemsBeanList.size(); i++) {
@@ -148,8 +135,8 @@ public class BroadcastReceiverInCall extends BroadcastReceiver {
                 }
                 //情景模式：取出本地数据
                 String contextualModelString = PreferencesUtils.getInstance(context).getString("contextualModel", "");
-                ContextualModel contextualModel = JsonUtil.parseObject(contextualModelString, ContextualModel.class);
-                if (contextualModel != null) {
+                if (!contextualModelString.equals("")) {
+                    ContextualModel contextualModel = JsonUtil.parseObject(contextualModelString, ContextualModel.class);
                     if ("1".equals(contextualModel.getInBound())) {
                         rejectCall(context);
                         return;
@@ -157,8 +144,9 @@ public class BroadcastReceiverInCall extends BroadcastReceiver {
                 }
                 //白名单：取出本地数据
                 String incomingCallString = PreferencesUtils.getInstance(context).getString("incomingCall", "");
-                IncomingCall incomingCallOld = JsonUtil.parseObject(incomingCallString, IncomingCall.class);
-                if (incomingCallOld != null) {
+                boolean incomingFlag = false;//白名单标记，如果是白名单，是true
+                if(!incomingCallString.equals("")){
+                    IncomingCall incomingCallOld = JsonUtil.parseObject(incomingCallString, IncomingCall.class);
                     //1、无限制 2、限制白名单以外的号码呼入 3、限制所有号码呼入
 //                    if (incomingCallOld.getCallLimit().equals("1")) ;
                     if (incomingCallOld.getCallLimit().equals("3")){
@@ -185,13 +173,11 @@ public class BroadcastReceiverInCall extends BroadcastReceiver {
                                         String timeNow = TimeUtils.getNowTimeString(TimeUtils.format4);
                                         int timeNowInt = Integer.parseInt(timeNow);
                                         if (awaitstartInt < awaitendInt) {//同一天
-                                            if (timeNowInt > awaitendInt || timeNowInt < awaitstartInt) {
-                                                rejectCall(context);
+                                            if (timeNowInt > awaitstartInt && timeNowInt < awaitendInt) {
                                                 return;
                                             }
                                         } else {//不同天22-04  09
-                                            if (timeNowInt > awaitstartInt && timeNowInt < awaitendInt) {
-                                                rejectCall(context);
+                                            if (timeNowInt > awaitendInt || timeNowInt < awaitstartInt) {
                                                 return;
                                             }
                                         }
@@ -201,26 +187,17 @@ public class BroadcastReceiverInCall extends BroadcastReceiver {
                         }
                     }
                 }
-                //打进的号码，不是 按键号码 和 白名单 ，拒绝
+                //打进的号码，不是 按键号码  ，拒绝
                 ArrayList listNum = new ArrayList();
 
                 //按键号码
                 String phontNu = PreferencesUtils.getInstance(context).getString("phoneNumber", "");
-                PhoneNumber phoneNumber = JsonUtil.parseObject(phontNu, PhoneNumber.class);
-                if (phoneNumber != null) {
+                if(!phontNu.equals("")){
+                    PhoneNumber phoneNumber = JsonUtil.parseObject(phontNu, PhoneNumber.class);
                     listNum.add(phoneNumber.getSosNumber());
                     List<PhoneNumber.EachPhoneNumber> eachPhoneNumberList = phoneNumber.getItems();
                     for (int i = 0; i < eachPhoneNumberList.size(); i++) {
                         listNum.add(eachPhoneNumberList.get(i).getPhoneNumber());
-                    }
-                }
-                //白名单
-                if (incomingCallOld != null) {
-                    if (incomingCallOld.getCallLimit().equals("2")) {
-                        List<IncomingCall.AddPhoneBean> addPhoneBeanList = incomingCallOld.getAddPhone();
-                        for(int i = 0;i<addPhoneBeanList.size();i++){
-                            listNum.add(addPhoneBeanList.get(i).getPhone());
-                        }
                     }
                 }
                 if(!listNum.contains(incomePhoneNumber)){
@@ -228,18 +205,11 @@ public class BroadcastReceiverInCall extends BroadcastReceiver {
                     return;
                 }
 
-                //跳转到接听activity
-                if (!TextUtils.isEmpty(incomePhoneNumber)) {
-                    Intent intent1 = new Intent(context, PhoneInActivity.class);
-                    intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    intent1.putExtra("phoneNumber", incomePhoneNumber);
-                    context.startActivity(intent1);
-                }
                 break;
             case TelephonyManager.CALL_STATE_IDLE://电话挂断
                 LogUtil.i("[Broadcast]电话挂断=" + incomePhoneNumber);
                 rejectCall(context);
-                noReceiveCall();
+//                noReceiveCall();
                 break;
             case TelephonyManager.CALL_STATE_OFFHOOK:// 摘机，即接通
                 LogUtil.i("[Broadcast]通话中=" + incomePhoneNumber);
@@ -289,12 +259,6 @@ public class BroadcastReceiverInCall extends BroadcastReceiver {
     }
 
 
-    private void noReceiveCall() {
-        //关闭接听activity
-        FinishActivityManager.getManager().finishActivity(PhoneInActivity.class);
-        FinishActivityManager.getManager().finishActivity(PhoneOutActivity.class);
-
-    }
 
 
 }

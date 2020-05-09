@@ -43,8 +43,13 @@ public class TemFrequency {
      * 1=0900!1200#2=1200
      */
     public static TemFrequency parseJson(String json){
-        String[] days = json.split("#");
         TemFrequency temFrequency = new TemFrequency();
+        if(json.equals("0")){
+            temFrequency = null;
+            return temFrequency;
+        }
+        String[] days = json.split("#");
+
         List<Frequency> items = new ArrayList<>();
         for(int i = 0;i<days.length;i++){
             Frequency frequency = new Frequency();
