@@ -24,6 +24,8 @@ public class TemListActivity extends BaseActivity implements View.OnClickListene
     private List<TemBean> temBeanList;
     private RecyclerView recyclerView;
     private ImageView iv_empty;
+    private ImageView back_top;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +39,8 @@ public class TemListActivity extends BaseActivity implements View.OnClickListene
     private void initView() {
         recyclerView = findViewById(R.id.rv_message);
         iv_empty = findViewById(R.id.iv_empty);
+        back_top = findViewById(R.id.back_top);
+        back_top.setOnClickListener(this);
     }
 
     @Override
@@ -67,6 +71,10 @@ public class TemListActivity extends BaseActivity implements View.OnClickListene
 
     @Override
     public void onClick(View v) {
+        int id = v.getId();
+        if(id == R.id.back_top){
+            finish();
+        }
 
     }
 }

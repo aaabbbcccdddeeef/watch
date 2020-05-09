@@ -36,7 +36,7 @@ public class CallRecordActivity extends BaseActivity {
     List<CallPhoneBean> callList = new ArrayList();
     PhoneNumber phoneNumber;
     CallRecordAdapter callRecordAdapter;
-
+    private ImageView back_top;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +56,13 @@ public class CallRecordActivity extends BaseActivity {
     private void initView() {
         rv_call_record = findViewById(R.id.rv_call_record);
         iv_empty = findViewById(R.id.iv_empty);
+        back_top = findViewById(R.id.back_top);
+        back_top.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     private void initData() {

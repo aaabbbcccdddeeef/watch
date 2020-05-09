@@ -21,15 +21,15 @@ public class TemAdapter extends RecyclerView.Adapter<TemAdapter.ViewHolder> {
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView no_read;
-        TextView sms_time;
-        TextView sms_content;
+        TextView tem_time;
+        TextView tem_content;
         RelativeLayout ll_all;
 
         public ViewHolder(View view) {
             super(view);
             no_read = view.findViewById(R.id.no_read);
-            sms_time = view.findViewById(R.id.sms_time);
-            sms_content = view.findViewById(R.id.sms_content);
+            tem_time = view.findViewById(R.id.tem_time);
+            tem_content = view.findViewById(R.id.tem_content);
             ll_all = view.findViewById(R.id.ll_all);
         }
     }
@@ -40,7 +40,7 @@ public class TemAdapter extends RecyclerView.Adapter<TemAdapter.ViewHolder> {
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_smsmessage, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_tem, parent, false);
 
         ViewHolder holder = new ViewHolder(view);
         return holder;
@@ -49,8 +49,8 @@ public class TemAdapter extends RecyclerView.Adapter<TemAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
         TemBean temBean = mTemBeanList.get(position);
-        holder.sms_time.setText(TimeUtils.getShortTime(temBean.getTime()));
-        holder.sms_content.setText(temBean.getTem());
+        holder.tem_time.setText(TimeUtils.millis2String(temBean.getTime(),TimeUtils.format7));
+        holder.tem_content.setText(temBean.getTem()+"°");
         if(temBean.getStatus()==0){
             holder.no_read.setVisibility(View.VISIBLE);
         }else {

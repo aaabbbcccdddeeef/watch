@@ -16,6 +16,7 @@ public class TimeUtils {
     public static final String format4 = "HHmm";
     public static final String format5 = "HHmmss";
     public static final String format6 = "yyyyMMddHHmmss";
+    public static final String format7 = "MM-dd HH:mm";
 
     /**
      * 设备时间

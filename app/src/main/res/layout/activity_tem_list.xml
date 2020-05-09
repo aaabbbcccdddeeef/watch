@@ -10,12 +10,27 @@
     android:orientation="vertical"
     android:paddingTop="24.0px">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="测温记录"
-        android:textColor="@color/white"
-        android:textSize="28.0sp" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/back_top"
+            android:layout_margin="5px"
+            android:src="@drawable/back_top"
+            android:layout_width="20px"
+            android:layout_height="20px" />
+        <TextView
+            android:id="@id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="测温记录"
+            android:layout_centerVertical="true"
+            android:textColor="#ffffffff"
+            android:textSize="@dimen/title_size" />
+    </RelativeLayout>
+
 
     <FrameLayout
         android:layout_width="fill_parent"

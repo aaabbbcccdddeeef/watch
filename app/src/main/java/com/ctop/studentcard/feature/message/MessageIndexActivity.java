@@ -25,7 +25,7 @@ public class MessageIndexActivity extends BaseActivity {
     private List<SmsMessage> smsMessageList;
     private RecyclerView recyclerView;
     private ImageView iv_empty;
-
+    private ImageView back_top;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +38,13 @@ public class MessageIndexActivity extends BaseActivity {
     private void initView() {
         recyclerView = findViewById(R.id.rv_message);
         iv_empty = findViewById(R.id.iv_empty);
+        back_top = findViewById(R.id.back_top);
+        back_top.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     @Override

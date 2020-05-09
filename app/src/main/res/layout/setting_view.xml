@@ -9,12 +9,20 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/back_top"
+            android:layout_margin="5px"
+            android:src="@drawable/back_top"
+            android:layout_width="20px"
+            android:layout_height="20px" />
         <TextView
             android:id="@id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="设置"
+            android:layout_centerVertical="true"
             android:textColor="#ffffffff"
             android:textSize="@dimen/title_size" />
     </RelativeLayout>
