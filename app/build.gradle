@@ -4,10 +4,10 @@ apply plugin: 'org.greenrobot.greendao' //新加的
 android {
     signingConfigs {
         release {
-            storeFile file('/Users/dugaolong/Documents/guizhou/git-apps/watch/key')
-            storePassword 'zhihui'
-            keyAlias = 'key0'
-            keyPassword 'zhihui'
+            storeFile file('/Users/dugaolong/Documents/guizhou/git-apps/watch/platform.keystore')
+            storePassword 'android'
+            keyAlias = 'platform'
+            keyPassword 'android'
         }
         android {
             storeFile file('/Users/dugaolong/Documents/guizhou/git-apps/watch/platform.keystore')
@@ -22,7 +22,7 @@ android {
         minSdkVersion 19
         targetSdkVersion 28
         versionCode 1
-        versionName "0.0.9"
+        versionName "0.1.9"
         // 这里添加
         multiDexEnabled true
         ndk {
@@ -45,7 +45,7 @@ android {
     }
     defaultConfig {
         vectorDrawables.useSupportLibrary = true
-        signingConfig signingConfigs.android
+        signingConfig signingConfigs.release
     }
     greendao {
         schemaVersion 1 //数据库版本号

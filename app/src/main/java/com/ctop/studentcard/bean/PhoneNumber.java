@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 情景模式
+ * 亲情号码
  */
 public class PhoneNumber {
     /**

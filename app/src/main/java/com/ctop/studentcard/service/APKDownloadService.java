@@ -425,11 +425,22 @@ public class APKDownloadService extends Service {
          */
         public void installApk(Context context, final File apkFile) {
             if (apkFile != null && apkFile.exists()) {
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.setDataAndType(Uri.fromFile(apkFile),
-                            "application/vnd.android.package-archive");
-                context.startActivity(intent);
+                //引力波的设备安装的方式
+                Intent intent = new Intent();
+                intent.setAction("dw.action.apkauto.install");
+                //key  apkFilePath
+                // value 下载的文件路径
+                intent.putExtra("apkFilePath", apkFile.getPath());
+                //key Intent.EXTRA_INSTALLER_PACKAGE_NAME
+                //value 包名
+                intent.putExtra(Intent.EXTRA_INSTALLER_PACKAGE_NAME,"com.ctop.studentcard");
+                sendBroadcast(intent);
+
+//                Intent intent = new Intent(Intent.ACTION_VIEW);
+//                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                intent.setDataAndType(Uri.fromFile(apkFile),
+//                            "application/vnd.android.package-archive");
+//                context.startActivity(intent);
             } else {
                 LogUtil.showLog(TAG, "安装文件不存在");
             }

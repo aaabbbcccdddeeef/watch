@@ -23,7 +23,6 @@ public class TemListActivity extends BaseActivity implements View.OnClickListene
     private TemBeanDao temBeanDao;
     private List<TemBean> temBeanList;
     private RecyclerView recyclerView;
-    private ImageView iv_empty;
     private ImageView back_top;
 
 
@@ -38,9 +37,9 @@ public class TemListActivity extends BaseActivity implements View.OnClickListene
 
     private void initView() {
         recyclerView = findViewById(R.id.rv_message);
-        iv_empty = findViewById(R.id.iv_empty);
         back_top = findViewById(R.id.back_top);
         back_top.setOnClickListener(this);
+        recyclerView.setClickable(false);
     }
 
     @Override
@@ -54,16 +53,12 @@ public class TemListActivity extends BaseActivity implements View.OnClickListene
         temBeanDao =  DaoManager.getInstance().getDaoSession().getTemBeanDao();
         temBeanList =   temBeanDao.queryBuilder().where(TemBeanDao.Properties.Time.gt(System.currentTimeMillis()-1000*60*60*24*7)).orderDesc(TemBeanDao.Properties.Time).list();
         if(temBeanList.size()>0){
-            iv_empty.setVisibility(View.GONE);
             recyclerView.setVisibility(View.VISIBLE);
             LinearLayoutManager layoutManager = new LinearLayoutManager(this, RecyclerView.VERTICAL,false);
             recyclerView.setLayoutManager(layoutManager);
             TemAdapter temAdapter = new TemAdapter(temBeanList);
             recyclerView.setAdapter(temAdapter);
             temAdapter.notifyDataSetChanged();
-        }else {
-            iv_empty.setVisibility(View.VISIBLE);
-            recyclerView.setVisibility(View.GONE);
         }
 
     }

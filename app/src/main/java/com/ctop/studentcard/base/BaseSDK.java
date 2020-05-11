@@ -294,7 +294,7 @@ public class BaseSDK implements ChannelListener {
     public void reportLocationInfoGet(String data, final OnReceiveListener onReceiveListener) {
         //组装报文
         String waterNumber = PreferencesUtils.getInstance(mContext).getString("LOCATION_INFO_GET", "");
-        final String request = PackDataUtil.packRequestStr(mContext, waterNumber, AppConst.LOCATION_INFO_GET, AppConst.RESPONSE_OF_ISSUED, data);
+        final String request = PackDataUtil.packRequestStr(mContext, waterNumber, AppConst.LOCATION_INFO_GET, AppConst.REPORT_THE_REQUEST, data);
         listenerArrayMap.put(waterNumber, onReceiveListener);
         NettyClient.getInstance(mContext).sendMsgToServer(request, onReceiveListener);
     }
@@ -537,7 +537,7 @@ public class BaseSDK implements ChannelListener {
                     PhoneNumber phoneNumber = PhoneNumber.parseJson(data);
                     PreferencesUtils.getInstance(mContext).setString("phoneNumber", JsonUtil.toJSONString(phoneNumber));
 
-                    String str = PackDataUtil.packRequestStr(BaseSDK.getBaseContext(), waterNumber, AppConst.REPORT_HEARTBEAT, AppConst.RESPONSE_OF_ISSUED, "0");
+                    String str = PackDataUtil.packRequestStr(BaseSDK.getBaseContext(), waterNumber, AppConst.SET_NORMAL_BUTTON, AppConst.RESPONSE_OF_ISSUED, "0");
                     NettyClient.getInstance(mContext).sendMsgToServer(str, null);
                 } else if (response.getCmd().equals(AppConst.DEVICE_DATA_TRANSPORT)) {//自定义下发
                     sendBack.getSend(response.getData(), new Iback() {
@@ -582,21 +582,21 @@ public class BaseSDK implements ChannelListener {
                     // 1省电模式不上报位置
                     // 2平衡模式20min/次
                     // 3实时模式3min/次
-                    String[] strings = data.split("@");
-                    String type = strings[0];
-                    int num = Integer.parseInt(strings[1]);
-                    if (type.equals(AppConst.MODEL_POWER_SAVING)) {
+//                    String[] strings = data.split("@");
+//                    String type = strings[0];
+//                    int num = Integer.parseInt(strings[1]);
+                    if (data.equals(AppConst.MODEL_POWER_SAVING)) {
                         PreferencesUtils.getInstance(mContext).setString("locationMode", AppConst.MODEL_POWER_SAVING);
                         PreferencesUtils.getInstance(mContext).setLong("locationModeStart", System.currentTimeMillis());
                         canalAlarm(mContext,BroadcastConstant.GPS);
-                    } else if (type.equals(AppConst.MODEL_BALANCE)) {
+                    } else if (data.equals(AppConst.MODEL_BALANCE)) {
                         PreferencesUtils.getInstance(mContext).setString("locationMode",  AppConst.MODEL_BALANCE);
                         PreferencesUtils.getInstance(mContext).setLong("locationModeStart", System.currentTimeMillis());
                         period = 20 * 60 * 60;
                         initialDelay = 0;
                         canalAlarm(mContext,BroadcastConstant.GPS);
                         setAlarmTime(mContext,System.currentTimeMillis(),BroadcastConstant.GPS, initialDelay);
-                    } else if (type.equals(AppConst.MODEL_REAL_TIME)) {
+                    } else if (data.equals(AppConst.MODEL_REAL_TIME)) {
                         PreferencesUtils.getInstance(mContext).setString("locationModeOld", PreferencesUtils.getInstance(mContext).getString("locationMode",  AppConst.MODEL_BALANCE));
                         PreferencesUtils.getInstance(mContext).setString("locationMode", AppConst.MODEL_REAL_TIME);
                         PreferencesUtils.getInstance(mContext).setLong("locationModeStart", System.currentTimeMillis());
@@ -605,10 +605,10 @@ public class BaseSDK implements ChannelListener {
                         canalAlarm(mContext,BroadcastConstant.GPS);
                         setAlarmTime(mContext,System.currentTimeMillis(),BroadcastConstant.GPS, initialDelay);
                         //计算结束时间 realTime
-                        long endTime = System.currentTimeMillis() + num * 60 * 1000;
+                        long endTime = System.currentTimeMillis() + 30 * 60 * 1000;
                         PreferencesUtils.getInstance(mContext).setLong("realTimeModeEnd", endTime);
                     }
-                    handler.sendEmptyMessage(6);
+//                    handler.sendEmptyMessage(6);
                     String str = PackDataUtil.packRequestStr(BaseSDK.getBaseContext(), waterNumber, AppConst.SET_LOCATION_MODE, AppConst.RESPONSE_OF_ISSUED, "0");
                     NettyClient.getInstance(mContext).sendMsgToServer(str, null);
                 } else if (response.getCmd().equals(AppConst.SET_REDAY_MODE)) {//设置待机模式
@@ -693,6 +693,8 @@ public class BaseSDK implements ChannelListener {
                 } else if (response.getCmd().equals(AppConst.SET_CLASS_MODEL)) {//课堂模式
                     ClassModel classModel = ClassModel.parseJson(data);
                     PreferencesUtils.getInstance(mContext).setString("classModel", JsonUtil.toJSONString(classModel));
+                    //静音
+                    DeviceUtil.silentSwitchOn(mContext);
                     String str = PackDataUtil.packRequestStr(BaseSDK.getBaseContext(), waterNumber, AppConst.SET_CLASS_MODEL, AppConst.RESPONSE_OF_ISSUED, "0");
                     NettyClient.getInstance(mContext).sendMsgToServer(str, null);
                 } else if (response.getCmd().equals(AppConst.SET_CLOCK)) {//设置闹铃
@@ -985,9 +987,6 @@ public class BaseSDK implements ChannelListener {
                         //0=13900000000!1=!2=13900000002!3=13900000003!4=13900000004!5=13900000005!
                         PhoneNumber phoneNumber = PhoneNumber.parseJson(data);
                         PreferencesUtils.getInstance(mContext).setString("phoneNumber", JsonUtil.toJSONString(phoneNumber));
-
-                        String str = PackDataUtil.packRequestStr(BaseSDK.getBaseContext(), waterNumber, AppConst.REPORT_HEARTBEAT, AppConst.RESPONSE_OF_ISSUED, "0");
-                        NettyClient.getInstance(mContext).sendMsgToServer(str, null);
                     }
                 } else if (response.getCmd().equals(AppConst.GET_CLASS_MODEL)) {//课堂模式
                     //异常应答：0无设置  1非平台用户  2其他异常

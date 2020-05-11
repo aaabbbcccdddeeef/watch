@@ -94,6 +94,7 @@ public class TemActivity extends BaseActivity implements View.OnClickListener {
     public void onClick(View v) {
         int id = v.getId();
         if (id == R.id.start_rl) {
+            start_rl.setOnClickListener(null);
             KdxfSpeechSynthesizerUtil.getInstance(this,"开始测量，请稍等");
             //注册温度结果广播
             mTemPostReceiver = new TemPostReceiver();
@@ -120,6 +121,7 @@ public class TemActivity extends BaseActivity implements View.OnClickListener {
                     tem_rl.setVisibility(View.GONE);
                     mRippleView.setVisibility(View.VISIBLE);
                     mRippleView.setRadius(80, mHandler);
+                    start_rl.setOnClickListener(TemActivity.this);
                 }
 
                 @Override
@@ -128,6 +130,8 @@ public class TemActivity extends BaseActivity implements View.OnClickListener {
                 }
             });
         } else if (id == R.id.tem_rl) {
+            tem_rl.setOnClickListener(null);
+            KdxfSpeechSynthesizerUtil.getInstance(this,"开始测量，请稍等");
             iv_tem_list.setVisibility(View.GONE);
             //发广播，请求测温
             sendBrodcast();
@@ -151,7 +155,7 @@ public class TemActivity extends BaseActivity implements View.OnClickListener {
                     mRippleView.setRadius(80, mHandler);
                     mRippleView.setEndFlag(false);
                     mRippleView.init();
-
+                    tem_rl.setOnClickListener(TemActivity.this);
                 }
 
                 @Override
