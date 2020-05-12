@@ -139,7 +139,7 @@ public class BaseApplication extends Application implements InstructionCallBack 
                 }
                 //重启tcp
                 NettyClient.getInstance(mContext).stopTcp();
-                NettyClient.getInstance(mContext).connect();
+//                NettyClient.getInstance(mContext).connect();
 
             } else if (msg.what == 3) {//RESTART
 

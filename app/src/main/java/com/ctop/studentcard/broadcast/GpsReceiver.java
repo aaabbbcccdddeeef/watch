@@ -18,7 +18,9 @@ public class GpsReceiver extends BroadcastReceiver {
         String action = intent.getAction();
         if (action.equals(BroadcastConstant.GPS)) {
 
-            BaseSDK.getInstance().findGPS();
+            if(BaseSDK.getInstance().getConnectStatus()){
+                BaseSDK.getInstance().findGPS();
+            }
 
             //因为setWindow只执行一次，所以要重新定义闹钟实现循环。
             AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
@@ -33,7 +35,6 @@ public class GpsReceiver extends BroadcastReceiver {
 
             BaseSDK.getInstance().findGPSGet();
         }
-
 
     }
 }

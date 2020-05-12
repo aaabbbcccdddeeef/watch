@@ -209,6 +209,7 @@ public class BaseSDK implements ChannelListener {
             //如果是主动断开，不用重连
             boolean setstopTcp = PreferencesUtils.getInstance(mContext).getBoolean("stopTcp", false);
             if (!setstopTcp) {
+                LogUtil.d("setstopTcp =false: connect");
                 NettyClient.getInstance(mContext).connect();
             }
         }

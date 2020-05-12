@@ -160,11 +160,15 @@ public class NettyClient {
 
     //断开tcp链接
     public void stopTcp() {
-        mChannel.disconnect();
-        mChannel.close();
-        mChannel = null;
-        isConnect = false;
-        group.shutdownGracefully();
+        if(mChannel!=null){
+            mChannel.disconnect();
+            mChannel.close();
+            mChannel = null;
+            isConnect = false;
+        }
+        if(group!=null){
+            group.shutdownGracefully();
+        }
     }
     //设置心跳
     public void setHeart(int allIdleTime) {
