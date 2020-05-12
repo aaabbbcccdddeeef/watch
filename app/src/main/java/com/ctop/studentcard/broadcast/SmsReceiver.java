@@ -28,6 +28,7 @@ import com.ctop.studentcard.util.PreferencesUtils;
 import com.ctop.studentcard.util.PropertiesUtil;
 import com.ctop.studentcard.util.TimeUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SmsReceiver extends BroadcastReceiver {
@@ -58,11 +59,12 @@ public class SmsReceiver extends BroadcastReceiver {
                 insertDb(waterNumber, body.toString());
                 if (body.toString().startsWith("SETSERVER")) {//设置IP地址
                     sendSmsSETSERVER(context, 2, body.toString());
-                    BaseSDK.getInstance().sendSMS(context,number.toString(),"Done, connect in 5 seconds");
+                    BaseSDK.getInstance().sendSMS(context, number.toString(), "Done, connect in 5 seconds");
                     return;
                 } else if ("SUPERPASS#".equals(body.toString())) {//打开短信指令30分钟
+                    BaseSDK.getInstance().canalAlarm(BaseSDK.getInstance().getBaseContext(), BroadcastConstant.GPS);
                     sendSmsWhat(context, 0);
-                    BaseSDK.getInstance().sendSMS(context,number.toString(),"Device unlocked，lock again in 30 minutes");
+                    BaseSDK.getInstance().sendSMS(context, number.toString(), "Device unlocked，lock again in 30 minutes");
                     return;
 //                    mHandler.sendEmptyMessage(0);
                 } else if ("WAKEUP#".equals(body.toString())) {//设备唤醒
@@ -72,17 +74,17 @@ public class SmsReceiver extends BroadcastReceiver {
                     PreferencesUtils.getInstance(context).setString("awaitModeEnd", "");
                     PreferencesUtils.getInstance(context).setString("locationModeOld", AppConst.MODEL_AWAIT);
                     LogUtil.e("上报设备模式5");
-                    BaseSDK.getInstance().send_device_status(PreferencesUtils.getInstance(context).getString("locationMode",  AppConst.MODEL_BALANCE));
+                    BaseSDK.getInstance().send_device_status(PreferencesUtils.getInstance(context).getString("locationMode", AppConst.MODEL_BALANCE));
 
-                    BaseSDK.getInstance().sendSMS(context,number.toString(),"Done, connect in 5 seconds");
+                    BaseSDK.getInstance().sendSMS(context, number.toString(), "Done, connect in 5 seconds");
                     return;
                 } else if ("SERVER#".equals(body.toString())) {//获取设备服务地址
                     String data = PropertiesUtil.getInstance().getHost(context) + "," + PropertiesUtil.getInstance().getTcp_port(context);
-                    BaseSDK.getInstance().sendSMS(context,number.toString(),data);
+                    BaseSDK.getInstance().sendSMS(context, number.toString(), data);
 
                     return;
                 } else if ("RESTART#".equals(body.toString())) {//重启设备
-                    BaseSDK.getInstance().sendSMS(context,number.toString(),"Done");
+                    BaseSDK.getInstance().sendSMS(context, number.toString(), "Done");
                     DeviceUtil.reboot(context);
                     return;
                 } else if ("STATUS#".equals(body.toString())) {//设备状态
@@ -103,7 +105,7 @@ public class SmsReceiver extends BroadcastReceiver {
 //                        msg.what = 5;
 //                        msg.obj = smsMessageReceive;
 //                        mHandler.sendMessage(msg);
-                        sendSmsWhatAndObj(context, 5, waterNumber, body.toString(), "1");
+//                        sendSmsWhatAndObj(context, 5, waterNumber, body.toString(), "1");
                         return;
                     }
 
@@ -111,142 +113,32 @@ public class SmsReceiver extends BroadcastReceiver {
 //                    msg.what = 5;
 //                    msg.obj = smsMessageReceive;
 
-                    //亲情号码、sos、白名单
-                    // //课堂模式 > 情景模式 > 其他模式
-                    //课堂模式
-                    String classModelString = PreferencesUtils.getInstance(context).getString("classModel", "");
-                    if (!classModelString.equals("")) {
-                    ClassModel classModel = JsonUtil.parseObject(classModelString, ClassModel.class);
-                        //sos号码
-                        String phontNu = PreferencesUtils.getInstance(context).getString("phoneNumber", "");
-                        PhoneNumber phoneNumber = JsonUtil.parseObject(phontNu, PhoneNumber.class);
-                        //sos号码不可呼入
-//                        if (number.equals(phoneNumber.getSosNumber())) {
-//                            if (!"0".equals(classModel.getSosInFlag())) {
-////                                mHandler.sendMessage(msg);
-//                                sendSmsWhatAndObj(context, 5, waterNumber, body.toString(), "1");
-//                                return;
-//                            }
-//                        }
-
-                        //普通号码
-                        if (classModel.getItems().size() > 0) {
-                            List<ClassModel.ItemsBean> itemsBeanList = classModel.getItems();
-                            for (int i = 0; i < itemsBeanList.size(); i++) {
-                                if ("0".equals(itemsBeanList.get(i).getIsEffect())) continue;//不生效
-                                List<ClassModel.ItemsBean.PeriodBean> periodBeans = itemsBeanList.get(i).getPeriod();
-                                for (int j = 0; j < periodBeans.size(); j++) {
-                                    if (TimeUtils.getWeekInCome().equals(periodBeans.get(i).getWeek())) {
-                                        int awaitstartInt = Integer.parseInt(itemsBeanList.get(i).getStartTime());
-                                        int awaitendInt = Integer.parseInt(itemsBeanList.get(i).getEndTime());
-                                        String timeNow = TimeUtils.getNowTimeString(TimeUtils.format4);
-                                        int timeNowInt = Integer.parseInt(timeNow);
-                                        if (awaitstartInt < awaitendInt) {//同一天
-                                            if (timeNowInt > awaitstartInt && timeNowInt < awaitendInt) {
-
-                                            } else {
-//                                                mHandler.sendMessage(msg);
-                                                sendSmsWhatAndObj(context, 5, waterNumber, body.toString(), "1");
-                                                return;
-                                            }
-                                        } else {//不同天
-                                            if (timeNowInt > awaitstartInt || timeNowInt < awaitendInt) {
-
-                                            } else {
-                                                sendSmsWhatAndObj(context, 5, waterNumber, body.toString(), "1");
-                                                return;
-//                                                mHandler.sendMessage(msg);
-                                            }
-                                        }
-                                    }
-                                }
-
-                            }
-                        }
-                    }
-
-                    //情景模式：取出本地数据
-                    String contextualModelString = PreferencesUtils.getInstance(context).getString("contextualModel", "");
-                    if (!contextualModelString.equals("")) {
-                        ContextualModel contextualModel = JsonUtil.parseObject(contextualModelString, ContextualModel.class);
-                        if (contextualModel.getRing().equals("1") && contextualModel.getInBound().equals("0")) {
-//                            mHandler.sendMessage(msg);
-                            sendSmsWhatAndObj(context, 5, waterNumber, body.toString(), "1");
-                            return;
-                        }
-
-                    }
+                    List phoneList = new ArrayList<String>();
                     //呼入限制：取出本地数据
                     String incomingCallString = PreferencesUtils.getInstance(context).getString("incomingCall", "");
-                    if (!incomingCallString.equals("")) {
+                    if (!incomingCallString.equals("") && !incomingCallString.equals("null")) {
                         IncomingCall incomingCallOld = JsonUtil.parseObject(incomingCallString, IncomingCall.class);
-                        //1、无限制 2、限制白名单以外的号码呼入 3、限制所有号码呼入
-                        if (incomingCallOld.getCallLimit().equals("1")) {
-//                            mHandler.sendMessage(msg);
-                            sendSmsWhatAndObj(context, 5, waterNumber, body.toString(), "1");
-                            return;
+                        List<IncomingCall.AddPhoneBean> addPhoneBeanList = incomingCallOld.getAddPhone();
+                        for (int j = 0; j < addPhoneBeanList.size(); j++) {
+                            phoneList.add(addPhoneBeanList.get(j).getPhone());
                         }
-                        if (incomingCallOld.getCallLimit().equals("2")) {
-                            List<IncomingCall.AddPhoneBean> addPhoneBeanList = incomingCallOld.getAddPhone();
-                            boolean flagPeriod = false;
-                            List<IncomingCall.PeriodBean> periodBeans = incomingCallOld.getPeriod();
-                            for (int i = 0; i < periodBeans.size(); i++) {
-                                if (TimeUtils.getWeekInCome().equals(periodBeans.get(i).getWeek())) {
-                                    flagPeriod = true;
-                                }
-                            }
-                            if (flagPeriod) {
-                                for (int j = 0; j < addPhoneBeanList.size(); j++) {
-                                    if (addPhoneBeanList.get(j).getPhone().equals(number)) {
-                                        List<IncomingCall.AddPhoneBean.TimeBean> timeBeanList = addPhoneBeanList.get(j).getTime();
-                                        for (int i = 0; i < timeBeanList.size(); i++) {
-                                            int awaitstartInt = Integer.parseInt(timeBeanList.get(i).getStart());
-                                            int awaitendInt = Integer.parseInt(timeBeanList.get(i).getEnd());
-                                            String timeNow = TimeUtils.getNowTimeString(TimeUtils.format4);
-                                            int timeNowInt = Integer.parseInt(timeNow);
-                                            if (awaitstartInt < awaitendInt) {//同一天
-                                                if (timeNowInt > awaitstartInt && timeNowInt < awaitendInt) {
-                                                } else {
-//                                                    mHandler.sendMessage(msg);
-                                                    sendSmsWhatAndObj(context, 5, waterNumber, body.toString(), "1");
-                                                    return;
-                                                }
-                                            } else {//不同天
-                                                if (timeNowInt > awaitstartInt || timeNowInt < awaitendInt) {
-                                                } else {
-//                                                    mHandler.sendMessage(msg);
-                                                    sendSmsWhatAndObj(context, 5, waterNumber, body.toString(), "1");
-                                                    return;
-                                                }
-                                            }
-                                        }
-
-                                    }
-                                }
-                            }
-
+                    }
+                    //按键号码
+                    String phontNu = PreferencesUtils.getInstance(context).getString("phoneNumber", "");
+                    if (!phontNu.equals("") && !phontNu.equals("null")) {
+                        PhoneNumber phoneNumber = JsonUtil.parseObject(phontNu, PhoneNumber.class);
+                        phoneList.add(phoneNumber.getSosNumber());
+                        List<PhoneNumber.EachPhoneNumber> eachPhoneNumberList = phoneNumber.getItems();
+                        for (int i = 0; i < eachPhoneNumberList.size(); i++) {
+                            phoneList.add(eachPhoneNumberList.get(i).getPhoneNumber());
                         }
                     }
 
+                    if (phoneList.contains(number.toString())) {
+                        insertDb(waterNumber, body.toString());
+                    }
                 }
 
-
-//                String smsBody = body.toString();
-//                String smsNumber = number.toString();
-//                LogUtil.e("smsNumber===" + smsNumber);
-//                if (smsNumber.contains("+86")) {
-//                    smsNumber = smsNumber.substring(3);
-//                }
-//                // 第二步:确认该短信内容是否满足过滤条件
-//                boolean flags_filter = false;
-//                if (smsNumber.equals("18309280898")) {// 屏蔽10086发来的短信
-//                    flags_filter = true;
-//                    LogUtil.e("SmsReceiver,sms_number.equals(18309280898)");
-//                }
-//                // 第三步:取消
-//                if (flags_filter) {
-//                    this.abortBroadcast();
-//                }
             }
         }
     }
@@ -268,7 +160,7 @@ public class SmsReceiver extends BroadcastReceiver {
     }
 
     //发送广播 短信
-    public static void sendSmsSTATUS(Context context, int what, String number ) {
+    public static void sendSmsSTATUS(Context context, int what, String number) {
         Intent intent = new Intent();
         intent.setAction(BroadcastConstant.SMS_STATE);
         intent.putExtra("what", what);
@@ -277,7 +169,7 @@ public class SmsReceiver extends BroadcastReceiver {
     }
 
     //发送广播 短信
-    public static void sendSmsSETSERVER(Context context, int what, String param ) {
+    public static void sendSmsSETSERVER(Context context, int what, String param) {
         Intent intent = new Intent();
         intent.setAction(BroadcastConstant.SMS_STATE);
         intent.putExtra("what", what);

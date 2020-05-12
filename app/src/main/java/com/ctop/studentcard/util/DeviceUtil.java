@@ -219,7 +219,7 @@ public class DeviceUtil {
 
     public static void callSOSPhone(Context context) {
         String phoneNumberString = PreferencesUtils.getInstance(context).getString("phoneNumber", "");
-        if (!phoneNumberString.equals("")) {
+        if (!phoneNumberString.equals("")  && !phoneNumberString.equals("null")) {
         PhoneNumber phoneNumber = JsonUtil.parseObject(phoneNumberString, PhoneNumber.class);
             //如果需要手动拨号将Intent.ACTION_CALL改为Intent.ACTION_DIAL（跳转到拨号界面，用户手动点击拨打）
             Intent intent = new Intent(Intent.ACTION_CALL);

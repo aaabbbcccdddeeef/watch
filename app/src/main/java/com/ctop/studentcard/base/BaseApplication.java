@@ -122,7 +122,7 @@ public class BaseApplication extends Application implements InstructionCallBack 
                     }
                 }.start();
             } else if (msg.what == 1) {//WAKEUP
-                BaseSDK.getInstance().reconnectTcp();
+                BaseSDK.getInstance().connect();
             } else if (msg.what == 2) {//setSERVER
                 String param = (String) msg.obj;
                 //第一位：固定SETSEVER

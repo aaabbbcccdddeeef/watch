@@ -39,7 +39,7 @@ public class TimeTickReceiver extends BroadcastReceiver {
                 //如果现在是待机模式，需要开启tcp
                 String state = PreferencesUtils.getInstance(context).getString("","");
                 if(state.equals(AppConst.MODEL_AWAIT)){
-                    BaseSDK.getInstance().reconnectTcp();
+                    BaseSDK.getInstance().connect();
                 }
 //
                 //请求更新apk
@@ -85,7 +85,7 @@ public class TimeTickReceiver extends BroadcastReceiver {
                         PreferencesUtils.getInstance(context).setString("locationMode", AppConst.MODEL_AWAIT);
                         PreferencesUtils.getInstance(context).setLong("locationModeStart", System.currentTimeMillis());
 
-                        BaseSDK.getInstance().canalAlarm(context,BroadcastConstant.GPS);
+                        BaseSDK.getInstance().canalAlarm(BaseSDK.getInstance().getBaseContext(),BroadcastConstant.GPS);
 
                         LogUtil.e("上报设备模式3-0");
                         BaseSDK.getInstance().send_device_status(AppConst.MODEL_BALANCE);
@@ -150,7 +150,7 @@ public class TimeTickReceiver extends BroadcastReceiver {
 
             //闹钟
             String clickBeanString = PreferencesUtils.getInstance(context).getString("clickBean", "");
-            if(!TextUtils.isEmpty(clickBeanString)){
+            if(!TextUtils.isEmpty(clickBeanString) && !clickBeanString.equals("null")){
                 ClickBean clickBean = JsonUtil.parseObject(clickBeanString, ClickBean.class);
                 List<ClickBean.ItemsBean> itemsBeanList = clickBean.getItems();
                 for (int i = 0; i < itemsBeanList.size(); i++) {
@@ -174,7 +174,7 @@ public class TimeTickReceiver extends BroadcastReceiver {
 
             //temFrequency
             String temFrequencystr = PreferencesUtils.getInstance(context).getString("temFrequency", "");
-            if(!TextUtils.isEmpty(temFrequencystr)){
+            if(!TextUtils.isEmpty(temFrequencystr) && !temFrequencystr.equals("null")){
                 TemFrequency mTemFrequency = JsonUtil.parseObject(temFrequencystr, TemFrequency.class);
                 List<TemFrequency.Frequency> items = mTemFrequency.getItems();
                 for(int i = 0;i<items.size();i++){

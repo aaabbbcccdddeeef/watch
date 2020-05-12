@@ -40,7 +40,7 @@ public class BroadcastReceiverInCall extends BroadcastReceiver {
             }
             //课堂模式，限制呼出
             String classModelString = PreferencesUtils.getInstance(context).getString("classModel", "");
-            if (!classModelString.equals("")) {
+            if (!classModelString.equals("") && !classModelString.equals("null")) {
                 ClassModel classModel = JsonUtil.parseObject(classModelString, ClassModel.class);
 
                 if (classModel.getItems().size() > 0) {
@@ -89,7 +89,7 @@ public class BroadcastReceiverInCall extends BroadcastReceiver {
             String phontNu = PreferencesUtils.getInstance(context).getString("phoneNumber", "");
             ArrayList listNum = new ArrayList();
             String sosphone = "";
-            if(!TextUtils.isEmpty(phontNu)){
+            if(!TextUtils.isEmpty(phontNu)  && !phontNu.equals("null")){
                 PhoneNumber phoneNumber = JsonUtil.parseObject(phontNu, PhoneNumber.class);
                 listNum.add(phoneNumber.getSosNumber());
                 sosphone = phoneNumber.getSosNumber();
@@ -101,7 +101,7 @@ public class BroadcastReceiverInCall extends BroadcastReceiver {
 
             //情景模式：限制呼出
             String contextualModelString = PreferencesUtils.getInstance(context).getString("contextualModel", "");
-            if (!contextualModelString.equals("")) {
+            if (!contextualModelString.equals("")  && !contextualModelString.equals("null")) {
                 ContextualModel contextualModel = JsonUtil.parseObject(contextualModelString, ContextualModel.class);
                 if ("1".equals(contextualModel.getOutBound()) && sosphone.equals(phoneData)) {
                     setResultData(null);
@@ -154,7 +154,7 @@ public class BroadcastReceiverInCall extends BroadcastReceiver {
                 //课堂模式 > 情景模式 > 其他模式
                 LogUtil.i("有电话 进入");
                 String classModelString = PreferencesUtils.getInstance(context).getString("classModel", "");
-                if (!classModelString.equals("")) {
+                if (!classModelString.equals("") && !classModelString.equals("null")) {
                      ClassModel classModel = JsonUtil.parseObject(classModelString, ClassModel.class);
 
                     if (classModel.getItems().size() > 0) {
@@ -188,7 +188,7 @@ public class BroadcastReceiverInCall extends BroadcastReceiver {
                 //白名单：取出本地数据
                 String incomingCallString = PreferencesUtils.getInstance(context).getString("incomingCall", "");
                 boolean incomingFlag = false;//白名单标记，如果是白名单，是true
-                if(!incomingCallString.equals("")){
+                if(!incomingCallString.equals("") && !incomingCallString.equals("null")){
                     IncomingCall incomingCallOld = JsonUtil.parseObject(incomingCallString, IncomingCall.class);
                     //1、无限制 2、限制白名单以外的号码呼入 3、限制所有号码呼入
 //                    if (incomingCallOld.getCallLimit().equals("1")) ;
@@ -236,7 +236,7 @@ public class BroadcastReceiverInCall extends BroadcastReceiver {
                 //按键号码
                 String phontNu = PreferencesUtils.getInstance(context).getString("phoneNumber", "");
                 String sosPhone = "";
-                if(!phontNu.equals("")){
+                if(!phontNu.equals("") && !phontNu.equals("null")){
                     PhoneNumber phoneNumber = JsonUtil.parseObject(phontNu, PhoneNumber.class);
                     listNum.add(phoneNumber.getSosNumber());
                     sosPhone = phoneNumber.getSosNumber();
@@ -247,7 +247,7 @@ public class BroadcastReceiverInCall extends BroadcastReceiver {
                 }
                 //情景模式：限制呼入
                 String contextualModelString = PreferencesUtils.getInstance(context).getString("contextualModel", "");
-                if (!contextualModelString.equals("")) {
+                if (!contextualModelString.equals("") && !contextualModelString.equals("null")) {
                     ContextualModel contextualModel = JsonUtil.parseObject(contextualModelString, ContextualModel.class);
                     if ("1".equals(contextualModel.getInBound()) && incomePhoneNumber.equals(sosPhone)) {
                         rejectCall(context);

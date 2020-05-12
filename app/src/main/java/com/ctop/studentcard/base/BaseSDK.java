@@ -209,7 +209,7 @@ public class BaseSDK implements ChannelListener {
             //如果是主动断开，不用重连
             boolean setstopTcp = PreferencesUtils.getInstance(mContext).getBoolean("stopTcp", false);
             if (!setstopTcp) {
-                NettyClient.getInstance(mContext).reconnect();
+                NettyClient.getInstance(mContext).connect();
             }
         }
     }
@@ -228,6 +228,7 @@ public class BaseSDK implements ChannelListener {
 
 
     private void timingLocationInit(int per) {
+        LogUtil.e("timingLocationInit ***");
         //先取消上一个任务，防止重复的任务
         canalAlarm(mContext,BroadcastConstant.GPS);
         if (per == 0) {
@@ -239,12 +240,10 @@ public class BaseSDK implements ChannelListener {
         LogUtil.e("LOCATION_initialDelay===" + initialDelay);
 
         setAlarmTime(mContext,System.currentTimeMillis(),BroadcastConstant.GPS, initialDelay);
-
-
-
     }
 
     private void timingLocation() {
+        LogUtil.e("timingLocation ***");
         //先取消上一个任务，防止重复的任务
         canalAlarm(mContext,BroadcastConstant.GPS);
         setAlarmTime(mContext,System.currentTimeMillis(),BroadcastConstant.GPS,  initialDelay);
@@ -1239,18 +1238,18 @@ public class BaseSDK implements ChannelListener {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
         Intent intent = new Intent(action);
-        PendingIntent sender = PendingIntent.getBroadcast(context, 0, intent,PendingIntent.FLAG_CANCEL_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent,PendingIntent.FLAG_CANCEL_CURRENT);
 
         //参数2是开始时间、参数3是允许系统延迟的时间
-        alarmManager.setWindow(AlarmManager.RTC, timeInMillis, interval, sender);
+        alarmManager.setWindow(AlarmManager.RTC, timeInMillis, interval, pendingIntent);
 
     }
 
     public void canalAlarm(Context context, String action) {
         Intent intent = new Intent(action);
-        PendingIntent pi = PendingIntent.getBroadcast(context, 0, intent,PendingIntent.FLAG_CANCEL_CURRENT);
-        AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        am.cancel(pi);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent,PendingIntent.FLAG_CANCEL_CURRENT);
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        alarmManager.cancel(pendingIntent);
     }
 
 }
