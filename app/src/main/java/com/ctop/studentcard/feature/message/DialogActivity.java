@@ -30,7 +30,6 @@ public class DialogActivity extends Activity {
         //亮屏
         screenOn();
         initView();
-        BaseSDK.getInstance().send_report_sms_read("2");
     }
 
     private void initView() {
@@ -43,6 +42,7 @@ public class DialogActivity extends Activity {
         public_see.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                BaseSDK.getInstance().send_report_sms_read(uuid+"@2");
                 Intent intent = new Intent(DialogActivity.this, MessageDetailActivity.class);
                 intent.putExtra("uuid", uuid);
                 startActivity(intent);

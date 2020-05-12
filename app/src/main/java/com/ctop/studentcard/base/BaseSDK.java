@@ -388,7 +388,7 @@ public class BaseSDK implements ChannelListener {
     public void send_device_status(String mode) {
         //组装报文
         //切换前模式@切换后模式@切换时间（格林威治时间到现在毫秒数）@已在之前模式下工作时长（分钟）
-        String locationModeOld = PreferencesUtils.getInstance(mContext).getString("locationModeOld", "2");
+        String locationModeOld = PreferencesUtils.getInstance(mContext).getString("locationModeOld", AppConst.MODEL_BALANCE);
         long startMode = PreferencesUtils.getInstance(mContext).getLong("locationModeStart", 0l);
         long durationOld = (System.currentTimeMillis() - startMode) / 60000;
         String data = locationModeOld + "@" + mode + "@" + System.currentTimeMillis() + "@" + durationOld;

@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.ctop.studentcard.R;
 import com.ctop.studentcard.adapter.SmsAdapter;
 import com.ctop.studentcard.base.BaseActivity;
+import com.ctop.studentcard.base.BaseSDK;
 import com.ctop.studentcard.greendao.DaoManager;
 import com.ctop.studentcard.greendao.SmsMessage;
 import com.ctop.studentcard.greendao.SmsMessageDao;
@@ -69,6 +70,9 @@ public class MessageIndexActivity extends BaseActivity {
                 @Override
                 public void onItemClick(int position) {
                     SmsMessage smsMessage = smsMessageList.get(position);
+                    if(smsMessage.getStatus()==0){
+                        BaseSDK.getInstance().send_report_sms_read(smsMessage.getUuid()+"@2");
+                    }
                     Intent intent = new Intent(MessageIndexActivity.this, MessageDetailActivity.class);
                     intent.putExtra(MessageDetailActivity.UUID, smsMessage.getUuid());
                     startActivity(intent);

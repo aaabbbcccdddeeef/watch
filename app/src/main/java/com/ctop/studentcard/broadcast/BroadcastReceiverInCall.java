@@ -35,6 +35,9 @@ public class BroadcastReceiverInCall extends BroadcastReceiver {
             lastetActionState = Intent.ACTION_NEW_OUTGOING_CALL;
             String phoneData = getResultData();
             LogUtil.e("outgoing:" + phoneData);
+            if (TextUtils.isEmpty(phoneData) || "null".equals(phoneData)) {
+                return;
+            }
             //课堂模式，限制呼出
             String classModelString = PreferencesUtils.getInstance(context).getString("classModel", "");
             if (!classModelString.equals("")) {
@@ -68,30 +71,46 @@ public class BroadcastReceiverInCall extends BroadcastReceiver {
                     }
                 }
             }
-
             //通话时长
             int callTimeLongAlready = PreferencesUtils.getInstance(context).getInt("callTimeLongAlready", 0);
             String callSetting = PreferencesUtils.getInstance(context).getString("callSetting", "");
             int callTimeLong = PreferencesUtils.getInstance(context).getInt("callTimeLong", -1);
-            if ("0".equals(callSetting))
+            if ("0".equals(callSetting)){
+                setResultData(null);
                 return;
+            }
             if (-1 != callTimeLong) {
                 if (callTimeLongAlready >= callTimeLong) {
                     setResultData(null);
+                    return;
                 }
             }
             //打chu的号码，不是 按键号码 ，拒绝
             String phontNu = PreferencesUtils.getInstance(context).getString("phoneNumber", "");
-            PhoneNumber phoneNumber = JsonUtil.parseObject(phontNu, PhoneNumber.class);
             ArrayList listNum = new ArrayList();
-            listNum.add(phoneNumber.getSosNumber());
-            List<PhoneNumber.EachPhoneNumber> eachPhoneNumberList =  phoneNumber.getItems();
-            for(int i = 0;i<eachPhoneNumberList.size();i++){
-                listNum.add(eachPhoneNumberList.get(i).getPhoneNumber());
+            String sosphone = "";
+            if(!TextUtils.isEmpty(phontNu)){
+                PhoneNumber phoneNumber = JsonUtil.parseObject(phontNu, PhoneNumber.class);
+                listNum.add(phoneNumber.getSosNumber());
+                sosphone = phoneNumber.getSosNumber();
+                List<PhoneNumber.EachPhoneNumber> eachPhoneNumberList =  phoneNumber.getItems();
+                for(int i = 0;i<eachPhoneNumberList.size();i++){
+                    listNum.add(eachPhoneNumberList.get(i).getPhoneNumber());
+                }
             }
 
+            //情景模式：限制呼出
+            String contextualModelString = PreferencesUtils.getInstance(context).getString("contextualModel", "");
+            if (!contextualModelString.equals("")) {
+                ContextualModel contextualModel = JsonUtil.parseObject(contextualModelString, ContextualModel.class);
+                if ("1".equals(contextualModel.getOutBound()) && sosphone.equals(phoneData)) {
+                    setResultData(null);
+                    return;
+                }
+            }
             if(!listNum.contains(phoneData)){
                 setResultData(null);
+                return;
             }
 
 
@@ -166,15 +185,6 @@ public class BroadcastReceiverInCall extends BroadcastReceiver {
                         }
                     }
                 }
-                //情景模式：取出本地数据
-                String contextualModelString = PreferencesUtils.getInstance(context).getString("contextualModel", "");
-                if (!contextualModelString.equals("")) {
-                    ContextualModel contextualModel = JsonUtil.parseObject(contextualModelString, ContextualModel.class);
-                    if ("1".equals(contextualModel.getInBound())) {
-                        rejectCall(context);
-                        return;
-                    }
-                }
                 //白名单：取出本地数据
                 String incomingCallString = PreferencesUtils.getInstance(context).getString("incomingCall", "");
                 boolean incomingFlag = false;//白名单标记，如果是白名单，是true
@@ -225,12 +235,23 @@ public class BroadcastReceiverInCall extends BroadcastReceiver {
 
                 //按键号码
                 String phontNu = PreferencesUtils.getInstance(context).getString("phoneNumber", "");
+                String sosPhone = "";
                 if(!phontNu.equals("")){
                     PhoneNumber phoneNumber = JsonUtil.parseObject(phontNu, PhoneNumber.class);
                     listNum.add(phoneNumber.getSosNumber());
+                    sosPhone = phoneNumber.getSosNumber();
                     List<PhoneNumber.EachPhoneNumber> eachPhoneNumberList = phoneNumber.getItems();
                     for (int i = 0; i < eachPhoneNumberList.size(); i++) {
                         listNum.add(eachPhoneNumberList.get(i).getPhoneNumber());
+                    }
+                }
+                //情景模式：限制呼入
+                String contextualModelString = PreferencesUtils.getInstance(context).getString("contextualModel", "");
+                if (!contextualModelString.equals("")) {
+                    ContextualModel contextualModel = JsonUtil.parseObject(contextualModelString, ContextualModel.class);
+                    if ("1".equals(contextualModel.getInBound()) && incomePhoneNumber.equals(sosPhone)) {
+                        rejectCall(context);
+                        return;
                     }
                 }
                 if(!listNum.contains(incomePhoneNumber)){

@@ -70,7 +70,7 @@ public class SmsReceiver extends BroadcastReceiver {
 //                    sendSmsWhat(context, 1);
                     PreferencesUtils.getInstance(context).setString("awaitModeStart", "");
                     PreferencesUtils.getInstance(context).setString("awaitModeEnd", "");
-                    PreferencesUtils.getInstance(context).setString("locationModeOld", "4");
+                    PreferencesUtils.getInstance(context).setString("locationModeOld", AppConst.MODEL_AWAIT);
                     LogUtil.e("上报设备模式5");
                     BaseSDK.getInstance().send_device_status(PreferencesUtils.getInstance(context).getString("locationMode",  AppConst.MODEL_BALANCE));
 

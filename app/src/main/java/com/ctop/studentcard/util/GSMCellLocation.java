@@ -86,13 +86,13 @@ public class GSMCellLocation {
         //为了区分移动、联通还是电信，推荐使用imsi来判断(万不得己的情况下用getNetworkType()判断，比如imsi为空时)
         if (imsi != null && !"".equals(imsi)) {
 //            LogUtil.d("imsi");
-            if (imsi.startsWith("46000") || imsi.startsWith("46002")) {// 因为移动网络编号46000下的IMSI已经用完，所以虚拟了一个46002编号，134/159号段使用了此编号
+            if (imsi.startsWith("46000") || imsi.startsWith("46002") || imsi.startsWith("46007")) {// 因为移动网络编号46000下的IMSI已经用完，所以虚拟了一个46002编号，134/159号段使用了此编号
                 // 中国移动
                 ret = "1";
-            } else if (imsi.startsWith("46001")) {
+            } else if (imsi.startsWith("46001") || imsi.startsWith("46006") || imsi.startsWith("46009")) {
                 // 中国联通
                 ret = "2";
-            } else if (imsi.startsWith("46003")) {
+            } else if (imsi.startsWith("46003") || imsi.startsWith("46005") || imsi.startsWith("46011")) {
                 // 中国电信
                 ret = "3";
             }
@@ -210,13 +210,13 @@ public class GSMCellLocation {
         //为了区分移动、联通还是电信，推荐使用imsi来判断(万不得己的情况下用getNetworkType()判断，比如imsi为空时)
         if (imsi != null && !"".equals(imsi)) {
             LogUtil.d("imsi");
-            if (imsi.startsWith("46000") || imsi.startsWith("46002")) {// 因为移动网络编号46000下的IMSI已经用完，所以虚拟了一个46002编号，134/159号段使用了此编号
+            if (imsi.startsWith("46000") || imsi.startsWith("46002") || imsi.startsWith("46007"))  {// 因为移动网络编号46000下的IMSI已经用完，所以虚拟了一个46002编号，134/159号段使用了此编号
                 // 中国移动
                 mobile(cellInfos, tm);
-            } else if (imsi.startsWith("46001")) {
+            } else if (imsi.startsWith("46001") || imsi.startsWith("46006") || imsi.startsWith("46009")) {
                 // 中国联通
                 union(cellInfos, tm);
-            } else if (imsi.startsWith("46003")) {
+            } else if (imsi.startsWith("46003") || imsi.startsWith("46005") || imsi.startsWith("46011")) {
                 // 中国电信
                 cdma(cellInfos, tm);
             }
