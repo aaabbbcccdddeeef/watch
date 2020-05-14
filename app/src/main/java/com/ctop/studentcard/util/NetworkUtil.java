@@ -411,7 +411,7 @@ public class NetworkUtil {
         String gpsStr = "1E0N0T"+TimeUtils.getNowTimeString(TimeUtils.format6);
         String lanStr = "";//纬度
         String lonStr = "";//经度
-        if (TextUtils.isEmpty(time)) {
+        if (!TextUtils.isEmpty(time)) {
             String lanSix = String.format("%.6f", lan);
             if (lan > 0) {
                 lanStr = "N" + lanSix;

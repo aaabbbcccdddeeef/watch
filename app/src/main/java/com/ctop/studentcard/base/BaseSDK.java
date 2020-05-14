@@ -129,6 +129,8 @@ public class BaseSDK implements ChannelListener {
 
             } else if (msg.what == 6) {
                 timingLocationInit(period);
+            }else if (msg.what == 7) {
+                NettyClient.getInstance(mContext).connect();
             }
         }
     };
@@ -210,7 +212,7 @@ public class BaseSDK implements ChannelListener {
             boolean setstopTcp = PreferencesUtils.getInstance(mContext).getBoolean("stopTcp", false);
             if (!setstopTcp) {
                 LogUtil.d("setstopTcp =false: connect");
-                NettyClient.getInstance(mContext).connect();
+                handler.sendEmptyMessage(7);
             }
         }
     }
@@ -290,11 +292,11 @@ public class BaseSDK implements ChannelListener {
         NettyClient.getInstance(mContext).sendMsgToServer(request, onReceiveListener);
     }
 
-    //获取实时位置
+    //响应平台的 获取实时位置
     public void reportLocationInfoGet(String data, final OnReceiveListener onReceiveListener) {
         //组装报文
         String waterNumber = PreferencesUtils.getInstance(mContext).getString("LOCATION_INFO_GET", "");
-        final String request = PackDataUtil.packRequestStr(mContext, waterNumber, AppConst.LOCATION_INFO_GET, AppConst.REPORT_THE_REQUEST, data);
+        final String request = PackDataUtil.packRequestStr(mContext, waterNumber, AppConst.LOCATION_INFO_GET, AppConst.RESPONSE_OF_ISSUED, data);
         listenerArrayMap.put(waterNumber, onReceiveListener);
         NettyClient.getInstance(mContext).sendMsgToServer(request, onReceiveListener);
     }
