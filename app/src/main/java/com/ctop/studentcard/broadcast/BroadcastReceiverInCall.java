@@ -38,6 +38,7 @@ public class BroadcastReceiverInCall extends BroadcastReceiver {
             if (TextUtils.isEmpty(phoneData) || "null".equals(phoneData)) {
                 return;
             }
+
             //课堂模式，限制呼出
             String classModelString = PreferencesUtils.getInstance(context).getString("classModel", "");
             if (!classModelString.equals("") && !classModelString.equals("null")) {
@@ -56,11 +57,13 @@ public class BroadcastReceiverInCall extends BroadcastReceiver {
                                 int timeNowInt = Integer.parseInt(timeNow);
                                 if (awaitstartInt < awaitendInt) {//同一天
                                     if (timeNowInt > awaitstartInt && timeNowInt < awaitendInt) {
+                                        sendBrodcast(context,"您正处于课堂模式时间，呼出已受限");
                                         setResultData(null);
                                         return;
                                     }
                                 } else {//不同天
                                     if (timeNowInt > awaitstartInt || timeNowInt < awaitendInt) {
+                                        sendBrodcast(context,"您正处于课堂模式时间，呼出已受限");
                                         setResultData(null);
                                         return;
                                     }
@@ -71,20 +74,7 @@ public class BroadcastReceiverInCall extends BroadcastReceiver {
                     }
                 }
             }
-            //通话时长
-            int callTimeLongAlready = PreferencesUtils.getInstance(context).getInt("callTimeLongAlready", 0);
-            String callSetting = PreferencesUtils.getInstance(context).getString("callSetting", "");
-            int callTimeLong = PreferencesUtils.getInstance(context).getInt("callTimeLong", -1);
-            if ("0".equals(callSetting)){
-                setResultData(null);
-                return;
-            }
-            if (-1 != callTimeLong) {
-                if (callTimeLongAlready >= callTimeLong) {
-                    setResultData(null);
-                    return;
-                }
-            }
+
             //打chu的号码，不是 按键号码 ，拒绝
             String phontNu = PreferencesUtils.getInstance(context).getString("phoneNumber", "");
             ArrayList listNum = new ArrayList();
@@ -98,19 +88,20 @@ public class BroadcastReceiverInCall extends BroadcastReceiver {
                     listNum.add(eachPhoneNumberList.get(i).getPhoneNumber());
                 }
             }
-
+            if(!listNum.contains(phoneData)){
+                sendBrodcast(context,"您的呼出已受限");
+                setResultData(null);
+                return;
+            }
             //情景模式：限制呼出
             String contextualModelString = PreferencesUtils.getInstance(context).getString("contextualModel", "");
             if (!contextualModelString.equals("")  && !contextualModelString.equals("null")) {
                 ContextualModel contextualModel = JsonUtil.parseObject(contextualModelString, ContextualModel.class);
                 if ("1".equals(contextualModel.getOutBound()) && sosphone.equals(phoneData)) {
+                    sendBrodcast(context,"您的呼出已受限");
                     setResultData(null);
                     return;
                 }
-            }
-            if(!listNum.contains(phoneData)){
-                setResultData(null);
-                return;
             }
 
 
@@ -312,6 +303,14 @@ public class BroadcastReceiverInCall extends BroadcastReceiver {
         }
     }
 
+
+
+    private void sendBrodcast(Context context,String msg) {
+        Intent intent = new Intent();
+        intent.setAction(BroadcastConstant.REJECT_CALL_OUT);
+        intent.putExtra("msg", msg);
+        context.sendBroadcast(intent);// 发送
+    }
 
 
 

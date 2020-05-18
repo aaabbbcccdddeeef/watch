@@ -27,4 +27,8 @@ public class BroadcastConstant {
     public static final String GPS_GET = "com.ctop.studentcard.gps_get";//
 
 
+    //限制呼出
+    public static final String REJECT_CALL_OUT = "com.ctop.studentcard.REJECT_CALL_OUT";//
+
+
 }

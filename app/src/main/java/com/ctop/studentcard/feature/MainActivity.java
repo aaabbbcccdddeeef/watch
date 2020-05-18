@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
         this.mHandler.sendEmptyMessageDelayed(5, 1000L);
     }
 
-
+    String toastStr = "禁止呼出";
     private Handler mHandler = new Handler() {
         public void handleMessage(android.os.Message msg) {
             if (msg.what == 1) {
@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
                     return;
                 } else {
                     if(needRejectCall()){
-                        Toast.makeText(mContext,"课堂时间内无法拨打电话",Toast.LENGTH_LONG).show();
+                        Toast.makeText(mContext,toastStr,Toast.LENGTH_LONG).show();
                     }else {
                         PhoneNumber phoneNumber = JsonUtil.parseObject(phontNu, PhoneNumber.class);
                         List<PhoneNumber.EachPhoneNumber> eachPhoneNumbers = phoneNumber.getItems();
@@ -331,6 +331,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
     //
     private ButtueryReceiver buttueryReceiver = null;
     private StrengthReceiver strengthReceiver = null;
+    private Reject_call_out_receiver reject_call_out_receiver;
 
     private void registerReceiver(Context context) {
         LogUtil.i("registerButtueryReceiver");
@@ -356,6 +357,9 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
         LogUtil.i("unregisterStrengthReceiver");
         if (null != strengthReceiver) {
             context.unregisterReceiver(strengthReceiver);
+        }
+        if (null != reject_call_out_receiver) {
+            context.unregisterReceiver(reject_call_out_receiver);
         }
     }
 
@@ -429,9 +433,20 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
         }
     }
 
+    class Reject_call_out_receiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            LogUtil.e( "onReceive: action: " + action);
+            if (action.equals(BroadcastConstant.REJECT_CALL_OUT)) {//Action
+                String msg = intent.getExtras().getString("msg");
+                Toast.makeText(mContext,msg,Toast.LENGTH_LONG).show();
+            }
+        }
+    }
 
     private boolean needRejectCall(){
-        boolean flag = false;
+        boolean rejectflag = false;
         //课堂模式
         String classModelString = PreferencesUtils.getInstance(mContext).getString("classModel", "");
         ClassModel classModel = JsonUtil.parseObject(classModelString, ClassModel.class);
@@ -449,11 +464,15 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
                             int timeNowInt = Integer.parseInt(timeNow);
                             if (awaitstartInt < awaitendInt) {//同一天
                                 if (timeNowInt > awaitstartInt && timeNowInt < awaitendInt) {
-                                    flag = true;
+                                    toastStr = "您正处于课堂模式时间，呼出已受限";
+                                    rejectflag = true;
+                                    return rejectflag;
                                 }
                             } else {//不同天
                                 if (timeNowInt > awaitstartInt || timeNowInt < awaitendInt) {
-                                    flag = true;
+                                    toastStr = "您正处于课堂模式时间，呼出已受限";
+                                    rejectflag = true;
+                                    return rejectflag;
                                 }
                             }
                         }
@@ -467,14 +486,18 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
         int callTimeLongAlready = PreferencesUtils.getInstance(mContext).getInt("callTimeLongAlready", 0);
         String callSetting = PreferencesUtils.getInstance(mContext).getString("callSetting", "");
         int callTimeLong = PreferencesUtils.getInstance(mContext).getInt("callTimeLong", -1);
-        if ("0".equals(callSetting))
-            flag = true;
-        if (-1 != callTimeLong) {
-            if (callTimeLongAlready >= callTimeLong) {
-                flag = true;
+        if ("1".equals(callSetting)){
+            if (-1 != callTimeLong) {
+                if (callTimeLongAlready >= callTimeLong) {
+                    toastStr = "您本月的通话时长已用完";
+                    rejectflag = true;
+                    return rejectflag;
+                }
             }
         }
-        return flag;
+
+
+        return rejectflag;
     }
 
 }
