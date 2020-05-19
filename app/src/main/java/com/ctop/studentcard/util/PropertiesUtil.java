@@ -216,10 +216,22 @@ public class PropertiesUtil {
         return url;
     }
 
+    public String getRfid(Context context) {
+        String url = "";
+        try {
+            property.load(context.openFileInput("zhihui.properties"));
+            url = property.getProperty("rfid");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return url;
+    }
+
     public String getLoginString(Context context) {
         String url = getNumber_of_ordinary_keys(context) + "@" + getHas_sos(context) + "@"
                 + getDevices_type(context) + "@" + getArea_alarm(context) + "@"
-                + getSet_incoming(context) + "@" + getProtocol_version(context);
+                + getSet_incoming(context) + "@" + getProtocol_version(context)
+                + "@" + getRfid(context);
         return url;
     }
 

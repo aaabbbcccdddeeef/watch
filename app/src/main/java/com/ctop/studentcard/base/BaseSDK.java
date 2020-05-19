@@ -235,7 +235,7 @@ public class BaseSDK implements ChannelListener {
         //先取消上一个任务，防止重复的任务
         canalAlarm(mContext,BroadcastConstant.GPS);
         if (per == 0) {
-            period = 10 * 60 ;
+            period = 20 * 60 ;
         } else {
             period = per;
         }
@@ -594,7 +594,7 @@ public class BaseSDK implements ChannelListener {
                     } else if (data.equals(AppConst.MODEL_BALANCE)) {
                         PreferencesUtils.getInstance(mContext).setString("locationMode",  AppConst.MODEL_BALANCE);
                         PreferencesUtils.getInstance(mContext).setLong("locationModeStart", System.currentTimeMillis());
-                        period = 20 * 60 * 60;
+                        period = 20 * 60;
                         initialDelay = 0;
                         canalAlarm(mContext,BroadcastConstant.GPS);
                         setAlarmTime(mContext,System.currentTimeMillis(),BroadcastConstant.GPS, initialDelay);
@@ -1130,7 +1130,7 @@ public class BaseSDK implements ChannelListener {
 //        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
 //            return "2";
 //        }
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 10, mlocListener);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100000000, 100000000, mlocListener);
 //        return "0";
     }
 

@@ -75,7 +75,7 @@ public class TimeTickReceiver extends BroadcastReceiver {
                     } else if (locationModeOld.equals(AppConst.MODEL_BALANCE)) {//平衡
                         PreferencesUtils.getInstance(context).setString("locationMode", AppConst.MODEL_BALANCE);
                         PreferencesUtils.getInstance(context).setLong("locationModeStart", System.currentTimeMillis());
-                        BaseSDK.getInstance().setPeriod(20 * 60 * 60);
+                        BaseSDK.getInstance().setPeriod(20 * 60);
                         LogUtil.e("上报设备模式3");
                         BaseSDK.getInstance().send_device_status(AppConst.MODEL_BALANCE);
 
