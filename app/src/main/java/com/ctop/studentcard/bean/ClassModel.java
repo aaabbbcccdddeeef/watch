@@ -1,5 +1,9 @@
 package com.ctop.studentcard.bean;
 
+import android.content.Context;
+
+import com.ctop.studentcard.util.DeviceUtil;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -130,9 +134,15 @@ public class ClassModel {
 
 
 
-    public static ClassModel parseJson(String json){
-        String[] strings = json.split("@");
+    public static ClassModel parseJson(Context mContext, String json){
         ClassModel classModel = new ClassModel();
+        String[] strings = json.split("@");
+        if(strings[0].equals("0")&&strings[1].equals("0")&&strings[2].equals("0")){
+            classModel = null;
+            DeviceUtil.silentSwitchOff(mContext);
+            return classModel;
+        }
+
         String sosInFlag = strings[0];
         String sosOutFlag = strings[1];
 

@@ -524,6 +524,7 @@ public class ByteUtil {
         str = str.replace("!","");
         str = str.replace("[","");
         str = str.replace("]","");
+        str = str.replace("0x","");
         // 用于返回结果
         String result = str;
         boolean flag = isContainChinese(str);

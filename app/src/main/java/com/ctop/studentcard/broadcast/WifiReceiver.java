@@ -17,8 +17,8 @@ public class WifiReceiver extends BroadcastReceiver {
 //        LogUtil.e("WifiReceiver=="+intent.getAction());
         if (intent.getAction().equals(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)) {//当扫描结果后，进行刷新列表
             refreshLocalWifiListData(context);
-        } else if (intent.getAction().equals(WifiManager.NETWORK_STATE_CHANGED_ACTION)) {//wifi连接网络状态变化
-            refreshLocalWifiListData(context);
+//        } else if (intent.getAction().equals(WifiManager.NETWORK_STATE_CHANGED_ACTION)) {//wifi连接网络状态变化
+//            refreshLocalWifiListData(context);
         }
     }
 

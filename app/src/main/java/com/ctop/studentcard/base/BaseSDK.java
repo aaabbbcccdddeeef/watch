@@ -693,7 +693,7 @@ public class BaseSDK implements ChannelListener {
                     String str = PackDataUtil.packRequestStr(BaseSDK.getBaseContext(), waterNumber, AppConst.REQUEST_CALL, AppConst.RESPONSE_OF_ISSUED, "0");
                     NettyClient.getInstance(mContext).sendMsgToServer(str, null);
                 } else if (response.getCmd().equals(AppConst.SET_CLASS_MODEL)) {//课堂模式
-                    ClassModel classModel = ClassModel.parseJson(data);
+                    ClassModel classModel = ClassModel.parseJson(mContext,data);
                     PreferencesUtils.getInstance(mContext).setString("classModel", JsonUtil.toJSONString(classModel));
                     //静音
                     DeviceUtil.silentSwitchOn(mContext);
@@ -995,7 +995,7 @@ public class BaseSDK implements ChannelListener {
                     if (data.equals("0") || data.equals("1") || data.equals("2")) {
                         LogUtil.e("异常应答:" + data);
                     } else {
-                        ClassModel classModel = ClassModel.parseJson(data);
+                        ClassModel classModel = ClassModel.parseJson(mContext,data);
                         PreferencesUtils.getInstance(mContext).setString("classModel", JsonUtil.toJSONString(classModel));
                     }
                 } else if (response.getCmd().equals(AppConst.GET_INCOMING_CALL)) {//呼入号码
@@ -1050,7 +1050,7 @@ public class BaseSDK implements ChannelListener {
         try{
             getLocation(mContext); //去定位
 //            if (gpsstate.equals("0")) {
-                new CountDownTimer(20000, 1000) {
+                new CountDownTimer(10000, 1000) {
                     @Override
                     public void onTick(long millisUntilFinished) {
                         LogUtil.e("CountDownTimer：onTick：" + millisUntilFinished);
@@ -1081,7 +1081,7 @@ public class BaseSDK implements ChannelListener {
         getLocation(mContext);
         //去定位
 //        if (gpsstate.equals("0")) {
-            new CountDownTimer(20000, 1000) {
+            new CountDownTimer(10000, 1000) {
                 @Override
                 public void onTick(long millisUntilFinished) {
 //                    LogUtil.e("CountDownTimer：onTick：" + millisUntilFinished);
