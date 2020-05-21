@@ -1,6 +1,8 @@
 package com.ctop.studentcard.netty;
 
 import com.ctop.studentcard.base.BaseSDK;
+import com.ctop.studentcard.feature.step.StepUtils;
+import com.ctop.studentcard.jni.NDKTools;
 import com.ctop.studentcard.util.AppConst;
 import com.ctop.studentcard.util.DeviceUtil;
 import com.ctop.studentcard.util.LogUtil;
@@ -71,7 +73,7 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<ByteBuf> {
                     if (AppConst.LOGIN_SUCCESS) {
                         LogUtil.e("send heart");
                         String waterNumber = PackDataUtil.createWaterNumber();
-                        String data = PackDataUtil.packRequestStr(BaseSDK.getBaseContext(),waterNumber, AppConst.REPORT_HEARTBEAT, AppConst.REPORT_THE_REQUEST, DeviceUtil.getBattery());
+                        String data = PackDataUtil.packRequestStr(BaseSDK.getBaseContext(),waterNumber, AppConst.REPORT_HEARTBEAT, AppConst.REPORT_THE_REQUEST, DeviceUtil.getBattery()+"@"+ StepUtils.getStep()+"@");
                         ctx.channel().writeAndFlush(data).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
                     }
 				} catch (Exception e){

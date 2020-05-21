@@ -19,6 +19,8 @@
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.READ_LOGS" />
 
+    <!-- 修改wifi -->
+    <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS" />
 
     <!-- 联网 -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -110,14 +112,12 @@
         <activity android:name=".feature.message.MessageIndexActivity" />
         <activity android:name=".feature.message.MessageDetailActivity" />
         <activity android:name=".feature.phone.record.CallRecordActivity" />
-        <activity android:name=".feature.phone.record.CallDetailActivity" />
         <activity android:name=".feature.setting.wallpaper.WallpaperActivity" />
         <activity android:name=".feature.setting.SettingActivity" />
         <activity android:name=".feature.setting.sound.SoundActivity" />
         <activity android:name=".feature.setting.sound.RingActivity" />
         <activity android:name=".feature.setting.about.AboutActivity" />
         <activity android:name=".feature.nlpchat.AIUIActivity" />
-        <activity android:name=".feature.nlpchat.ChatActivity" />
         <activity android:name=".feature.message.DialogActivity" />
         <activity android:name=".feature.CallNumberActivity" />
         <activity android:name=".feature.temperature.TemActivity" />

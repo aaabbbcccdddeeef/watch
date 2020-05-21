@@ -14,10 +14,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.ctop.studentcard.R;
-import com.ctop.studentcard.feature.nlpchat.ChatActivity;
 import com.ctop.studentcard.feature.setting.SettingActivity;
 import com.ctop.studentcard.feature.temperature.TemActivity;
-import com.ctop.studentcard.util.UIUtil;
 
 public class MenuItem2Fragment extends Fragment {
 

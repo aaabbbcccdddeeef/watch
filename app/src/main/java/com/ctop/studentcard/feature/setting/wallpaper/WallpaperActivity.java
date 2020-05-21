@@ -2,17 +2,24 @@ package com.ctop.studentcard.feature.setting.wallpaper;
 
 import android.app.WallpaperManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.ctop.studentcard.R;
+import com.ctop.studentcard.api.OnReceiveListener;
 import com.ctop.studentcard.base.BaseActivity;
+import com.ctop.studentcard.base.BaseSDK;
+import com.ctop.studentcard.feature.setting.SettingActivity;
+import com.ctop.studentcard.feature.setting.about.AboutActivity;
+import com.ctop.studentcard.feature.setting.sound.SoundActivity;
 import com.ctop.studentcard.util.PreferencesUtils;
 
 public class WallpaperActivity extends BaseActivity {
@@ -22,6 +29,7 @@ public class WallpaperActivity extends BaseActivity {
 
     private ViewPager viewPager;
 
+
     protected void onCreate(Bundle paramBundle) {
         super.onCreate(paramBundle);
         setContentView(R.layout.wallpaper_layout);
@@ -29,6 +37,8 @@ public class WallpaperActivity extends BaseActivity {
         this.viewPager = findViewById(R.id.vp_wall);
         ImageAdapter imageAdapter = new ImageAdapter();
         viewPager.setAdapter(imageAdapter);
+
+
     }
 
     protected void onDestroy() {
@@ -46,6 +56,7 @@ public class WallpaperActivity extends BaseActivity {
             return;
         }
     }
+
 
     public class ImageAdapter extends PagerAdapter {
         public int getCount() {

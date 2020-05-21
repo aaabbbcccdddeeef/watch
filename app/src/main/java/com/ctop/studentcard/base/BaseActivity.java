@@ -10,15 +10,18 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.WindowManager;
+import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.ctop.studentcard.R;
 import com.ctop.studentcard.util.FinishActivityManager;
 import com.ctop.studentcard.util.LogUtil;
 
-public class BaseActivity extends AppCompatActivity {
+public class BaseActivity extends AppCompatActivity implements View.OnClickListener {
 
     private Context mContext;
     float x1 = 0.0F;
@@ -28,6 +31,7 @@ public class BaseActivity extends AppCompatActivity {
     float y1 = 0.0F;
 
     float y2 = 0.0F;
+    private ImageView back_top;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +41,10 @@ public class BaseActivity extends AppCompatActivity {
         mContext = this;
         FinishActivityManager.getManager().addActivity(this);
         openGPSSettings();
+
+
+        back_top = findViewById(R.id.back_top);
+        back_top.setOnClickListener(this);
     }
 
 
@@ -50,13 +58,13 @@ public class BaseActivity extends AppCompatActivity {
     }
 
 
-        //268435456
-        protected void showHome () {
-            Intent intent = new Intent("android.intent.action.MAIN");
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.addCategory("android.intent.category.HOME");
-            startActivity(intent);
-        }
+    //268435456
+    protected void showHome() {
+        Intent intent = new Intent("android.intent.action.MAIN");
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addCategory("android.intent.category.HOME");
+        startActivity(intent);
+    }
 //    @Override
 //    public boolean dispatchKeyEvent(KeyEvent event) {
 //        if (event.getKeyCode() == KeyEvent.KEYCODE_BACK ) {
@@ -80,27 +88,37 @@ public class BaseActivity extends AppCompatActivity {
 //    }
 
 
-        @Override
-        protected void onDestroy () {
-            super.onDestroy();
-            //从活动管理器删除当前Activity
-            FinishActivityManager.getManager().finishActivity(this);
-        }
+    @Override
+    public void onClick(View v) {
 
+        int id = v.getId();
+        if (id == R.id.back_top) {
 
-        public boolean onTouchEvent (MotionEvent paramMotionEvent){
-            if (paramMotionEvent.getAction() == 0) {
-                this.x1 = paramMotionEvent.getX();
-            } else if (paramMotionEvent.getAction() == 1) {
-                this.x2 = paramMotionEvent.getX();
-                int i = ViewConfiguration.get((Context) this).getScaledTouchSlop();
-                float f3 = (i * 10);
-                if (this.x2 - this.x1 > f3) {
-                    LogUtil.e("finish is true");
-                    FinishActivityManager.getManager().currentActivity().finish();
-                    return true;
-                }
-            }
-            return super.onTouchEvent(paramMotionEvent);
+            finish();
         }
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //从活动管理器删除当前Activity
+        FinishActivityManager.getManager().finishActivity(this);
+    }
+
+
+    public boolean onTouchEvent(MotionEvent paramMotionEvent) {
+        if (paramMotionEvent.getAction() == 0) {
+            this.x1 = paramMotionEvent.getX();
+        } else if (paramMotionEvent.getAction() == 1) {
+            this.x2 = paramMotionEvent.getX();
+            int i = ViewConfiguration.get((Context) this).getScaledTouchSlop();
+            float f3 = (i * 10);
+            if (this.x2 - this.x1 > f3) {
+                LogUtil.e("finish is true");
+                FinishActivityManager.getManager().currentActivity().finish();
+                return true;
+            }
+        }
+        return super.onTouchEvent(paramMotionEvent);
+    }
+}

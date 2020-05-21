@@ -5,15 +5,27 @@
     android:layout_gravity="center"
     android:background="#ff000000">
 
-    <TextView
-        android:id="@id/title"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/title_height"
-        android:layout_centerHorizontal="true"
-        android:gravity="center"
-        android:text="@string/wallpaper"
-        android:textColor="#ffffffff"
-        android:textSize="@dimen/title_size" />
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/back_top"
+            android:layout_margin="5px"
+            android:src="@drawable/back_top"
+            android:layout_width="20px"
+            android:layout_height="20px" />
+        <TextView
+            android:id="@id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/wallpaper"
+            android:layout_centerVertical="true"
+            android:textColor="#ffffffff"
+            android:textSize="@dimen/title_size" />
+    </RelativeLayout>
+
 
     <androidx.viewpager.widget.ViewPager
         android:layout_below="@id/title"
