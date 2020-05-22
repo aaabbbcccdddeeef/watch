@@ -67,8 +67,8 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<ByteBuf> {
 	@Override
 	public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
 		if (evt instanceof IdleStateEvent) {
-			IdleStateEvent event = (IdleStateEvent) evt;
-			if (event.state() == IdleState.ALL_IDLE){
+//			IdleStateEvent event = (IdleStateEvent) evt;
+//			if (event.state() == IdleState.ALL_IDLE){
 				try{
                     if (AppConst.LOGIN_SUCCESS) {
                         LogUtil.e("send heart");
@@ -79,7 +79,7 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<ByteBuf> {
 				} catch (Exception e){
 					LogUtil.e(e.getMessage());
 				}
-			}
+//			}
 		}
 		super.userEventTriggered(ctx, evt);
 	}
