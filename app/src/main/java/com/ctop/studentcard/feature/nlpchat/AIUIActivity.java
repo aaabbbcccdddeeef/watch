@@ -67,6 +67,7 @@ public class AIUIActivity extends Activity implements View.OnClickListener {
     //交互状态
     private int mAIUIState = AIUIConstant.STATE_IDLE;
 
+    private ImageView back_top;//
     private ImageView speak_iv_wait;//默认
     private ImageView speak_iv_ing;//说话
     private ImageView speak_iv_analyze;//分析
@@ -103,6 +104,7 @@ public class AIUIActivity extends Activity implements View.OnClickListener {
 
 //        mNlpText = findViewById(R.id.nlp_text);
 
+        back_top = findViewById(R.id.back_top);
         speak_iv_wait = findViewById(R.id.speak_iv_wait);
         speak_iv_ing = findViewById(R.id.speak_iv_ing);
         speak_iv_analyze = findViewById(R.id.speak_iv_analyze);
@@ -116,6 +118,13 @@ public class AIUIActivity extends Activity implements View.OnClickListener {
             @Override
             public void onClick(View v) {
                 reset();
+            }
+        });
+        back_top.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+                overridePendingTransition(R.anim.main_in,R.anim.aiui_out);
             }
         });
     }

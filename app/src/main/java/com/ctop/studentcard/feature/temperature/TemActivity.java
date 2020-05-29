@@ -30,11 +30,12 @@ public class TemActivity extends BaseActivity implements View.OnClickListener {
     private PercentCircle percentCircle;
     private RippleView mRippleView;
     private RelativeLayout start_rl;
-    private RelativeLayout tem_rl;
+    private RelativeLayout tem_rl;//测试结果
     private TextView tv_tem;
     private TemPostReceiver mTemPostReceiver;
     private ImageView iv_tem_list;
     private String valueTem;
+    private ImageView back_top;
 
     Handler mHandler = new Handler() {
         @Override
@@ -52,10 +53,8 @@ public class TemActivity extends BaseActivity implements View.OnClickListener {
                 AlphaAnimationUtil.startAlphaIn(percentCircle);
                 tem_rl.setVisibility(View.VISIBLE);
                 tv_tem.setText(valueTem);
-                AlphaAnimationUtil.translationXIn(tem_rl);
-                hiddenViews();
                 iv_tem_list.setVisibility(View.VISIBLE);
-
+                AlphaAnimationUtil.translationXIn(tem_rl);
 
             }
         }
@@ -73,6 +72,7 @@ public class TemActivity extends BaseActivity implements View.OnClickListener {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         percentCircle = findViewById(R.id.percentCircle);
         mRippleView = findViewById(R.id.rippleView);
+        back_top = findViewById(R.id.back_top);
         start_rl = findViewById(R.id.start_rl);
         tem_rl = findViewById(R.id.tem_rl);
         tv_tem = findViewById(R.id.tv_tem);
@@ -80,6 +80,7 @@ public class TemActivity extends BaseActivity implements View.OnClickListener {
         iv_tem_list.setVisibility(View.GONE);
         percentCircle.setVisibility(View.GONE);
 
+        back_top.setOnClickListener(this);
         start_rl.setOnClickListener(this);
         tem_rl.setOnClickListener(this);
         iv_tem_list.setOnClickListener(this);
@@ -165,6 +166,8 @@ public class TemActivity extends BaseActivity implements View.OnClickListener {
             });
         } else if (id == R.id.iv_tem_list) {
             startActivity(new Intent(this,TemListActivity.class));
+        }else if (id == R.id.back_top) {
+            finish();
         }
     }
 

@@ -18,8 +18,8 @@ public class GpsReceiver extends BroadcastReceiver {
         String action = intent.getAction();
         if (action.equals(BroadcastConstant.GPS)) {
 
-            if(BaseSDK.getInstance().getConnectStatus()){
-                BaseSDK.getInstance().findGPS();
+            if(BaseSDK.getInstance().getConnectStatus()){//定时上报
+                BaseSDK.getInstance().findWifi();
             }
 
             //因为setWindow只执行一次，所以要重新定义闹钟实现循环。
@@ -31,7 +31,7 @@ public class GpsReceiver extends BroadcastReceiver {
             //参数2是开始时间、参数3是允许系统延迟的时间
             am.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + (BaseSDK.getInstance().getPeriod() * 1000), pendingIntent);
 
-        } else if (action.equals(BroadcastConstant.GPS_GET)) {
+        } else if (action.equals(BroadcastConstant.GPS_GET)) {//主动获取地理位置
 
             BaseSDK.getInstance().findGPSGet();
         }

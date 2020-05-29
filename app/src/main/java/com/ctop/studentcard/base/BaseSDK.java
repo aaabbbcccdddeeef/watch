@@ -22,10 +22,8 @@ import android.util.ArrayMap;
 
 import com.ctop.studentcard.api.OnReceiveListener;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
 import com.ctop.studentcard.api.Iback;
@@ -41,6 +39,7 @@ import com.ctop.studentcard.bean.RequestContent;
 import com.ctop.studentcard.bean.SmsMessageReceive;
 import com.ctop.studentcard.bean.TemFrequency;
 import com.ctop.studentcard.broadcast.BroadcastConstant;
+import com.ctop.studentcard.feature.step.StepUtils;
 import com.ctop.studentcard.greendao.DaoManager;
 import com.ctop.studentcard.greendao.SmsMessage;
 import com.ctop.studentcard.greendao.SmsMessageDao;
@@ -50,6 +49,7 @@ import com.ctop.studentcard.netty.SendBack;
 import com.ctop.studentcard.service.APKDownloadService;
 import com.ctop.studentcard.util.AppConst;
 import com.ctop.studentcard.util.DeviceUtil;
+import com.ctop.studentcard.util.GpsUtil;
 import com.ctop.studentcard.util.JsonUtil;
 import com.ctop.studentcard.util.LogUtil;
 import com.ctop.studentcard.util.NetworkUtil;
@@ -77,6 +77,7 @@ public class BaseSDK implements ChannelListener {
 //    private NetworkReceiver networkReceiver;
 
     public int period;
+    public int period_heart = 5 * 60;
 
     private int count_send_login = 0;
     AlarmManager alarmManager;
@@ -131,6 +132,8 @@ public class BaseSDK implements ChannelListener {
                 timingLocationInit(period);
             }else if (msg.what == 7) {
                 NettyClient.getInstance(mContext).connect();
+            }else if (msg.what == 8) {
+
             }
         }
     };
@@ -170,7 +173,7 @@ public class BaseSDK implements ChannelListener {
         if (baseSDK == null) {
             return;
         }
-        mContext = context;
+//        mContext = context;
 
         connect();
         alarmManager = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
@@ -245,6 +248,20 @@ public class BaseSDK implements ChannelListener {
         setAlarmTime(mContext,System.currentTimeMillis(),BroadcastConstant.GPS, initialDelay);
     }
 
+    public void heartInit(int per) {
+        LogUtil.e("heartInit ***");
+        //先取消上一个任务，防止重复的任务
+        canalAlarm(mContext,BroadcastConstant.HEART_BEAT);
+        if (per == 0) {
+            period_heart = 5 * 60 ;
+        } else {
+            period_heart = per;
+        }
+        LogUtil.e("period_heart_init===" + period);
+
+        setAlarmTime(mContext,System.currentTimeMillis()+(5*60*1000),BroadcastConstant.HEART_BEAT, 0);
+    }
+
     private void timingLocation() {
         LogUtil.e("timingLocation ***");
         //先取消上一个任务，防止重复的任务
@@ -263,14 +280,14 @@ public class BaseSDK implements ChannelListener {
         reportLocationInfo(locationInfo, new OnReceiveListener() {
             @Override
             public void onResponse(String msg) {
-
             }
         });
-
         if(await_stoptcp){
             await_stoptcp = false;
             stopTcp();
         }
+        //定位结束，关闭gps
+        GpsUtil.closeGPSSettings(mContext);
     }
 
     private void executorGet(final String locationInfo) {
@@ -278,9 +295,10 @@ public class BaseSDK implements ChannelListener {
         reportLocationInfoGet(locationInfo, new OnReceiveListener() {
             @Override
             public void onResponse(String msg) {
-
             }
         });
+        //定位结束，关闭gps
+        GpsUtil.closeGPSSettings(mContext);
     }
 
     //上报位置信息
@@ -372,6 +390,18 @@ public class BaseSDK implements ChannelListener {
                 }
             }).start();
         }
+    }
+
+    //发送心跳
+    public void send_report_heart() {
+        //组装报文
+        final String request = PackDataUtil.packRequestStr(mContext, PackDataUtil.createWaterNumber(), AppConst.REPORT_HEARTBEAT, AppConst.REPORT_THE_REQUEST, DeviceUtil.getBattery()+"@"+ StepUtils.getStep()+"@");
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                NettyClient.getInstance(mContext).sendMsgToServer(request, null);
+            }
+        }).start();
     }
 
     //SOS 触发报警上报
@@ -519,17 +549,8 @@ public class BaseSDK implements ChannelListener {
                     NettyClient.getInstance(mContext).sendMsgToServer(str, null);
                     String[] strings = data.split("@");
                     if (strings[1].equals("1")) {//恢复除平台地址以外的出厂设置
-                        PreferencesUtils.getInstance(mContext).setString("phoneNumber", "");
-                        PreferencesUtils.getInstance(mContext).setString("locationModeOld", "");
-                        PreferencesUtils.getInstance(mContext).setString("locationMode", AppConst.MODEL_BALANCE);
-                        PreferencesUtils.getInstance(mContext).setLong("locationModeStart", 0l);
-                        PreferencesUtils.getInstance(mContext).setLong("realTimeModeEnd", 0l);
-                        PreferencesUtils.getInstance(mContext).setString("awaitModeStart", "");
-                        PreferencesUtils.getInstance(mContext).setString("awaitModeEnd", "");
-                        PreferencesUtils.getInstance(mContext).setString("callSetting", "");
-                        PreferencesUtils.getInstance(mContext).setInt("callTimeLong", 0);
-                        PreferencesUtils.getInstance(mContext).setString("classModel", "");
-                        PreferencesUtils.getInstance(mContext).setString("incomingCall", "");
+                        clearPreferences();
+
                     }
                     if (strings[0].equals("1")) {//重启终端
                         DeviceUtil.reboot(mContext);
@@ -595,7 +616,6 @@ public class BaseSDK implements ChannelListener {
                         PreferencesUtils.getInstance(mContext).setString("locationMode",  AppConst.MODEL_BALANCE);
                         PreferencesUtils.getInstance(mContext).setLong("locationModeStart", System.currentTimeMillis());
                         period = 20 * 60;
-                        initialDelay = 0;
                         canalAlarm(mContext,BroadcastConstant.GPS);
                         setAlarmTime(mContext,System.currentTimeMillis(),BroadcastConstant.GPS, initialDelay);
                     } else if (data.equals(AppConst.MODEL_REAL_TIME)) {
@@ -603,7 +623,6 @@ public class BaseSDK implements ChannelListener {
                         PreferencesUtils.getInstance(mContext).setString("locationMode", AppConst.MODEL_REAL_TIME);
                         PreferencesUtils.getInstance(mContext).setLong("locationModeStart", System.currentTimeMillis());
                         period = 3 * 60;
-                        initialDelay = 0;
                         canalAlarm(mContext,BroadcastConstant.GPS);
                         setAlarmTime(mContext,System.currentTimeMillis(),BroadcastConstant.GPS, initialDelay);
                         //计算结束时间 realTime
@@ -672,7 +691,8 @@ public class BaseSDK implements ChannelListener {
                     PreferencesUtils.getInstance(mContext).setString("LOCATION_INFO_GET", waterNumber);
                     handler.sendEmptyMessage(1);
                 } else if (response.getCmd().equals(AppConst.SET_HEARTBEAT)) {//设置终端心跳
-                    setHeart(Integer.valueOf(data));
+//                    setHeart(Integer.valueOf(data));
+                    setPeriod_heart(Integer.valueOf(data));
                     String str = PackDataUtil.packRequestStr(BaseSDK.getBaseContext(), waterNumber, AppConst.SET_HEARTBEAT, AppConst.RESPONSE_OF_ISSUED, "0");
                     NettyClient.getInstance(mContext).sendMsgToServer(str, null);
                 } else if (response.getCmd().equals(AppConst.SET_MODEL)) {//设置情景模式
@@ -834,6 +854,10 @@ public class BaseSDK implements ChannelListener {
                 LogUtil.e("this is 上报的响应回复:" + data);
                 if (response.getCmd().equals(AppConst.LOGIN)) {//判断是否登录成功
                     String[] strings = data.split("@");//0@0@0  成功
+                    if (strings[2].equals("1")) {//需要 恢复出厂设置
+                        clearPreferences();
+                    }
+
                     if (PropertiesUtil.getInstance().isWeixiao(mContext)) {
                         if (!strings[0].equals("2")) {
                             AppConst.LOGIN_SUCCESS = true;
@@ -851,6 +875,7 @@ public class BaseSDK implements ChannelListener {
                                     }
                                 });
                             }
+
                             //端口获取
                             BaseSDK.getInstance().getSmsPort("1", new OnReceiveListener() {
                                 @Override
@@ -896,6 +921,7 @@ public class BaseSDK implements ChannelListener {
                             PreferencesUtils.getInstance(mContext).setBoolean("loginLater", false);//
                             LogUtil.e("登陆成功");
                             handler.sendEmptyMessage(2);//上报GPS数据
+                            handler.sendEmptyMessage(8);//心跳
                             LogUtil.d("AppConst.BOOTBROADCAST：" + AppConst.BOOTBROADCAST);
                             if (AppConst.BOOTBROADCAST) {
                                 AppConst.BOOTBROADCAST = false;
@@ -1044,6 +1070,15 @@ public class BaseSDK implements ChannelListener {
         SmsManagerUtils.getInstence(context).sendSMS(phoneNumber, text);
     }
 
+    //定时上报，wifi优先
+    public void findWifi() {
+        if(NetworkUtil.mWifiList.size()>=5){//5个以上有效
+            String locationInfo = NetworkUtil.packNetInfo(mContext, 0, 0, "");
+            executor(locationInfo);
+        }else {//5个一下，上报gps
+            findGPS();
+        }
+    }
 
     public void findGPS() {
         GPS_ING = true;
@@ -1072,8 +1107,6 @@ public class BaseSDK implements ChannelListener {
         }catch (Exception e){
             e.printStackTrace();
         }
-
-
     }
 
     public void findGPSGet() {
@@ -1114,24 +1147,10 @@ public class BaseSDK implements ChannelListener {
 
     @SuppressLint("MissingPermission")
     public void getLocation(Context context) {
+        GpsUtil.openGPSSettings(context);//打开gps
         LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         LocationListener mlocListener = new GPSListener();
-//        List<String> list = locationManager.getAllProviders();
-//        boolean hasGps = false;
-//        for (String c : list) {
-//            if (c.equals(LocationManager.GPS_PROVIDER)) {
-//                hasGps = true;
-//                break;
-//            }
-//        }
-//        if (!hasGps) {
-//            return "2";
-//        }
-//        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-//            return "2";
-//        }
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100000000, 100000000, mlocListener);
-//        return "0";
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 10, mlocListener);
     }
 
     public void reconnectTcp() {
@@ -1224,6 +1243,12 @@ public class BaseSDK implements ChannelListener {
     }
 
 
+    public long getPeriodHeart() {
+        return period_heart;
+    }
+    public void setPeriod_heart(int period) {
+         period_heart = period;
+    }
     public long getPeriod() {
         return period;
     }
@@ -1244,7 +1269,8 @@ public class BaseSDK implements ChannelListener {
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent,PendingIntent.FLAG_CANCEL_CURRENT);
 
         //参数2是开始时间、参数3是允许系统延迟的时间
-        alarmManager.setWindow(AlarmManager.RTC, timeInMillis, interval, pendingIntent);
+        alarmManager.setExact(AlarmManager.RTC, timeInMillis, pendingIntent);
+//        alarmManager.setWindow(AlarmManager.RTC, timeInMillis, interval, pendingIntent);
 
     }
 
@@ -1253,6 +1279,23 @@ public class BaseSDK implements ChannelListener {
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent,PendingIntent.FLAG_CANCEL_CURRENT);
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         alarmManager.cancel(pendingIntent);
+    }
+
+    private void clearPreferences(){
+        PreferencesUtils.getInstance(mContext).setString("phoneNumber", "");
+        PreferencesUtils.getInstance(mContext).setString("locationModeOld", "");
+        PreferencesUtils.getInstance(mContext).setString("locationMode", AppConst.MODEL_BALANCE);
+        PreferencesUtils.getInstance(mContext).setLong("locationModeStart", 0l);
+        PreferencesUtils.getInstance(mContext).setLong("realTimeModeEnd", 0l);
+        PreferencesUtils.getInstance(mContext).setString("awaitModeStart", "");
+        PreferencesUtils.getInstance(mContext).setString("awaitModeEnd", "");
+        PreferencesUtils.getInstance(mContext).setString("callSetting", "");
+        PreferencesUtils.getInstance(mContext).setInt("callTimeLong", 0);
+        PreferencesUtils.getInstance(mContext).setString("classModel", "");
+        PreferencesUtils.getInstance(mContext).setString("incomingCall", "");
+        //围栏
+        PreferencesUtils.getInstance(mContext).setString("incomingCall", "");
+
     }
 
 }

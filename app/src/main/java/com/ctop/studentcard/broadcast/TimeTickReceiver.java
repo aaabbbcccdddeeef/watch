@@ -17,6 +17,7 @@ import com.ctop.studentcard.base.BaseSDK;
 import com.ctop.studentcard.bean.ClickBean;
 import com.ctop.studentcard.bean.TemFrequency;
 import com.ctop.studentcard.feature.MainActivity;
+import com.ctop.studentcard.feature.step.StepUtils;
 import com.ctop.studentcard.util.AppConst;
 import com.ctop.studentcard.util.JsonUtil;
 import com.ctop.studentcard.util.LogUtil;
@@ -36,6 +37,8 @@ public class TimeTickReceiver extends BroadcastReceiver {
             int randomSecond=(int)(Math.random()*60);
 //            if (timeNowUpdate.equals("1147")) {//凌晨2点到3点之间
             if (timeNowUpdate.equals("02"+randomSecond)) {//凌晨2点到3点之间
+                LogUtil.e("timeNowUpdate==="+timeNowUpdate);
+                LogUtil.e("randomSecond==="+("02"+randomSecond));
                 //如果现在是待机模式，需要开启tcp
                 String state = PreferencesUtils.getInstance(context).getString("","");
                 if(state.equals(AppConst.MODEL_AWAIT)){
@@ -116,6 +119,7 @@ public class TimeTickReceiver extends BroadcastReceiver {
                 if (awaitstartInt < awaitendInt) {//同一天
                     if (timeNowInt > awaitstartInt && timeNowInt < awaitendInt) {//处于 待机 时间段内
                         if(!locationModeNow.equals(AppConst.MODEL_AWAIT)){
+                            PreferencesUtils.getInstance(context).setString("locationMode", AppConst.MODEL_AWAIT);//修改为待机模式
                             PreferencesUtils.getInstance(context).setString("locationModeOld", PreferencesUtils.getInstance(context).getString("locationMode",  AppConst.MODEL_BALANCE));
                             LogUtil.e("上报设备模式4");
                             BaseSDK.getInstance().send_device_status(AppConst.MODEL_AWAIT);
@@ -123,6 +127,8 @@ public class TimeTickReceiver extends BroadcastReceiver {
                         }
                     } else {
                         if(locationModeNow.equals(AppConst.MODEL_AWAIT)) {
+                            PreferencesUtils.getInstance(context).setString("locationMode",
+                                    PreferencesUtils.getInstance(context).getString("locationModeOld",  AppConst.MODEL_BALANCE));//从待机模式 还原
                             BaseSDK.getInstance().init(context);
                             PreferencesUtils.getInstance(context).setString("locationModeOld", AppConst.MODEL_AWAIT);
                             LogUtil.e("上报设备模式5");
@@ -132,6 +138,7 @@ public class TimeTickReceiver extends BroadcastReceiver {
                 } else {//不同天
                     if (timeNowInt > awaitstartInt || timeNowInt < awaitendInt) {
                         if(!locationModeNow.equals(AppConst.MODEL_AWAIT)) {
+                            PreferencesUtils.getInstance(context).setString("locationMode", AppConst.MODEL_AWAIT);//修改为待机模式
                             PreferencesUtils.getInstance(context).setString("locationModeOld", PreferencesUtils.getInstance(context).getString("locationMode", AppConst.MODEL_BALANCE));
                             LogUtil.e("上报设备模式6");
                             BaseSDK.getInstance().send_device_status(AppConst.MODEL_AWAIT);
@@ -139,11 +146,39 @@ public class TimeTickReceiver extends BroadcastReceiver {
                         }
                     } else {
                         if(locationModeNow.equals(AppConst.MODEL_AWAIT)) {
+                            PreferencesUtils.getInstance(context).setString("locationMode",
+                                    PreferencesUtils.getInstance(context).getString("locationModeOld",  AppConst.MODEL_BALANCE));//从待机模式 还原
                             BaseSDK.getInstance().init(context);
                             PreferencesUtils.getInstance(context).setString("locationModeOld", AppConst.MODEL_AWAIT);
                             LogUtil.e("上报设备模式7");
                             BaseSDK.getInstance().send_device_status(PreferencesUtils.getInstance(context).getString("locationMode",  AppConst.MODEL_BALANCE));
                         }
+                    }
+                }
+            }else {//系统默认待机模式晚11点 到 早 6点
+                String awaitstartSys = "2300";
+                String awaitendSys = "0600";
+                String locationModeNowSys = PreferencesUtils.getInstance(context).getString("locationMode", AppConst.MODEL_BALANCE);
+                int awaitstartInt = Integer.parseInt(awaitstartSys);
+                int awaitendInt = Integer.parseInt(awaitendSys);
+                String timeNow = TimeUtils.getNowTimeString(TimeUtils.format4);
+                int timeNowInt = Integer.parseInt(timeNow);
+                if (timeNowInt > awaitstartInt || timeNowInt < awaitendInt) {
+                    if(!locationModeNow.equals(AppConst.MODEL_AWAIT)) {
+                        PreferencesUtils.getInstance(context).setString("locationMode", AppConst.MODEL_AWAIT);//修改为待机模式
+                        PreferencesUtils.getInstance(context).setString("locationModeOld", PreferencesUtils.getInstance(context).getString("locationMode", AppConst.MODEL_BALANCE));
+                        LogUtil.e("上报设备模式6");
+                        BaseSDK.getInstance().send_device_status(AppConst.MODEL_AWAIT);
+                        BaseSDK.getInstance().stopTcp();
+                    }
+                } else {
+                    if(locationModeNow.equals(AppConst.MODEL_AWAIT)) {
+                        PreferencesUtils.getInstance(context).setString("locationMode",
+                                PreferencesUtils.getInstance(context).getString("locationModeOld",  AppConst.MODEL_BALANCE));//从待机模式 还原
+                        BaseSDK.getInstance().init(context);
+                        PreferencesUtils.getInstance(context).setString("locationModeOld", AppConst.MODEL_AWAIT);
+                        LogUtil.e("上报设备模式7");
+                        BaseSDK.getInstance().send_device_status(PreferencesUtils.getInstance(context).getString("locationMode",  AppConst.MODEL_BALANCE));
                     }
                 }
             }
@@ -172,7 +207,7 @@ public class TimeTickReceiver extends BroadcastReceiver {
             }
 
 
-            //temFrequency
+            //定时上报 温度
             String temFrequencystr = PreferencesUtils.getInstance(context).getString("temFrequency", "");
             if(!TextUtils.isEmpty(temFrequencystr) && !temFrequencystr.equals("null")){
                 TemFrequency mTemFrequency = JsonUtil.parseObject(temFrequencystr, TemFrequency.class);
@@ -196,7 +231,15 @@ public class TimeTickReceiver extends BroadcastReceiver {
 
                 }
             }
-
+            //每天最后一分钟，定时上报 步数，然后清空步数
+            if("1722".equals(TimeUtils.getNowTimeString(TimeUtils.format4))) {
+                //上报
+                int step = StepUtils.getStep();
+                BaseSDK.getInstance().sendHealth(
+                        TimeUtils.getNowTimeString(TimeUtils.format4) + "-" + TimeUtils.getNowTimeString(TimeUtils.format4) +
+                                "@0@0@"+ step);
+                StepUtils.clearStep();
+            }
 
         }
     }

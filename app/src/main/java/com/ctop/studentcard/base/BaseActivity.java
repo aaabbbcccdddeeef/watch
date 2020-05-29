@@ -31,7 +31,6 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
     float y1 = 0.0F;
 
     float y2 = 0.0F;
-    private ImageView back_top;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,22 +39,11 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
 
         mContext = this;
         FinishActivityManager.getManager().addActivity(this);
-        openGPSSettings();
 
 
-        back_top = findViewById(R.id.back_top);
-        back_top.setOnClickListener(this);
+
     }
 
-
-    private void openGPSSettings() {
-        //获取GPS现在的状态（打开或是关闭状态）
-        boolean gpsEnabled = Settings.Secure.isLocationProviderEnabled(getContentResolver(), LocationManager.GPS_PROVIDER);
-        if (!gpsEnabled) {
-            //打开GPS
-            Settings.Secure.setLocationProviderEnabled(getContentResolver(), LocationManager.GPS_PROVIDER, true);
-        }
-    }
 
 
     //268435456

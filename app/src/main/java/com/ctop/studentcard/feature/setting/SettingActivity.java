@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -93,7 +94,7 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
 //            }else {
 //                Toast.makeText(mContext,"电量少于50%，无法更新",Toast.LENGTH_SHORT).show();
 //            }
-
+//            startActivity(new Intent(Settings.ACTION_SETTINGS));
         } else if (id == R.id.rl_about) {
 
             startActivity(new Intent(mContext, AboutActivity.class));

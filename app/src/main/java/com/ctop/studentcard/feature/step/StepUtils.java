@@ -1,16 +1,25 @@
 package com.ctop.studentcard.feature.step;
 
-import com.ctop.studentcard.jni.NDKTools;
+
+import com.ctop.studentcard.util.LogUtil;
+import com.smart.cc.stepcounter.PEDOMETERALG;
 
 public class StepUtils {
 
 
     public static int getStep(){
-
-        NDKTools.gsensorOpen();
-        int step = NDKTools.getGsensorSteps();
-        NDKTools.gsensorClose();
+        PEDOMETERALG.gsensorOpen();
+        int step = PEDOMETERALG.getGsensorSteps();
+        PEDOMETERALG.gsensorClose();
 
         return step;
+    }
+
+
+    public static void clearStep(){
+        PEDOMETERALG.gsensorOpen();
+        PEDOMETERALG.clearGsensorSteps();
+        PEDOMETERALG.gsensorClose();
+
     }
 }

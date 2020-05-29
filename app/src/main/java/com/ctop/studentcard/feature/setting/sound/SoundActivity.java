@@ -31,6 +31,7 @@ public class SoundActivity extends BaseActivity implements View.OnClickListener 
     public int[] MENU_ITEM_ICON = new int[]{R.drawable.volume0, R.drawable.volume1, R.drawable.volume2, R.drawable.volume3, R.drawable.volume4, R.drawable.volume5};
 
     private ImageView adjustVoice;
+    private ImageView back_top;
 
     private int currentVolume;
 
@@ -61,40 +62,6 @@ public class SoundActivity extends BaseActivity implements View.OnClickListener 
 
     public MediaPlayer mMediaPlayer;
 
-//    private BroadcastReceiver mRingReceiver = new BroadcastReceiver() {
-//        public void onReceive(Context param1Context, Intent param1Intent) {
-//            if ("android.media.RINGER_MODE_CHANGED".equals(param1Intent.getAction())) {
-//                int ringerMode = ((AudioManager)SoundActivity.this.getSystemService(Context.AUDIO_SERVICE)).getRingerMode();
-//                LogUtil.e("ringerMode ="+ringerMode);
-//                switch (ringerMode) {
-//                    default:
-//                        return;
-//                    case 2:
-//                        SoundActivity.this.mIsSilentOrVibrate = false;
-//                        SoundActivity.this.mIsSilent = false;
-//                        if (SoundActivity.this.currentVolume == 0) {
-//                            SoundActivity.access$002(SoundActivity.this, SoundActivity.this.currentVolume + SoundActivity.this.mInitVolume);
-//                            SoundActivity.this.mAudioManager.setStreamVolume(2, SoundActivity.this.currentVolume, 0);
-//                            SoundActivity.this.mAudioManager.setStreamVolume(3, SoundActivity.this.currentVolume, 0);
-//                            SoundActivity.this.adjustVoice.setImageResource(SoundActivity.this.MENU_ITEM_ICON[1]);
-//                        }
-//                        SoundActivity.this.choiceVolumeIndex(SoundActivity.this.currentVolume);
-//                        Settings.System.putInt(SoundActivity.this.getContentResolver(), "vibrate_when_ringing", SoundActivity.this.mIsRingAndVibrate);
-//                        return;
-//                    case 1:
-//                        SoundActivity.this.mIsSilentOrVibrate = true;
-//                        SoundActivity.this.mIsSilent = false;
-//                        SoundActivity.this.adjustVoice.setImageResource(SoundActivity.this.MENU_ITEM_ICON[0]);
-//                        return;
-//                    case 0:
-//                        break;
-//                }
-//                SoundActivity.this.mIsSilentOrVibrate = true;
-//                SoundActivity.this.mIsSilent = true;
-//                SoundActivity.this.adjustVoice.setImageResource(SoundActivity.this.MENU_ITEM_ICON[0]);
-//            }
-//        }
-//    };
 
     private Timer mTimer;
 
@@ -120,28 +87,20 @@ public class SoundActivity extends BaseActivity implements View.OnClickListener 
             this.adjustVoice.setImageResource(this.MENU_ITEM_ICON[currentVolume  / this.stepVolume ]);
             return;
         }
-//        if (currentVolume == this.mInitVolume) {
-//            this.adjustVoice.setImageResource(this.MENU_ITEM_ICON[1]);
-//            return;
-//        }
         if (currentVolume == 0)
             this.adjustVoice.setImageResource(this.MENU_ITEM_ICON[0]);
     }
 
-    public Ringtone getDefaultRingtone(int paramInt) {
-        return RingtoneManager.getRingtone((Context) this, RingtoneManager.getActualDefaultRingtoneUri((Context) this, paramInt));
-    }
 
     public void initView() {
         this.lowerVoice = (ImageView) findViewById(R.id.lower);
         this.heighVoice = (ImageView) findViewById(R.id.heigh);
         this.adjustVoice = (ImageView) findViewById(R.id.volume_adjust);
+        this.back_top = (ImageView) findViewById(R.id.back_top);
         this.lowerVoice.setOnClickListener(this);
         this.heighVoice.setOnClickListener(this);
+        this.back_top.setOnClickListener(this);
 
-//        IntentFilter intentFilter = new IntentFilter();
-//        intentFilter.addAction("android.media.RINGER_MODE_CHANGED");
-//        registerReceiver(this.mRingReceiver, intentFilter);
     }
 
     public void lowerVolume() {
@@ -160,19 +119,16 @@ public class SoundActivity extends BaseActivity implements View.OnClickListener 
     @Override
     public void onClick(View paramView) {
         int id = paramView.getId();
-
         if (id == R.id.lower) {
             LogUtil.d("lower");
             lowerVolume();
             playRing();
-            return;
-
-        }
-
-        if (id == R.id.heigh) {
+        }else if (id == R.id.heigh) {
             LogUtil.d("height");
             upVolume();
             playRing();
+        }else if (id == R.id.back_top) {
+            finish();
         }
 
     }

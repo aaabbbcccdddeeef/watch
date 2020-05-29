@@ -197,6 +197,12 @@
             </intent-filter>
         </receiver>
 
+        <receiver android:name=".broadcast.HeartReceiver">
+            <intent-filter android:priority="999">
+                <action android:name="com.ctop.studentcard.heart"/>
+            </intent-filter>
+        </receiver>
+
         <!--<receiver-->
             <!--android:name=".ScreenOffAdminReceiver"-->
             <!--android:label="@string/app_name"-->

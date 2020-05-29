@@ -1,10 +1,14 @@
 package com.ctop.studentcard.util;
 
 import android.annotation.SuppressLint;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.location.GpsSatellite;
 import android.location.GpsStatus;
 import android.location.LocationManager;
+import android.net.Uri;
+import android.provider.Settings;
 
 import java.util.Iterator;
 
@@ -22,6 +26,42 @@ public class GpsUtil {
 
     }
 
+    //打开GPS
+    public static void openGPSSettings(Context context) {
+        //获取GPS现在的状态（打开或是关闭状态）
+        boolean gpsEnabled = Settings.Secure.isLocationProviderEnabled(context.getContentResolver(), LocationManager.GPS_PROVIDER);
+        if (!gpsEnabled) {
+            //打开GPS
+            Settings.Secure.setLocationProviderEnabled(context.getContentResolver(), LocationManager.GPS_PROVIDER, true);
+        }
+    }
+
+    //关闭GPS
+    public static void closeGPSSettings(Context context) {
+        //获取GPS现在的状态（打开或是关闭状态）
+        boolean gpsEnabled = Settings.Secure.isLocationProviderEnabled(context.getContentResolver(), LocationManager.GPS_PROVIDER);
+        if (gpsEnabled) {
+            //关闭GPS
+            Settings.Secure.putInt(context.getContentResolver(), Settings.Secure.LOCATION_MODE, android.provider.Settings.Secure.LOCATION_MODE_OFF);
+        }
+    }
+
+    /**
+     * 强制帮用户打开GPS
+     *
+     * @param context
+     */
+    public static final void openGPS(Context context) {
+        Intent GPSIntent = new Intent();
+        GPSIntent.setClassName("com.android.settings", "com.android.settings.widget.SettingsAppWidgetProvider");
+        GPSIntent.addCategory("android.intent.category.ALTERNATIVE");
+        GPSIntent.setData(Uri.parse("custom:3"));
+        try {
+            PendingIntent.getBroadcast(context, 0, GPSIntent, 0).send();
+        } catch (PendingIntent.CanceledException e) {
+            e.printStackTrace();
+        }
+    }
     /**
      * 卫星信号强度监听
      * 第一种：监听卫星信噪比

@@ -2,7 +2,6 @@ package com.ctop.studentcard.netty;
 
 import com.ctop.studentcard.base.BaseSDK;
 import com.ctop.studentcard.feature.step.StepUtils;
-import com.ctop.studentcard.jni.NDKTools;
 import com.ctop.studentcard.util.AppConst;
 import com.ctop.studentcard.util.DeviceUtil;
 import com.ctop.studentcard.util.LogUtil;
@@ -12,7 +11,6 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 
 /**
@@ -66,21 +64,21 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<ByteBuf> {
     //利用写空闲发送心跳检测消息
 	@Override
 	public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-		if (evt instanceof IdleStateEvent) {
-//			IdleStateEvent event = (IdleStateEvent) evt;
-//			if (event.state() == IdleState.ALL_IDLE){
-				try{
-                    if (AppConst.LOGIN_SUCCESS) {
-                        LogUtil.e("send heart");
-                        String waterNumber = PackDataUtil.createWaterNumber();
-                        String data = PackDataUtil.packRequestStr(BaseSDK.getBaseContext(),waterNumber, AppConst.REPORT_HEARTBEAT, AppConst.REPORT_THE_REQUEST, DeviceUtil.getBattery()+"@"+ StepUtils.getStep()+"@");
-                        ctx.channel().writeAndFlush(data).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
-                    }
-				} catch (Exception e){
-					LogUtil.e(e.getMessage());
-				}
-//			}
-		}
+//		if (evt instanceof IdleStateEvent) {
+////			IdleStateEvent event = (IdleStateEvent) evt;
+////			if (event.state() == IdleState.ALL_IDLE){
+//				try{
+//                    if (AppConst.LOGIN_SUCCESS) {
+//                        LogUtil.e("send heart");
+//                        String waterNumber = PackDataUtil.createWaterNumber();
+//                        String data = PackDataUtil.packRequestStr(BaseSDK.getBaseContext(),waterNumber, AppConst.REPORT_HEARTBEAT, AppConst.REPORT_THE_REQUEST, DeviceUtil.getBattery()+"@"+ StepUtils.getStep()+"@");
+//                        ctx.channel().writeAndFlush(data).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
+//                    }
+//				} catch (Exception e){
+//					LogUtil.e(e.getMessage());
+//				}
+////			}
+//		}
 		super.userEventTriggered(ctx, evt);
 	}
 

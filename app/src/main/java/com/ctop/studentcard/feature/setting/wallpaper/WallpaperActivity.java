@@ -28,16 +28,18 @@ public class WallpaperActivity extends BaseActivity {
     private Context context;
 
     private ViewPager viewPager;
+    private ImageView back_top;
 
 
     protected void onCreate(Bundle paramBundle) {
         super.onCreate(paramBundle);
         setContentView(R.layout.wallpaper_layout);
         this.context = this;
-        this.viewPager = findViewById(R.id.vp_wall);
+        viewPager = findViewById(R.id.vp_wall);
+        back_top = findViewById(R.id.back_top);
         ImageAdapter imageAdapter = new ImageAdapter();
         viewPager.setAdapter(imageAdapter);
-
+        back_top.setOnClickListener(this);
 
     }
 

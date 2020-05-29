@@ -6,6 +6,7 @@
     android:background="#ff000000">
 
     <RelativeLayout
+        android:id="@+id/title_rl"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -28,7 +29,7 @@
 
 
     <androidx.viewpager.widget.ViewPager
-        android:layout_below="@id/title"
+        android:layout_below="@id/title_rl"
         android:id="@+id/vp_wall"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

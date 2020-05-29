@@ -49,6 +49,7 @@ public class BaseApplication extends Application implements InstructionCallBack 
 
     private BatteryBroadcastReceiver batteryBroadcastReceiver;
     private SmsSelfReceiver smsSelfReceiver;
+    private BootReceiver bootReceiver;
 
     @Override
     public void onCreate() {
@@ -56,19 +57,13 @@ public class BaseApplication extends Application implements InstructionCallBack 
         mContext = this;
         // 初始化MultiDex
         MultiDex.install(this);
-        Intent intent = new Intent(this, ServerService.class);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            startForegroundService(intent);
-        } else {
-            startService(intent);
-        }
-        startService(intent);
+//        Intent intent = new Intent(this, ServerService.class);
+//        startService(intent);
         LogUtil.e("BaseApplication:thread:name:" + Thread.currentThread().getName());
-
         //注册接收下发的监听
 //        if (NetworkUtil.isAvailable(mContext)) {
-            BaseSDK.getInstance().setBaseContext(getApplicationContext());
-            BaseSDK.getInstance().setOnInstructionListener(this);
+        BaseSDK.getInstance().setBaseContext(getApplicationContext());
+        BaseSDK.getInstance().setOnInstructionListener(this);
 //        }
         //监听通话记录
         setCallListner();
@@ -84,6 +79,7 @@ public class BaseApplication extends Application implements InstructionCallBack 
         GSMCellLocation.getSignalStrengths(mContext);//手机网络信号强度
         GpsUtil.getInstence(mContext);//手机gps信号强度
         initMsc();
+        mHandler.sendEmptyMessage(6);
     }
     private void initMsc() {
         // 应用程序入口处调用,避免手机内存过小,杀死后台进程后通过历史intent进入Activity造成SpeechUtility对象为null
@@ -176,6 +172,8 @@ public class BaseApplication extends Application implements InstructionCallBack 
                 KdxfSpeechSynthesizerUtil.getInstance(mContext,"通知，" + smsMessageReceive.getMessage());
                 //发送广播 屏幕显示
                 sendScreenBrocast(smsMessageReceive.getUuid(), smsMessageReceive.getSmsType());
+            }else if (msg.what == 6) {
+                BaseSDK.getInstance().heartInit(0);
             }
         }
     };
@@ -220,6 +218,12 @@ public class BaseApplication extends Application implements InstructionCallBack 
         filterSms.addAction(BroadcastConstant.SMS_STATE);
         smsSelfReceiver = new SmsSelfReceiver();
         mContext.registerReceiver(smsSelfReceiver, filterSms);
+
+        //boot
+        IntentFilter filterboot = new IntentFilter();
+        filterboot.addAction(BroadcastConstant.BOOT_STATE);
+        bootReceiver = new BootReceiver();
+        mContext.registerReceiver(bootReceiver, filterboot);
 
     }
 
@@ -336,6 +340,18 @@ public class BaseApplication extends Application implements InstructionCallBack 
                     mHandler.sendMessage(msg);
                 }
             }
+        }
+    }
+
+
+    class BootReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            LogUtil.e("onReceive: action: " + action);
+            Intent intent1 = new Intent(context, ServerService.class);
+            startService(intent1);
+
         }
     }
 

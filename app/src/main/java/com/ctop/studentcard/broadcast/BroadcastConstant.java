@@ -26,9 +26,13 @@ public class BroadcastConstant {
     public static final String GPS = "com.ctop.studentcard.gps";//
     public static final String GPS_GET = "com.ctop.studentcard.gps_get";//
 
+    //心跳
+    public static final String HEART_BEAT = "com.ctop.studentcard.heart";//
+
 
     //限制呼出
     public static final String REJECT_CALL_OUT = "com.ctop.studentcard.REJECT_CALL_OUT";//
 
-
+    //启动
+    public static final String BOOT_STATE = "com.ctop.studentcard.boot";
 }
