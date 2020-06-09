@@ -1,19 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <ImageView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/back_top"
-        android:layout_width="20px"
-        android:layout_height="20px"
-        android:layout_margin="10px"
-        android:src="@drawable/back_top" />
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="35px"
         android:layout_marginLeft="6dp"
         android:layout_marginRight="6dp"
         android:layout_marginBottom="6dp"
@@ -30,4 +24,12 @@
 
     </ScrollView>
 
-</LinearLayout>
+    <ImageView
+        android:id="@+id/back_top"
+        android:src="@drawable/back_top"
+        android:paddingRight="30px"
+        android:paddingBottom="30px"
+        android:layout_width="56px"
+        android:layout_height="56px" />
+
+</RelativeLayout>

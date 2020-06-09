@@ -236,7 +236,7 @@ public class BaseSDK implements ChannelListener {
     private void timingLocationInit(int per) {
         LogUtil.e("timingLocationInit ***");
         //先取消上一个任务，防止重复的任务
-        canalAlarm(mContext,BroadcastConstant.GPS);
+        canalAlarm(mContext,BroadcastConstant.GPS,0);
         if (per == 0) {
             period = 20 * 60 ;
         } else {
@@ -245,13 +245,13 @@ public class BaseSDK implements ChannelListener {
         LogUtil.e("LOCATION_init===" + period);
         LogUtil.e("LOCATION_initialDelay===" + initialDelay);
 
-        setAlarmTime(mContext,System.currentTimeMillis(),BroadcastConstant.GPS, initialDelay);
+        setAlarmTime(mContext,System.currentTimeMillis(),BroadcastConstant.GPS, initialDelay,0);
     }
 
     public void heartInit(int per) {
         LogUtil.e("heartInit ***");
         //先取消上一个任务，防止重复的任务
-        canalAlarm(mContext,BroadcastConstant.HEART_BEAT);
+        canalAlarm(mContext,BroadcastConstant.HEART_BEAT,1);
         if (per == 0) {
             period_heart = 5 * 60 ;
         } else {
@@ -259,18 +259,18 @@ public class BaseSDK implements ChannelListener {
         }
         LogUtil.e("period_heart_init===" + period);
 
-        setAlarmTime(mContext,System.currentTimeMillis()+(5*60*1000),BroadcastConstant.HEART_BEAT, 0);
+        setAlarmTime(mContext,System.currentTimeMillis()+(5*60*1000),BroadcastConstant.HEART_BEAT, 0,1);
     }
 
     private void timingLocation() {
         LogUtil.e("timingLocation ***");
         //先取消上一个任务，防止重复的任务
-        canalAlarm(mContext,BroadcastConstant.GPS);
-        setAlarmTime(mContext,System.currentTimeMillis(),BroadcastConstant.GPS,  initialDelay);
+        canalAlarm(mContext,BroadcastConstant.GPS,0);
+        setAlarmTime(mContext,System.currentTimeMillis(),BroadcastConstant.GPS,  initialDelay,0);
     }
 
     private void timingLocationGet() {
-        setAlarmTime(mContext,System.currentTimeMillis(),BroadcastConstant.GPS_GET,  initialDelay);
+        setAlarmTime(mContext,System.currentTimeMillis(),BroadcastConstant.GPS_GET,  initialDelay,0);
     }
 
     int initialDelay = 0;
@@ -611,20 +611,20 @@ public class BaseSDK implements ChannelListener {
                     if (data.equals(AppConst.MODEL_POWER_SAVING)) {
                         PreferencesUtils.getInstance(mContext).setString("locationMode", AppConst.MODEL_POWER_SAVING);
                         PreferencesUtils.getInstance(mContext).setLong("locationModeStart", System.currentTimeMillis());
-                        canalAlarm(mContext,BroadcastConstant.GPS);
+                        canalAlarm(mContext,BroadcastConstant.GPS,0);
                     } else if (data.equals(AppConst.MODEL_BALANCE)) {
                         PreferencesUtils.getInstance(mContext).setString("locationMode",  AppConst.MODEL_BALANCE);
                         PreferencesUtils.getInstance(mContext).setLong("locationModeStart", System.currentTimeMillis());
                         period = 20 * 60;
-                        canalAlarm(mContext,BroadcastConstant.GPS);
-                        setAlarmTime(mContext,System.currentTimeMillis(),BroadcastConstant.GPS, initialDelay);
+                        canalAlarm(mContext,BroadcastConstant.GPS,0);
+                        setAlarmTime(mContext,System.currentTimeMillis(),BroadcastConstant.GPS, initialDelay,0);
                     } else if (data.equals(AppConst.MODEL_REAL_TIME)) {
                         PreferencesUtils.getInstance(mContext).setString("locationModeOld", PreferencesUtils.getInstance(mContext).getString("locationMode",  AppConst.MODEL_BALANCE));
                         PreferencesUtils.getInstance(mContext).setString("locationMode", AppConst.MODEL_REAL_TIME);
                         PreferencesUtils.getInstance(mContext).setLong("locationModeStart", System.currentTimeMillis());
                         period = 3 * 60;
-                        canalAlarm(mContext,BroadcastConstant.GPS);
-                        setAlarmTime(mContext,System.currentTimeMillis(),BroadcastConstant.GPS, initialDelay);
+                        canalAlarm(mContext,BroadcastConstant.GPS,0);
+                        setAlarmTime(mContext,System.currentTimeMillis(),BroadcastConstant.GPS, initialDelay,0);
                         //计算结束时间 realTime
                         long endTime = System.currentTimeMillis() + 30 * 60 * 1000;
                         PreferencesUtils.getInstance(mContext).setLong("realTimeModeEnd", endTime);
@@ -650,8 +650,8 @@ public class BaseSDK implements ChannelListener {
                         PreferencesUtils.getInstance(mContext).setString("awaitModeStart", startEnd[0]);
                         PreferencesUtils.getInstance(mContext).setString("awaitModeEnd", startEnd[1]);
                         //上报一次位置
-                        canalAlarm(mContext,BroadcastConstant.GPS);
-                        setAlarmTime(mContext,System.currentTimeMillis(),BroadcastConstant.GPS, initialDelay);
+                        canalAlarm(mContext,BroadcastConstant.GPS,0);
+                        setAlarmTime(mContext,System.currentTimeMillis(),BroadcastConstant.GPS, initialDelay,0);
 
 
                         String str = PackDataUtil.packRequestStr(BaseSDK.getBaseContext(), waterNumber, AppConst.SET_REDAY_MODE, AppConst.RESPONSE_OF_ISSUED, "0");
@@ -1262,11 +1262,11 @@ public class BaseSDK implements ChannelListener {
         return NettyClient.getInstance(mContext).getConnectStatus();
     }
 
-    public void setAlarmTime(Context context, long timeInMillis,String action, int interval) {
+    public void setAlarmTime(Context context, long timeInMillis,String action, int interval,int requestCode) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
         Intent intent = new Intent(action);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent,PendingIntent.FLAG_CANCEL_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, requestCode, intent,PendingIntent.FLAG_CANCEL_CURRENT);
 
         //参数2是开始时间、参数3是允许系统延迟的时间
         alarmManager.setExact(AlarmManager.RTC, timeInMillis, pendingIntent);
@@ -1274,9 +1274,9 @@ public class BaseSDK implements ChannelListener {
 
     }
 
-    public void canalAlarm(Context context, String action) {
+    public void canalAlarm(Context context, String action,int requestCode) {
         Intent intent = new Intent(action);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent,PendingIntent.FLAG_CANCEL_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, requestCode, intent,PendingIntent.FLAG_CANCEL_CURRENT);
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         alarmManager.cancel(pendingIntent);
     }

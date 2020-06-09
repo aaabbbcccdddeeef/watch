@@ -170,8 +170,9 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="0.0dip"
-                android:layout_weight="1.0"  android:layout_marginTop="10px"
-                android:src="@drawable/health" />
+                android:layout_weight="1.0"
+                android:layout_marginTop="10px"
+                android:src="@mipmap/ic_health" />
 
             <TextView
                 style="@style/menuItem"

@@ -88,7 +88,7 @@ public class TimeTickReceiver extends BroadcastReceiver {
                         PreferencesUtils.getInstance(context).setString("locationMode", AppConst.MODEL_AWAIT);
                         PreferencesUtils.getInstance(context).setLong("locationModeStart", System.currentTimeMillis());
 
-                        BaseSDK.getInstance().canalAlarm(BaseSDK.getInstance().getBaseContext(),BroadcastConstant.GPS);
+                        BaseSDK.getInstance().canalAlarm(BaseSDK.getInstance().getBaseContext(),BroadcastConstant.GPS,0);
 
                         LogUtil.e("上报设备模式3-0");
                         BaseSDK.getInstance().send_device_status(AppConst.MODEL_BALANCE);

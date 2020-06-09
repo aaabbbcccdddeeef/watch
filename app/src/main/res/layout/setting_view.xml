@@ -1,21 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_gravity="center"
     android:background="#ff000000"
     android:orientation="vertical">
 
     <RelativeLayout
+        android:id="@+id/top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <ImageView
-            android:id="@+id/back_top"
-            android:layout_margin="5px"
-            android:src="@drawable/back_top"
-            android:layout_width="20px"
-            android:layout_height="20px" />
+
         <TextView
             android:id="@id/title"
             android:layout_width="match_parent"
@@ -27,8 +22,8 @@
             android:textSize="@dimen/title_size" />
     </RelativeLayout>
 
-
     <ScrollView
+        android:layout_below="@id/top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -185,4 +180,12 @@
 
     </ScrollView>
 
-</LinearLayout>
+    <ImageView
+        android:id="@+id/back_top"
+        android:src="@drawable/back_top"
+        android:paddingRight="30px"
+        android:paddingBottom="30px"
+        android:layout_width="56px"
+        android:layout_height="56px" />
+
+</RelativeLayout>

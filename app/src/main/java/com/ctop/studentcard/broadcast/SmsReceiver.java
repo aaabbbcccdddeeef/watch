@@ -58,11 +58,11 @@ public class SmsReceiver extends BroadcastReceiver {
                 String waterNumber = PackDataUtil.createWaterNumber();
                 insertDb(waterNumber, body.toString());
                 if (body.toString().startsWith("SETSERVER")) {//设置IP地址
-                    sendSmsSETSERVER(context, 2, body.toString());
                     BaseSDK.getInstance().sendSMS(context, number.toString(), "Done, connect in 5 seconds");
+                    sendSmsSETSERVER(context, 2, body.toString());
                     return;
                 } else if ("SUPERPASS#".equals(body.toString())) {//打开短信指令30分钟
-                    BaseSDK.getInstance().canalAlarm(BaseSDK.getInstance().getBaseContext(), BroadcastConstant.GPS);
+                    BaseSDK.getInstance().canalAlarm(BaseSDK.getInstance().getBaseContext(), BroadcastConstant.GPS,0);
                     sendSmsWhat(context, 0);
                     BaseSDK.getInstance().sendSMS(context, number.toString(), "Device unlocked，lock again in 30 minutes");
                     return;
@@ -84,8 +84,8 @@ public class SmsReceiver extends BroadcastReceiver {
 
                     return;
                 } else if ("RESTART#".equals(body.toString())) {//重启设备
-                    BaseSDK.getInstance().sendSMS(context, number.toString(), "Done");
-                    DeviceUtil.reboot(context);
+//                    BaseSDK.getInstance().sendSMS(context, number.toString(), "Done");
+//                    DeviceUtil.reboot(context);
                     return;
                 } else if ("STATUS#".equals(body.toString())) {//设备状态
                     //设备状态应包含以下信息：

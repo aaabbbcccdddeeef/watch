@@ -358,6 +358,9 @@ public class NetworkUtil {
             String strSsid = mWifiList.get(i).SSID;
             String strBssid = mWifiList.get(i).BSSID;
             int strLevel = mWifiList.get(i).level;
+            if(strLevel==0 || strBssid.equals("00:00:00:00:00:00")){
+                continue;
+            }
             str +=  ByteUtil.filterChinese(strSsid) + "!" + strBssid +  "!" + strLevel +"#";
         }
         if (str.length() > 0) {

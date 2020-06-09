@@ -8,10 +8,11 @@
 
     <ImageView
         android:id="@+id/back_top"
-        android:layout_margin="5px"
         android:src="@drawable/back_top"
-        android:layout_width="20px"
-        android:layout_height="20px" />
+        android:paddingRight="30px"
+        android:paddingBottom="30px"
+        android:layout_width="56px"
+        android:layout_height="56px" />
 
         <TextView
             android:id="@+id/title"

@@ -54,7 +54,7 @@
                 android:layout_height="0.0dip"
                 android:layout_marginTop="10px"
                 android:layout_weight="1.0"
-                android:src="@drawable/tem_icon" />
+                android:src="@mipmap/ic_tem" />
 
             <TextView
                 style="@style/menuItem"
