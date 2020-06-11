@@ -75,7 +75,7 @@ public class GSMCellLocation {
     }
 
     public static String getNetType(Context ctx) {
-        String ret = "1";
+        String ret = "0";
         ArrayList<CellInfo> cellInfos = new ArrayList<CellInfo>();
         TelephonyManager tm = (TelephonyManager) ctx.getSystemService(Context.TELEPHONY_SERVICE);
         //网络制式
@@ -126,7 +126,7 @@ public class GSMCellLocation {
 
 
     public static String getServiceState(Context ctx) {
-        String ret = "1";
+        String ret = "0";
         TelephonyManager tm = (TelephonyManager) ctx.getSystemService(Context.TELEPHONY_SERVICE);
         //网络制式
         int type = tm.getNetworkType();

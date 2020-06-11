@@ -390,12 +390,15 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
             if (action.equals(BroadcastConstant.LASTSTRENGTH_STATE)) {//Action
                 //>=-90是ok的
                 int signalStrenghtint = intent.getExtras().getInt("signalStrength");
-                if (signalStrenghtint <= -110) {
-                    signalStrength.setImageResource(R.drawable.weak);
-                } else if (signalStrenghtint > -90) {
-                    signalStrength.setImageResource(R.drawable.strong);
-                } else {
-                    signalStrength.setImageResource(R.drawable.normal);
+                LogUtil.e( "onReceive: signalStrenghtint: " + signalStrenghtint);
+                if (signalStrenghtint != 0) {
+                    if (signalStrenghtint <= -110) {
+                        signalStrength.setImageResource(R.drawable.weak);
+                    } else if (signalStrenghtint > -90) {
+                        signalStrength.setImageResource(R.drawable.strong);
+                    } else {
+                        signalStrength.setImageResource(R.drawable.normal);
+                    }
                 }
                 String state = GSMCellLocation.getNetType(mContext);
                 if (state.equals("1")) {
