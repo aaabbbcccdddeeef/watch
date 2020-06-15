@@ -33,7 +33,6 @@
                 style="@style/menuItem"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="2px"
                 android:textSize="@dimen/text_size_main"
                 android:text="设置" />
 

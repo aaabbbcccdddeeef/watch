@@ -57,7 +57,7 @@ public class NettyClient {
                         .channel(NioSocketChannel.class)
                         .handler(nettyClientInitializer);
                 if( PropertiesUtil.getInstance().getTcp_port(mContext) == 0){//域名
-                    LogUtil.d(" ------/域名="+PropertiesUtil.getInstance().getHost(mContext));
+                    LogUtil.e(" ------/域名="+PropertiesUtil.getInstance().getHost(mContext));
                     SocketAddress socketAddress = new DomainSocketAddress(PropertiesUtil.getInstance().getHost(mContext));
                     bootstrap.connect(socketAddress)
                             .addListener(new ChannelFutureListener() {
@@ -77,7 +77,7 @@ public class NettyClient {
                                 }
                             }).sync();
                 }else {//ip+端口
-                    LogUtil.d(" ------/ip+端口="+PropertiesUtil.getInstance().getHost(mContext)+":"+PropertiesUtil.getInstance().getTcp_port(mContext));
+                    LogUtil.e(" ------/ip+端口="+PropertiesUtil.getInstance().getHost(mContext)+":"+PropertiesUtil.getInstance().getTcp_port(mContext));
                     bootstrap.connect(PropertiesUtil.getInstance().getHost(mContext),
                             PropertiesUtil.getInstance().getTcp_port(mContext))
                             .addListener(new ChannelFutureListener() {
