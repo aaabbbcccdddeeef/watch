@@ -7,4 +7,6 @@
     <dimen name="marginRight_text_width">12.0dip</dimen>
     <dimen name="text_size">24.0px</dimen>
 
+    <dimen name="text_size_main">24.0px</dimen>
+
 </resources>

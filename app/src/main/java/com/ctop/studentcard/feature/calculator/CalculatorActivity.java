@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.lifecycle.MutableLiveData;
@@ -28,6 +29,7 @@ public class CalculatorActivity extends BaseActivity {
     private MutableLiveData<String> mOperate = new MutableLiveData();
 
     private TextView tv_result;
+    private ImageView back_top;
 
     private void appendNumber(String paramString) {
         if (TextUtils.isEmpty((String) this.getOperate().getValue())) {
@@ -39,6 +41,14 @@ public class CalculatorActivity extends BaseActivity {
 
     private void initView() {
         tv_result = (TextView) findViewById(R.id.tv_result);
+
+        back_top = findViewById(R.id.back_top);
+        back_top.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     public void append0(View paramView) {

@@ -692,7 +692,7 @@ public class BaseSDK implements ChannelListener {
                     handler.sendEmptyMessage(1);
                 } else if (response.getCmd().equals(AppConst.SET_HEARTBEAT)) {//设置终端心跳
 //                    setHeart(Integer.valueOf(data));
-                    setPeriod_heart(Integer.valueOf(data));
+                    setPeriod_heart(Integer.valueOf(data) * 60);
                     String str = PackDataUtil.packRequestStr(BaseSDK.getBaseContext(), waterNumber, AppConst.SET_HEARTBEAT, AppConst.RESPONSE_OF_ISSUED, "0");
                     NettyClient.getInstance(mContext).sendMsgToServer(str, null);
                 } else if (response.getCmd().equals(AppConst.SET_MODEL)) {//设置情景模式

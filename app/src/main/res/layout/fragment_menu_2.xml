@@ -11,7 +11,6 @@
         android:layout_height="0.0dip"
         android:layout_weight="1.0">
 
-
         <LinearLayout
             android:id="@+id/layout_1"
             android:layout_width="0.0dip"
@@ -28,14 +27,16 @@
                 android:layout_height="0.0dip"
                 android:layout_marginTop="10px"
                 android:layout_weight="1.0"
-                android:src="@drawable/selector_item_setting" />
+                android:src="@mipmap/ic_setting" />
 
             <TextView
                 style="@style/menuItem"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10px"
+                android:layout_marginBottom="2px"
+                android:textSize="@dimen/text_size_main"
                 android:text="设置" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -60,8 +61,10 @@
                 style="@style/menuItem"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10px"
+                android:layout_marginBottom="2px"
+                android:textSize="@dimen/text_size_main"
                 android:text="测量体温" />
+
         </LinearLayout>
 
     </LinearLayout>
@@ -94,6 +97,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="设置" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -119,6 +123,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="计算器" />
+
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

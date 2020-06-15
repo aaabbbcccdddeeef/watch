@@ -3,6 +3,8 @@ package com.ctop.studentcard.feature.message;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ctop.studentcard.R;
@@ -22,6 +24,8 @@ public class MessageDetailActivity extends BaseActivity {
     Intent intent;
     private SmsMessageDao smsMessageDao;
     private List<SmsMessage> smsMessageList;
+    private ImageView back_top;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +52,13 @@ public class MessageDetailActivity extends BaseActivity {
             ((TextView)findViewById(R.id.tv_content)).setText(smsMessageList.get(0).getMessage());
             updateStatus(smsMessageList.get(0));
         }
+        back_top = findViewById(R.id.back_top);
+        back_top.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     //修改已读

@@ -84,8 +84,8 @@ public class SmsReceiver extends BroadcastReceiver {
 
                     return;
                 } else if ("RESTART#".equals(body.toString())) {//重启设备
-//                    BaseSDK.getInstance().sendSMS(context, number.toString(), "Done");
-//                    DeviceUtil.reboot(context);
+                    BaseSDK.getInstance().sendSMS(context, number.toString(), "Done");
+                    DeviceUtil.reboot(context);
                     return;
                 } else if ("STATUS#".equals(body.toString())) {//设备状态
                     //设备状态应包含以下信息：

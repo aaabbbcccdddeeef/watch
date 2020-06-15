@@ -11,7 +11,6 @@
         android:layout_height="0.0dip"
         android:layout_weight="1.0">
 
-
         <LinearLayout
             android:id="@+id/layout_1"
             android:layout_width="0.0dip"
@@ -32,7 +31,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10px"
-                    android:src="@drawable/selector_item_sms" />
+                    android:src="@mipmap/ic_sms" />
 
                 <!--<TextView-->
                 <!--android:id="@+id/tv_sms_unread"-->
@@ -51,7 +50,8 @@
                 style="@style/menuItem"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10px"
+                android:layout_marginBottom="2px"
+                android:textSize="@dimen/text_size_main"
                 android:text="短信" />
         </LinearLayout>
 
@@ -76,7 +76,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10px"
-                    android:src="@drawable/selector_item_phone" />
+                    android:src="@mipmap/ic_phone" />
 
                 <!--<TextView-->
                 <!--android:id="@+id/tv_phone_un_answer"-->
@@ -95,7 +95,8 @@
                 style="@style/menuItem"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10px"
+                android:layout_marginBottom="2px"
+                android:textSize="@dimen/text_size_main"
                 android:text="通话记录" />
         </LinearLayout>
     </LinearLayout>
@@ -146,13 +147,14 @@
                 android:layout_height="0.0dip"
                 android:layout_marginTop="10px"
                 android:layout_weight="1.0"
-                android:src="@drawable/selector_item_calculator" />
+                android:src="@mipmap/ic_calculator" />
 
             <TextView
                 style="@style/menuItem"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10px"
+                android:layout_marginBottom="2px"
+                android:textSize="@dimen/text_size_main"
                 android:text="计算器" />
         </LinearLayout>
 
@@ -179,7 +181,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="健康码"
-                android:layout_marginBottom="10px"/>
+                android:layout_marginBottom="2px"
+                android:textSize="@dimen/text_size_main"/>
 
         </LinearLayout>
 
