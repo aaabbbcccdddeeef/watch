@@ -18,7 +18,6 @@
             android:layout_weight="1.0"
             android:background="@drawable/selector_menu_item"
             android:clickable="true"
-            android:focusable="true"
             android:gravity="center"
             android:orientation="vertical">
 
@@ -45,7 +44,6 @@
             android:layout_weight="1.0"
             android:background="@drawable/selector_menu_item"
             android:clickable="true"
-            android:focusable="true"
             android:gravity="center"
             android:orientation="vertical">
 
