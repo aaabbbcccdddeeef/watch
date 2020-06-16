@@ -130,9 +130,9 @@ public class BaseSDK implements ChannelListener {
 
             } else if (msg.what == 6) {
                 timingLocationInit(period);
-            }else if (msg.what == 7) {
+            } else if (msg.what == 7) {
                 NettyClient.getInstance(mContext).connect();
-            }else if (msg.what == 8) {
+            } else if (msg.what == 8) {
 
             }
         }
@@ -236,41 +236,41 @@ public class BaseSDK implements ChannelListener {
     private void timingLocationInit(int per) {
         LogUtil.e("timingLocationInit ***");
         //先取消上一个任务，防止重复的任务
-        canalAlarm(mContext,BroadcastConstant.GPS,0);
+        canalAlarm(mContext, BroadcastConstant.GPS, 0);
         if (per == 0) {
-            period = 20 * 60 ;
+            period = 20 * 60;
         } else {
             period = per;
         }
         LogUtil.e("LOCATION_init===" + period);
         LogUtil.e("LOCATION_initialDelay===" + initialDelay);
 
-        setAlarmTime(mContext,System.currentTimeMillis(),BroadcastConstant.GPS, initialDelay,0);
+        setAlarmTime(mContext, System.currentTimeMillis(), BroadcastConstant.GPS, initialDelay, 0);
     }
 
     public void heartInit(int per) {
         LogUtil.e("heartInit ***");
         //先取消上一个任务，防止重复的任务
-        canalAlarm(mContext,BroadcastConstant.HEART_BEAT,1);
+        canalAlarm(mContext, BroadcastConstant.HEART_BEAT, 1);
         if (per == 0) {
-            period_heart = 5 * 60 ;
+            period_heart = 5 * 60;
         } else {
             period_heart = per;
         }
         LogUtil.e("period_heart_init===" + period);
 
-        setAlarmTime(mContext,System.currentTimeMillis()+(5*60*1000),BroadcastConstant.HEART_BEAT, 0,1);
+        setAlarmTime(mContext, System.currentTimeMillis() + (5 * 60 * 1000), BroadcastConstant.HEART_BEAT, 0, 1);
     }
 
     private void timingLocation() {
         LogUtil.e("timingLocation ***");
         //先取消上一个任务，防止重复的任务
-        canalAlarm(mContext,BroadcastConstant.GPS,0);
-        setAlarmTime(mContext,System.currentTimeMillis(),BroadcastConstant.GPS,  initialDelay,0);
+        canalAlarm(mContext, BroadcastConstant.GPS, 0);
+        setAlarmTime(mContext, System.currentTimeMillis(), BroadcastConstant.GPS, initialDelay, 0);
     }
 
     private void timingLocationGet() {
-        setAlarmTime(mContext,System.currentTimeMillis(),BroadcastConstant.GPS_GET,  initialDelay,0);
+        setAlarmTime(mContext, System.currentTimeMillis(), BroadcastConstant.GPS_GET, initialDelay, 0);
     }
 
     int initialDelay = 0;
@@ -282,7 +282,7 @@ public class BaseSDK implements ChannelListener {
             public void onResponse(String msg) {
             }
         });
-        if(await_stoptcp){
+        if (await_stoptcp) {
             await_stoptcp = false;
             stopTcp();
         }
@@ -395,7 +395,7 @@ public class BaseSDK implements ChannelListener {
     //发送心跳
     public void send_report_heart() {
         //组装报文
-        final String request = PackDataUtil.packRequestStr(mContext, PackDataUtil.createWaterNumber(), AppConst.REPORT_HEARTBEAT, AppConst.REPORT_THE_REQUEST, DeviceUtil.getBattery()+"@"+ StepUtils.getStep()+"@");
+        final String request = PackDataUtil.packRequestStr(mContext, PackDataUtil.createWaterNumber(), AppConst.REPORT_HEARTBEAT, AppConst.REPORT_THE_REQUEST, DeviceUtil.getBattery() + "@" + StepUtils.getStep() + "@");
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -611,20 +611,20 @@ public class BaseSDK implements ChannelListener {
                     if (data.equals(AppConst.MODEL_POWER_SAVING)) {
                         PreferencesUtils.getInstance(mContext).setString("locationMode", AppConst.MODEL_POWER_SAVING);
                         PreferencesUtils.getInstance(mContext).setLong("locationModeStart", System.currentTimeMillis());
-                        canalAlarm(mContext,BroadcastConstant.GPS,0);
+                        canalAlarm(mContext, BroadcastConstant.GPS, 0);
                     } else if (data.equals(AppConst.MODEL_BALANCE)) {
-                        PreferencesUtils.getInstance(mContext).setString("locationMode",  AppConst.MODEL_BALANCE);
+                        PreferencesUtils.getInstance(mContext).setString("locationMode", AppConst.MODEL_BALANCE);
                         PreferencesUtils.getInstance(mContext).setLong("locationModeStart", System.currentTimeMillis());
                         period = 20 * 60;
-                        canalAlarm(mContext,BroadcastConstant.GPS,0);
-                        setAlarmTime(mContext,System.currentTimeMillis(),BroadcastConstant.GPS, initialDelay,0);
+                        canalAlarm(mContext, BroadcastConstant.GPS, 0);
+                        setAlarmTime(mContext, System.currentTimeMillis(), BroadcastConstant.GPS, initialDelay, 0);
                     } else if (data.equals(AppConst.MODEL_REAL_TIME)) {
-                        PreferencesUtils.getInstance(mContext).setString("locationModeOld", PreferencesUtils.getInstance(mContext).getString("locationMode",  AppConst.MODEL_BALANCE));
+                        PreferencesUtils.getInstance(mContext).setString("locationModeOld", PreferencesUtils.getInstance(mContext).getString("locationMode", AppConst.MODEL_BALANCE));
                         PreferencesUtils.getInstance(mContext).setString("locationMode", AppConst.MODEL_REAL_TIME);
                         PreferencesUtils.getInstance(mContext).setLong("locationModeStart", System.currentTimeMillis());
                         period = 3 * 60;
-                        canalAlarm(mContext,BroadcastConstant.GPS,0);
-                        setAlarmTime(mContext,System.currentTimeMillis(),BroadcastConstant.GPS, initialDelay,0);
+                        canalAlarm(mContext, BroadcastConstant.GPS, 0);
+                        setAlarmTime(mContext, System.currentTimeMillis(), BroadcastConstant.GPS, initialDelay, 0);
                         //计算结束时间 realTime
                         long endTime = System.currentTimeMillis() + 30 * 60 * 1000;
                         PreferencesUtils.getInstance(mContext).setLong("realTimeModeEnd", endTime);
@@ -641,7 +641,7 @@ public class BaseSDK implements ChannelListener {
                     String[] startEnd = strings[1].split("-");
                     String type = strings[0];
                     if (type.equals("1")) {
-                        String locationModeNow = PreferencesUtils.getInstance(mContext).getString("locationMode",  AppConst.MODEL_BALANCE);
+                        String locationModeNow = PreferencesUtils.getInstance(mContext).getString("locationMode", AppConst.MODEL_BALANCE);
                         if (locationModeNow.equals(AppConst.MODEL_REAL_TIME)) {//实时模式
                             PreferencesUtils.getInstance(mContext).setString("locationModeOld", AppConst.MODEL_AWAIT);
                             return;
@@ -650,8 +650,8 @@ public class BaseSDK implements ChannelListener {
                         PreferencesUtils.getInstance(mContext).setString("awaitModeStart", startEnd[0]);
                         PreferencesUtils.getInstance(mContext).setString("awaitModeEnd", startEnd[1]);
                         //上报一次位置
-                        canalAlarm(mContext,BroadcastConstant.GPS,0);
-                        setAlarmTime(mContext,System.currentTimeMillis(),BroadcastConstant.GPS, initialDelay,0);
+                        canalAlarm(mContext, BroadcastConstant.GPS, 0);
+                        setAlarmTime(mContext, System.currentTimeMillis(), BroadcastConstant.GPS, initialDelay, 0);
 
 
                         String str = PackDataUtil.packRequestStr(BaseSDK.getBaseContext(), waterNumber, AppConst.SET_REDAY_MODE, AppConst.RESPONSE_OF_ISSUED, "0");
@@ -713,7 +713,7 @@ public class BaseSDK implements ChannelListener {
                     String str = PackDataUtil.packRequestStr(BaseSDK.getBaseContext(), waterNumber, AppConst.REQUEST_CALL, AppConst.RESPONSE_OF_ISSUED, "0");
                     NettyClient.getInstance(mContext).sendMsgToServer(str, null);
                 } else if (response.getCmd().equals(AppConst.SET_CLASS_MODEL)) {//课堂模式
-                    ClassModel classModel = ClassModel.parseJson(mContext,data);
+                    ClassModel classModel = ClassModel.parseJson(mContext, data);
                     PreferencesUtils.getInstance(mContext).setString("classModel", JsonUtil.toJSONString(classModel));
                     //静音
                     DeviceUtil.silentSwitchOn(mContext);
@@ -814,7 +814,7 @@ public class BaseSDK implements ChannelListener {
 //                    //向主线程发送消息
 //                    handler.sendMessage(message);
 
-                }else if (response.getCmd().equals(AppConst.SET_HEALTH)) {//设置心率，温度的上报频率：参数标识@参数@
+                } else if (response.getCmd().equals(AppConst.SET_HEALTH)) {//设置心率，温度的上报频率：参数标识@参数@
                     //第一位:参数标识
                     //10 心率上报频率设置
                     //11 获取实时心率
@@ -828,16 +828,16 @@ public class BaseSDK implements ChannelListener {
                     // 每个时间点之间用！符分割，每天用#分割
                     try {
                         String[] datas = data.split("@");
-                        if(datas[0].equals("10")){//心率上报频率设置
+                        if (datas[0].equals("10")) {//心率上报频率设置
 
-                        }else if(datas[0].equals("11")){//获取实时心率
+                        } else if (datas[0].equals("11")) {//获取实时心率
 
-                        }else if(datas[0].equals("20")){//温度上报频率设置
+                        } else if (datas[0].equals("20")) {//温度上报频率设置
                             TemFrequency temFrequency = TemFrequency.parseJson(datas[1]);
                             PreferencesUtils.getInstance(mContext).setString("temFrequency", JsonUtil.toJSONString(temFrequency));
                             String str = PackDataUtil.packRequestStr(BaseSDK.getBaseContext(), waterNumber, AppConst.SET_HEALTH, AppConst.RESPONSE_OF_ISSUED, "0@0@0");
                             NettyClient.getInstance(mContext).sendMsgToServer(str, null);
-                        }else if(datas[0].equals("21")) {//获取实时温度
+                        } else if (datas[0].equals("21")) {//获取实时温度
                             AppConst.ISSUED_TEM_WATERNUMBER = waterNumber;
                             //发送广播 获取实时温度
                             Intent intent = new Intent();
@@ -857,133 +857,72 @@ public class BaseSDK implements ChannelListener {
                     if (strings[2].equals("1")) {//需要 恢复出厂设置
                         clearPreferences();
                     }
-
-                    if (PropertiesUtil.getInstance().isWeixiao(mContext)) {
-                        if (!strings[0].equals("2")) {
-                            AppConst.LOGIN_SUCCESS = true;
-                            PreferencesUtils.getInstance(mContext).setBoolean("loginLater", false);//
-                            LogUtil.e("登陆成功");
-                            handler.sendEmptyMessage(2);//上报GPS数据
-                            LogUtil.d("AppConst.BOOTBROADCAST：" + AppConst.BOOTBROADCAST);
-                            if (AppConst.BOOTBROADCAST) {
-                                AppConst.BOOTBROADCAST = false;
-                                String dataButtery = "4@" + DeviceUtil.getBattery();
-                                BaseSDK.getInstance().sendBootAndShutdown(dataButtery, new OnReceiveListener() {
-                                    @Override
-                                    public void onResponse(final String msg) {
-                                        LogUtil.d("自动开机的return: " + msg);
-                                    }
-                                });
-                            }
-
-                            //端口获取
-                            BaseSDK.getInstance().getSmsPort("1", new OnReceiveListener() {
+                    if (strings[0].equals("0") && strings[1].equals("0") && strings[2].equals("0")) {
+                        AppConst.LOGIN_SUCCESS = true;
+                        PreferencesUtils.getInstance(mContext).setBoolean("loginLater", false);//
+                        LogUtil.e("登陆成功");
+                        handler.sendEmptyMessage(2);//上报GPS数据
+                        handler.sendEmptyMessage(8);//心跳
+                        LogUtil.d("AppConst.BOOTBROADCAST：" + AppConst.BOOTBROADCAST);
+                        if (AppConst.BOOTBROADCAST) {
+                            AppConst.BOOTBROADCAST = false;
+                            String dataButtery = "4@" + DeviceUtil.getBattery();
+                            BaseSDK.getInstance().sendBootAndShutdown(dataButtery, new OnReceiveListener() {
                                 @Override
                                 public void onResponse(final String msg) {
+                                    LogUtil.d("自动开机的return: " + msg);
                                 }
                             });
-                            //呼入号码获取
-                            BaseSDK.getInstance().getIncomingCall("1", new OnReceiveListener() {
-                                @Override
-                                public void onResponse(final String msg) {
-
-                                }
-                            });
-                            //按键获取
-                            BaseSDK.getInstance().getNormalButton("1", new OnReceiveListener() {
-                                @Override
-                                public void onResponse(final String msg) {
-
-                                }
-                            });
-                            //课堂模式获取
-                            BaseSDK.getInstance().getClassModel("1", new OnReceiveListener() {
-                                @Override
-                                public void onResponse(final String msg) {
-
-                                }
-                            });
-                        }else {//需要发送短信
-                            LogUtil.e("登陆失败，发送短信");
-                            AppConst.LOGIN_SUCCESS = false;
-                            if (count_send_login >= 10) {
-                                stopTcp();
-                                return;
-                            }
-                            sendSMS(mContext, strings[1], DeviceUtil.getPhoneIMEI(mContext) + "@" + DeviceUtil.getSimSerialNumber(mContext));
-                            //2分钟以后重复登陆
-                            handler.sendEmptyMessage(3);
-
                         }
-                    } else {
-                        if (strings[0].equals("0") && strings[1].equals("0") && strings[2].equals("0")) {
-                            AppConst.LOGIN_SUCCESS = true;
-                            PreferencesUtils.getInstance(mContext).setBoolean("loginLater", false);//
-                            LogUtil.e("登陆成功");
-                            handler.sendEmptyMessage(2);//上报GPS数据
-                            handler.sendEmptyMessage(8);//心跳
-                            LogUtil.d("AppConst.BOOTBROADCAST：" + AppConst.BOOTBROADCAST);
-                            if (AppConst.BOOTBROADCAST) {
-                                AppConst.BOOTBROADCAST = false;
-                                String dataButtery = "4@" + DeviceUtil.getBattery();
-                                BaseSDK.getInstance().sendBootAndShutdown(dataButtery, new OnReceiveListener() {
-                                    @Override
-                                    public void onResponse(final String msg) {
-                                        LogUtil.d("自动开机的return: " + msg);
-                                    }
-                                });
+                        //端口获取
+                        BaseSDK.getInstance().getSmsPort("1", new OnReceiveListener() {
+                            @Override
+                            public void onResponse(final String msg) {
                             }
-                            //端口获取
-                            BaseSDK.getInstance().getSmsPort("1", new OnReceiveListener() {
-                                @Override
-                                public void onResponse(final String msg) {
-                                }
-                            });
-                            //呼入号码获取
-                            BaseSDK.getInstance().getIncomingCall("1", new OnReceiveListener() {
-                                @Override
-                                public void onResponse(final String msg) {
+                        });
+                        //呼入号码获取
+                        BaseSDK.getInstance().getIncomingCall("1", new OnReceiveListener() {
+                            @Override
+                            public void onResponse(final String msg) {
 
-                                }
-                            });
-                            //按键获取
-                            BaseSDK.getInstance().getNormalButton("1", new OnReceiveListener() {
-                                @Override
-                                public void onResponse(final String msg) {
+                            }
+                        });
+                        //按键获取
+                        BaseSDK.getInstance().getNormalButton("1", new OnReceiveListener() {
+                            @Override
+                            public void onResponse(final String msg) {
 
-                                }
-                            });
-                            //课堂模式获取
-                            BaseSDK.getInstance().getClassModel("1", new OnReceiveListener() {
-                                @Override
-                                public void onResponse(final String msg) {
+                            }
+                        });
+                        //课堂模式获取
+                        BaseSDK.getInstance().getClassModel("1", new OnReceiveListener() {
+                            @Override
+                            public void onResponse(final String msg) {
 
-                                }
-                            });
-                        } else if (strings[0].equals("1")) {//设备认为登录失败，会在下一次心跳时间（5 分钟后）重新发送登录报文
-                            AppConst.LOGIN_SUCCESS = false;
-                            LogUtil.e("设备认为登录失败，5分钟以后重复登陆");
-                            PreferencesUtils.getInstance(mContext).setBoolean("loginLater", true);//
-                            //5分钟以后重复登陆
-                            handler.sendEmptyMessage(4);
-
-                        } else if (strings[0].equals("2")) {//终端不会再向平台发送信息，除非重启设备
-                            AppConst.LOGIN_SUCCESS = false;
+                            }
+                        });
+                    } else if (strings[0].equals("1")) {//设备认为登录失败，会在下一次心跳时间（5 分钟后）重新发送登录报文
+                        AppConst.LOGIN_SUCCESS = false;
+                        LogUtil.e("设备认为登录失败，5分钟以后重复登陆");
+                        PreferencesUtils.getInstance(mContext).setBoolean("loginLater", true);//
+                        //5分钟以后重复登陆
+                        handler.sendEmptyMessage(4);
+                    } else if (strings[0].equals("2")) {//终端不会再向平台发送信息，除非重启设备
+                        AppConst.LOGIN_SUCCESS = false;
+                        stopTcp();
+                    } else if (strings[2].equals("1")) {//需要发送短信
+                        LogUtil.e("登陆失败，发送短信");
+                        AppConst.LOGIN_SUCCESS = false;
+                        if (count_send_login >= 10) {
                             stopTcp();
-                        } else if (strings[2].equals("1")) {//需要发送短信
-                            LogUtil.e("登陆失败，发送短信");
-                            AppConst.LOGIN_SUCCESS = false;
-                            if (count_send_login >= 10) {
-                                stopTcp();
-                                return;
-                            }
-                            sendSMS(mContext, strings[1], DeviceUtil.getPhoneIMEI(mContext) + "@" + DeviceUtil.getSimSerialNumber(mContext));
-                            //2分钟以后重复登陆
-                            handler.sendEmptyMessage(3);
-
+                            return;
                         }
+                        if (!PropertiesUtil.getInstance().isWeixiao(mContext)) {
+                            sendSMS(mContext, strings[1], DeviceUtil.getPhoneIMEI(mContext) + "@" + DeviceUtil.getSimSerialNumber(mContext));
+                        }
+                        //2分钟以后重复登陆
+                        handler.sendEmptyMessage(3);
                     }
-
                 } else if (response.getCmd().equals(AppConst.REPORT_HEARTBEAT)) {
                     LogUtil.e("heart return");
                 } else if (response.getCmd().equals(AppConst.GET_SERVICE_MSG)) {//更新
@@ -1021,7 +960,7 @@ public class BaseSDK implements ChannelListener {
                     if (data.equals("0") || data.equals("1") || data.equals("2")) {
                         LogUtil.e("异常应答:" + data);
                     } else {
-                        ClassModel classModel = ClassModel.parseJson(mContext,data);
+                        ClassModel classModel = ClassModel.parseJson(mContext, data);
                         PreferencesUtils.getInstance(mContext).setString("classModel", JsonUtil.toJSONString(classModel));
                     }
                 } else if (response.getCmd().equals(AppConst.GET_INCOMING_CALL)) {//呼入号码
@@ -1072,39 +1011,39 @@ public class BaseSDK implements ChannelListener {
 
     //定时上报，wifi优先
     public void findWifi() {
-        if(NetworkUtil.mWifiList.size()>=5){//5个以上有效
+        if (NetworkUtil.mWifiList.size() >= 5) {//5个以上有效
             String locationInfo = NetworkUtil.packNetInfo(mContext, 0, 0, "");
             executor(locationInfo);
-        }else {//5个一下，上报gps
+        } else {//5个一下，上报gps
             findGPS();
         }
     }
 
     public void findGPS() {
         GPS_ING = true;
-        try{
+        try {
             getLocation(mContext); //去定位
 //            if (gpsstate.equals("0")) {
-                new CountDownTimer(10000, 1000) {
-                    @Override
-                    public void onTick(long millisUntilFinished) {
-                        LogUtil.e("CountDownTimer：onTick：" + millisUntilFinished);
-                    }
+            new CountDownTimer(10000, 1000) {
+                @Override
+                public void onTick(long millisUntilFinished) {
+                    LogUtil.e("CountDownTimer：onTick：" + millisUntilFinished);
+                }
 
-                    @Override
-                    public void onFinish() {
-                        LogUtil.e("CountDownTimer：onFinish");
-                        LogUtil.writeInFile(mContext, "CountDownTimer：onFinish, no location return!!!!!!!");
-                        if (GETGPS == true) {//已经在20秒内请求到位置信息
-                            GETGPS = false;
-                        } else {//20秒内没有收到GPS信息
-                            String locationInfo = NetworkUtil.packNetInfo(mContext, 0, 0, "");
-                            executor(locationInfo);
-                        }
+                @Override
+                public void onFinish() {
+                    LogUtil.e("CountDownTimer：onFinish");
+                    LogUtil.writeInFile(mContext, "CountDownTimer：onFinish, no location return!!!!!!!");
+                    if (GETGPS == true) {//已经在20秒内请求到位置信息
+                        GETGPS = false;
+                    } else {//20秒内没有收到GPS信息
+                        String locationInfo = NetworkUtil.packNetInfo(mContext, 0, 0, "");
+                        executor(locationInfo);
                     }
-                }.start();
+                }
+            }.start();
 //            }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -1114,24 +1053,24 @@ public class BaseSDK implements ChannelListener {
         getLocation(mContext);
         //去定位
 //        if (gpsstate.equals("0")) {
-            new CountDownTimer(10000, 1000) {
-                @Override
-                public void onTick(long millisUntilFinished) {
+        new CountDownTimer(10000, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
 //                    LogUtil.e("CountDownTimer：onTick：" + millisUntilFinished);
-                }
+            }
 
-                @Override
-                public void onFinish() {
-                    LogUtil.e("CountDownTimer：onFinish");
-                    LogUtil.writeInFile(mContext, "CountDownTimer：onFinish, no location return!!!!!!!");
-                    if (GETGPSGET == true) {//已经在20秒内请求到位置信息
-                        GETGPSGET = false;
-                    } else {//20秒内没有收到GPS信息
-                        String locationInfo = NetworkUtil.packNetInfo(mContext, 0, 0, "");
-                        executorGet(locationInfo);
-                    }
+            @Override
+            public void onFinish() {
+                LogUtil.e("CountDownTimer：onFinish");
+                LogUtil.writeInFile(mContext, "CountDownTimer：onFinish, no location return!!!!!!!");
+                if (GETGPSGET == true) {//已经在20秒内请求到位置信息
+                    GETGPSGET = false;
+                } else {//20秒内没有收到GPS信息
+                    String locationInfo = NetworkUtil.packNetInfo(mContext, 0, 0, "");
+                    executorGet(locationInfo);
                 }
-            }.start();
+            }
+        }.start();
 //        }
     }
 
@@ -1193,7 +1132,7 @@ public class BaseSDK implements ChannelListener {
     class GPSListener implements LocationListener {
         @Override
         public void onLocationChanged(Location location) {
-            if(GPS_ING == true){
+            if (GPS_ING == true) {
                 latitude[0] = location.getLatitude();
                 longitude[0] = location.getLongitude();
                 String locationInfo = NetworkUtil.packNetInfo(mContext, latitude[0], longitude[0], TimeUtils.getNowTimeString(TimeUtils.format6));
@@ -1206,7 +1145,7 @@ public class BaseSDK implements ChannelListener {
                 GETGPS = true;
             }
 
-            if(GPS_GET_ING == true){
+            if (GPS_GET_ING == true) {
                 latitude[0] = location.getLatitude();
                 longitude[0] = location.getLongitude();
                 String locationInfo = NetworkUtil.packNetInfo(mContext, latitude[0], longitude[0], TimeUtils.getNowTimeString(TimeUtils.format6));
@@ -1246,9 +1185,11 @@ public class BaseSDK implements ChannelListener {
     public long getPeriodHeart() {
         return period_heart;
     }
+
     public void setPeriod_heart(int period) {
-         period_heart = period;
+        period_heart = period;
     }
+
     public long getPeriod() {
         return period;
     }
@@ -1258,15 +1199,16 @@ public class BaseSDK implements ChannelListener {
     }
 
 
+    //链接，并登陆成功
     public boolean getConnectStatus() {
-        return NettyClient.getInstance(mContext).getConnectStatus();
+        return NettyClient.getInstance(mContext).getConnectStatus() && AppConst.LOGIN_SUCCESS;
     }
 
-    public void setAlarmTime(Context context, long timeInMillis,String action, int interval,int requestCode) {
+    public void setAlarmTime(Context context, long timeInMillis, String action, int interval, int requestCode) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
         Intent intent = new Intent(action);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, requestCode, intent,PendingIntent.FLAG_CANCEL_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, requestCode, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 
         //参数2是开始时间、参数3是允许系统延迟的时间
         alarmManager.setExact(AlarmManager.RTC, timeInMillis, pendingIntent);
@@ -1274,14 +1216,14 @@ public class BaseSDK implements ChannelListener {
 
     }
 
-    public void canalAlarm(Context context, String action,int requestCode) {
+    public void canalAlarm(Context context, String action, int requestCode) {
         Intent intent = new Intent(action);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, requestCode, intent,PendingIntent.FLAG_CANCEL_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, requestCode, intent, PendingIntent.FLAG_CANCEL_CURRENT);
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         alarmManager.cancel(pendingIntent);
     }
 
-    private void clearPreferences(){
+    private void clearPreferences() {
         PreferencesUtils.getInstance(mContext).setString("phoneNumber", "");
         PreferencesUtils.getInstance(mContext).setString("locationModeOld", "");
         PreferencesUtils.getInstance(mContext).setString("locationMode", AppConst.MODEL_BALANCE);
