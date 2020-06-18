@@ -70,9 +70,8 @@ public class SmsReceiver extends BroadcastReceiver {
                 } else if ("WAKEUP#".equals(body.toString())) {//设备唤醒
                     BaseSDK.getInstance().init(context);
 //                    sendSmsWhat(context, 1);
-                    PreferencesUtils.getInstance(context).setString("awaitModeStart", "");
-                    PreferencesUtils.getInstance(context).setString("awaitModeEnd", "");
-                    PreferencesUtils.getInstance(context).setString("locationModeOld", AppConst.MODEL_AWAIT);
+                    PreferencesUtils.getInstance(context).setString("WAKEUPTime", TimeUtils.getNowTimeString(TimeUtils.format8));
+                    PreferencesUtils.getInstance(context).setString("locationModeOld", PreferencesUtils.getInstance(context).getString("locationMode", AppConst.MODEL_BALANCE));
                     LogUtil.e("上报设备模式5");
                     BaseSDK.getInstance().send_device_status(PreferencesUtils.getInstance(context).getString("locationMode", AppConst.MODEL_BALANCE));
 

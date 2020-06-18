@@ -12,14 +12,7 @@
         android:paddingBottom="30px"
         android:layout_width="56px"
         android:layout_height="56px" />
-    <ImageView
-        android:padding="30dp"
-        android:id="@+id/iv_tem_list"
-        android:layout_alignParentRight="true"
-        android:layout_width="30px"
-        android:src="@drawable/tem_list"
-        android:visibility="gone"
-        android:layout_height="30px" />
+
 
     <RelativeLayout
         android:layout_centerInParent="true"
@@ -119,5 +112,14 @@
             android:src="@drawable/tem_reset" />
 
     </RelativeLayout>
+
+    <ImageView
+        android:paddingLeft="30px"
+        android:paddingBottom="30px"
+        android:id="@+id/iv_tem_list"
+        android:layout_alignParentRight="true"
+        android:layout_width="60px"
+        android:src="@drawable/tem_list"
+        android:layout_height="60px" />
 
 </RelativeLayout>

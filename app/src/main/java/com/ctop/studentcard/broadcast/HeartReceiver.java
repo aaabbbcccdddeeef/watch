@@ -7,7 +7,9 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.ctop.studentcard.base.BaseSDK;
+import com.ctop.studentcard.util.AppConst;
 import com.ctop.studentcard.util.LogUtil;
+import com.ctop.studentcard.util.PreferencesUtils;
 
 public class HeartReceiver extends BroadcastReceiver {
     @Override
@@ -19,7 +21,10 @@ public class HeartReceiver extends BroadcastReceiver {
             if(BaseSDK.getInstance().getConnectStatus()){//定时上报
                 BaseSDK.getInstance().send_report_heart();
             }else {
-                BaseSDK.getInstance().connect();
+                String locationModeNow = PreferencesUtils.getInstance(context).getString("locationMode", AppConst.MODEL_BALANCE);
+                if(!locationModeNow.equals(AppConst.MODEL_AWAIT)){//待机模式时候，不链接平台
+                    BaseSDK.getInstance().connect();
+                }
             }
             //因为setWindow只执行一次，所以要重新定义闹钟实现循环。
             AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);

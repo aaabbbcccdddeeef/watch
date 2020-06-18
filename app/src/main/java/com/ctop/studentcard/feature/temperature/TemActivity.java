@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.view.View;
 import android.view.WindowManager;
@@ -107,7 +108,7 @@ public class TemActivity extends BaseActivity implements View.OnClickListener {
 
             //简单渐变动画
             AlphaAnimation alphaAnimation = new AlphaAnimation(1, 0);//渐变度从0到1
-            alphaAnimation.setDuration(3000);//动画持续时间：2000毫秒
+            alphaAnimation.setDuration(2000);//动画持续时间：2000毫秒
             start_rl.startAnimation(alphaAnimation);
 
             alphaAnimation.setAnimationListener(new Animation.AnimationListener() {

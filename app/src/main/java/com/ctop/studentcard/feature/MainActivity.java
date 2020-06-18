@@ -45,6 +45,7 @@ import com.ctop.studentcard.util.KeyUtil;
 import com.ctop.studentcard.util.LogUtil;
 import com.ctop.studentcard.util.PreferencesUtils;
 import com.ctop.studentcard.util.TimeUtils;
+import com.ctop.studentcard.util.ToastUtils;
 import com.ctop.studentcard.util.ai.KdxfSpeechSynthesizerUtil;
 import com.ctop.studentcard.util.calls.CallsUtil;
 
@@ -160,25 +161,21 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
                     KdxfSpeechSynthesizerUtil.getInstance(mContext,"请设置S O S号码");
                     return;
                 } else {
-                    if(needRejectCall()){
-                        Toast.makeText(mContext,"课堂时间内无法拨打电话",Toast.LENGTH_LONG).show();
-                    }else {
-                        PhoneNumber phoneNumber = JsonUtil.parseObject(phontNu, PhoneNumber.class);
-                        Intent intent = new Intent(Intent.ACTION_CALL);
-                        Uri data = Uri.parse("tel:" + phoneNumber.getSosNumber());
-                        intent.setData(data);
-                        startActivity(intent);
-                        //上报设备模式
-                        LogUtil.e("上报设备模式8");
-                        BaseSDK.getInstance().send_device_status("3");
-                        //设置30分钟的实时模式
-                        PreferencesUtils.getInstance(mContext).setString("locationModeOld", PreferencesUtils.getInstance(mContext).getString("locationMode",  AppConst.MODEL_BALANCE));
-                        PreferencesUtils.getInstance(mContext).setString("locationMode", AppConst.MODEL_REAL_TIME);
-                        BaseSDK.getInstance().setPeriod(3 * 60);
-                        //计算结束时间 realTime
-                        long endTime = System.currentTimeMillis() + 30 * 60 * 1000;
-                        PreferencesUtils.getInstance(mContext).setLong("realTimeModeEnd", endTime);
-                    }
+                    PhoneNumber phoneNumber = JsonUtil.parseObject(phontNu, PhoneNumber.class);
+                    Intent intent = new Intent(Intent.ACTION_CALL);
+                    Uri data = Uri.parse("tel:" + phoneNumber.getSosNumber());
+                    intent.setData(data);
+                    startActivity(intent);
+                    //上报设备模式
+                    LogUtil.e("上报设备模式8");
+                    BaseSDK.getInstance().send_device_status("3");
+                    //设置30分钟的实时模式
+                    PreferencesUtils.getInstance(mContext).setString("locationModeOld", PreferencesUtils.getInstance(mContext).getString("locationMode",  AppConst.MODEL_BALANCE));
+                    PreferencesUtils.getInstance(mContext).setString("locationMode", AppConst.MODEL_REAL_TIME);
+                    BaseSDK.getInstance().setPeriod(3 * 60);
+                    //计算结束时间 realTime
+                    long endTime = System.currentTimeMillis() + 30 * 60 * 1000;
+                    PreferencesUtils.getInstance(mContext).setLong("realTimeModeEnd", endTime);
                 }
             } else if (msg.what == 5) {
                 handleTime();
@@ -262,6 +259,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
             this.x1 = motionEvent.getX();
             this.y1 = motionEvent.getY();
         } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+
             this.x2 = motionEvent.getX();
             this.y2 = motionEvent.getY();
             int i = ViewConfiguration.get(this).getScaledTouchSlop();
@@ -271,8 +269,14 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
             LogUtil.e("x2===" + x2);
             LogUtil.e("f3===" + f3);
             if (this.x1 - this.x2 > f3) {
-                showFeatureMenu();
-                return true;
+                if(inclassmode()){
+                    ToastUtils.getInstance(mContext).showShortToast("禁用时段");
+//                    Toast.makeText(mContext,"禁用时段",Toast.LENGTH_LONG).show();
+                    return true;
+                }else {
+                    showFeatureMenu();
+                    return true;
+                }
             }
             if (this.y1 - this.y2 > f3) {
                 startActivity(new Intent(MainActivity.this, CallNumberActivity.class));
@@ -280,9 +284,15 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
                 return true;
             }
             if (this.x2 - this.x1 > f3) {
-                startActivity(new Intent(MainActivity.this, AIUIActivity.class));
-                overridePendingTransition(R.anim.left_to_right, R.anim.right_to_left);
-                return true;
+                if(inclassmode()){
+                    ToastUtils.getInstance(mContext).showShortToast("禁用时段");
+//                    Toast.makeText(mContext,"禁用时段",Toast.LENGTH_LONG).show();
+                    return true;
+                }else {
+                    startActivity(new Intent(MainActivity.this, AIUIActivity.class));
+                    overridePendingTransition(R.anim.left_to_right, R.anim.right_to_left);
+                    return true;
+                }
             }
         }
         return super.onTouchEvent(motionEvent);
@@ -338,7 +348,6 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
         buttueryReceiver = new ButtueryReceiver();
         final IntentFilter homeFilter = new IntentFilter(BroadcastConstant.BUTTERY_STATE);
         context.registerReceiver(buttueryReceiver, homeFilter);
-
 
         LogUtil.i("registerStrengthReceiver");
         strengthReceiver = new StrengthReceiver();
@@ -449,7 +458,25 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
     }
 
     private boolean needRejectCall(){
-        boolean rejectflag = false;
+        if(inclassmode()){
+            return true;
+        }
+        //通话时长
+        int callTimeLongAlready = PreferencesUtils.getInstance(mContext).getInt("callTimeLongAlready", 0);
+        String callSetting = PreferencesUtils.getInstance(mContext).getString("callSetting", "");
+        int callTimeLong = PreferencesUtils.getInstance(mContext).getInt("callTimeLong", -1);
+        if ("1".equals(callSetting)){
+            if (-1 != callTimeLong) {
+                if (callTimeLongAlready >= callTimeLong) {
+                    toastStr = "您本月的通话时长已用完";
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean inclassmode(){
         //课堂模式
         String classModelString = PreferencesUtils.getInstance(mContext).getString("classModel", "");
         ClassModel classModel = JsonUtil.parseObject(classModelString, ClassModel.class);
@@ -468,39 +495,20 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
                             if (awaitstartInt < awaitendInt) {//同一天
                                 if (timeNowInt > awaitstartInt && timeNowInt < awaitendInt) {
                                     toastStr = "您正处于课堂模式时间，呼出已受限";
-                                    rejectflag = true;
-                                    return rejectflag;
+                                    return true;
                                 }
                             } else {//不同天
                                 if (timeNowInt > awaitstartInt || timeNowInt < awaitendInt) {
                                     toastStr = "您正处于课堂模式时间，呼出已受限";
-                                    rejectflag = true;
-                                    return rejectflag;
+                                    return true;
                                 }
                             }
                         }
                     }
-
                 }
             }
         }
-
-        //通话时长
-        int callTimeLongAlready = PreferencesUtils.getInstance(mContext).getInt("callTimeLongAlready", 0);
-        String callSetting = PreferencesUtils.getInstance(mContext).getString("callSetting", "");
-        int callTimeLong = PreferencesUtils.getInstance(mContext).getInt("callTimeLong", -1);
-        if ("1".equals(callSetting)){
-            if (-1 != callTimeLong) {
-                if (callTimeLongAlready >= callTimeLong) {
-                    toastStr = "您本月的通话时长已用完";
-                    rejectflag = true;
-                    return rejectflag;
-                }
-            }
-        }
-
-
-        return rejectflag;
+        return false;
     }
 
 }

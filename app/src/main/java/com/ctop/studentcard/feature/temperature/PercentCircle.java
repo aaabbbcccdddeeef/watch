@@ -5,10 +5,10 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.PorterDuff;
+import android.graphics.Path;
+import android.graphics.PathEffect;
 import android.graphics.RectF;
 import android.os.Handler;
-import android.os.Message;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -105,6 +105,8 @@ public class PercentCircle extends View {
         mBackgroundPaint.setAntiAlias(true);
         mBackgroundPaint.setColor(mBackgroundColor);
         mBackgroundPaint.setStyle(Paint.Style.FILL);
+        mBackgroundPaint.setStrokeCap(Paint.Cap.ROUND);
+        mBackgroundPaint.setStrokeJoin(Paint.Join.ROUND);
 
         //设置百分比文字的画笔
         mTextPaint = new Paint();
@@ -114,6 +116,8 @@ public class PercentCircle extends View {
         mTextPaint.setStrokeWidth(20);
         mTextPaint.setTextSize(46);   //文字大小为半径的一半
         mTextPaint.setTextAlign(Paint.Align.CENTER);
+        mTextPaint.setStrokeCap(Paint.Cap.ROUND);
+        mTextPaint.setStrokeJoin(Paint.Join.ROUND);
 
         //设置白色环的画笔
         mRingPaintWhite = new Paint();
@@ -121,6 +125,8 @@ public class PercentCircle extends View {
         mRingPaintWhite.setColor(Color.WHITE);
         mRingPaintWhite.setStyle(Paint.Style.STROKE);
         mRingPaintWhite.setStrokeWidth(strokeWidth);
+        mRingPaintWhite.setStrokeCap(Paint.Cap.ROUND);
+        mRingPaintWhite.setStrokeJoin(Paint.Join.ROUND);
 
         //设置蓝色圆环的画笔
         mRingPaint = new Paint();
@@ -128,20 +134,25 @@ public class PercentCircle extends View {
         mRingPaint.setColor(mRingColor);
         mRingPaint.setStyle(Paint.Style.STROKE);
         mRingPaint.setStrokeWidth(strokeWidth);
+        mRingPaint.setStrokeCap(Paint.Cap.ROUND);
+        mRingPaint.setStrokeJoin(Paint.Join.ROUND);
 
         //获得文字的字号 因为要设置文字在圆的中心位置
         mTextSize = (int) mTextPaint.getTextSize();
 
 
-        paint = new Paint();
+        //画对钩的笔
+        rightPaint = new Paint();
         //设置画笔颜色
-        paint.setColor(mRingColor);
+        rightPaint.setColor(mRingColor);
         //设置圆弧的宽度
-        paint.setStrokeWidth(lineThick);
+        rightPaint.setStrokeWidth(lineThick);
         //设置圆弧为空心
-        paint.setStyle(Paint.Style.STROKE);
+        rightPaint.setStyle(Paint.Style.STROKE);
         //消除锯齿
-        paint.setAntiAlias(true);
+        rightPaint.setAntiAlias(true);
+        rightPaint.setStrokeCap(Paint.Cap.ROUND);
+        rightPaint.setStrokeJoin(Paint.Join.ROUND);
         //获取圆心的x坐标
         center = (int) (240 / 2);
         //圆弧半径
@@ -221,7 +232,7 @@ public class PercentCircle extends View {
     int radius;
     //定义的圆弧的形状和大小的界限
     RectF rectF;
-    Paint paint;
+    Paint rightPaint;
     boolean secLineInited = false;
 
 
@@ -250,6 +261,7 @@ public class PercentCircle extends View {
 //        canvas.drawRect(mArcRectF, mRingPaint);
 
         if (mCurrentPercent == 100) {
+
 //            canvas.drawColor(0, PorterDuff.Mode.CLEAR);
             canvas.drawCircle(mCircleX, mCircleY, mRadius - (strokeWidth / 2), mBackgroundPaint);
             if (line1X < radius / 3) {
@@ -257,7 +269,11 @@ public class PercentCircle extends View {
                 line1Y += step;
             }
             //画第一根线
-            canvas.drawLine(checkStartX, center, checkStartX + line1X, center + line1Y, paint);
+            Path path = new Path();
+            path.moveTo(checkStartX, center);
+            path.lineTo(checkStartX + line1X, center + line1Y);
+            canvas.drawPath(path, rightPaint);
+//            canvas.drawLine(checkStartX, center, checkStartX + line1X, center + line1Y, rightPaint);
             if (line1X >= radius / 3) {
                 if (!secLineInited) {
                     line2X = line1X;
@@ -267,8 +283,10 @@ public class PercentCircle extends View {
                 line2X += step;
                 line2Y -= step;
                 //画第二根线
-                canvas.drawLine(checkStartX + line1X - lineThick / 2,
-                        center + line1Y, checkStartX + line2X, center + line2Y, paint);
+                path.lineTo(checkStartX + line2X, center + line2Y);
+                canvas.drawPath(path, rightPaint);
+//                canvas.drawLine(checkStartX + line1X - lineThick / 2,
+//                        center + line1Y, checkStartX + line2X, center + line2Y, rightPaint);
             }
             //每隔6毫秒界面刷新
             if (line2X <= radius){

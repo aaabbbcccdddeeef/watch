@@ -81,7 +81,8 @@ public class BaseSDK implements ChannelListener {
 
     private int count_send_login = 0;
     AlarmManager alarmManager;
-    boolean await_stoptcp = false;
+
+    public boolean await_stoptcp = false;
 
     Handler handler = new Handler() {
         public void handleMessage(android.os.Message msg) {
@@ -641,23 +642,20 @@ public class BaseSDK implements ChannelListener {
                     String[] startEnd = strings[1].split("-");
                     String type = strings[0];
                     if (type.equals("1")) {
-                        String locationModeNow = PreferencesUtils.getInstance(mContext).getString("locationMode", AppConst.MODEL_BALANCE);
-                        if (locationModeNow.equals(AppConst.MODEL_REAL_TIME)) {//实时模式
-                            PreferencesUtils.getInstance(mContext).setString("locationModeOld", AppConst.MODEL_AWAIT);
-                            return;
-                        }
-                        PreferencesUtils.getInstance(mContext).setString("locationMode", AppConst.MODEL_AWAIT);
+//                        String locationModeNow = PreferencesUtils.getInstance(mContext).getString("locationMode", AppConst.MODEL_BALANCE);
+//                        if (locationModeNow.equals(AppConst.MODEL_REAL_TIME)) {//实时模式
+//                            PreferencesUtils.getInstance(mContext).setString("locationModeOld", AppConst.MODEL_AWAIT);
+//                            return;
+//                        }
+//                        PreferencesUtils.getInstance(mContext).setString("locationMode", AppConst.MODEL_AWAIT);
+                        PreferencesUtils.getInstance(mContext).setString("WAKEUPTime","");
                         PreferencesUtils.getInstance(mContext).setString("awaitModeStart", startEnd[0]);
                         PreferencesUtils.getInstance(mContext).setString("awaitModeEnd", startEnd[1]);
-                        //上报一次位置
-                        canalAlarm(mContext, BroadcastConstant.GPS, 0);
-                        setAlarmTime(mContext, System.currentTimeMillis(), BroadcastConstant.GPS, initialDelay, 0);
-
-
+//
                         String str = PackDataUtil.packRequestStr(BaseSDK.getBaseContext(), waterNumber, AppConst.SET_REDAY_MODE, AppConst.RESPONSE_OF_ISSUED, "0");
                         NettyClient.getInstance(mContext).sendMsgToServer(str, null);
-
-                        await_stoptcp = true;//关闭tcp
+//
+//                        await_stoptcp = true;//关闭tcp
 
                     } else {
                         PreferencesUtils.getInstance(mContext).setString("locationMode", AppConst.MODEL_BALANCE);
@@ -863,6 +861,9 @@ public class BaseSDK implements ChannelListener {
                         LogUtil.e("登陆成功");
                         handler.sendEmptyMessage(2);//上报GPS数据
                         handler.sendEmptyMessage(8);//心跳
+                        PreferencesUtils.getInstance(mContext).setString("locationModeOld", AppConst.MODEL_BALANCE);//平衡模式
+                        PreferencesUtils.getInstance(mContext).setString("locationMode", AppConst.MODEL_BALANCE);//平衡模式
+
                         LogUtil.d("AppConst.BOOTBROADCAST：" + AppConst.BOOTBROADCAST);
                         if (AppConst.BOOTBROADCAST) {
                             AppConst.BOOTBROADCAST = false;
@@ -1239,5 +1240,15 @@ public class BaseSDK implements ChannelListener {
         PreferencesUtils.getInstance(mContext).setString("incomingCall", "");
 
     }
+
+
+    public boolean isAwait_stoptcp() {
+        return await_stoptcp;
+    }
+
+    public void setAwait_stoptcp(boolean await_stoptcp) {
+        this.await_stoptcp = await_stoptcp;
+    }
+
 
 }

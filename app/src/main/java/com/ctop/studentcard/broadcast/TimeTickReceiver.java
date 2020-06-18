@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.BatteryManager;
 import android.os.Vibrator;
 import android.text.TextUtils;
+import android.view.TextureView;
 
 import java.util.List;
 
@@ -18,10 +19,12 @@ import com.ctop.studentcard.bean.ClickBean;
 import com.ctop.studentcard.bean.TemFrequency;
 import com.ctop.studentcard.feature.MainActivity;
 import com.ctop.studentcard.feature.step.StepUtils;
+import com.ctop.studentcard.netty.NettyClient;
 import com.ctop.studentcard.util.AppConst;
 import com.ctop.studentcard.util.JsonUtil;
 import com.ctop.studentcard.util.LogUtil;
 import com.ctop.studentcard.util.NetworkUtil;
+import com.ctop.studentcard.util.PackDataUtil;
 import com.ctop.studentcard.util.PreferencesUtils;
 import com.ctop.studentcard.util.TimeUtils;
 
@@ -118,12 +121,22 @@ public class TimeTickReceiver extends BroadcastReceiver {
                 int timeNowInt = Integer.parseInt(timeNow);
                 if (awaitstartInt < awaitendInt) {//同一天
                     if (timeNowInt > awaitstartInt && timeNowInt < awaitendInt) {//处于 待机 时间段内
+                        String WAKEUPTime = PreferencesUtils.getInstance(context).getString("WAKEUPTime", "");
+                        if(!TextUtils.isEmpty(WAKEUPTime) && TimeUtils.getNowTimeString(TimeUtils.format8).equals(WAKEUPTime)){
+                            return;//被唤醒
+                        }
                         if(!locationModeNow.equals(AppConst.MODEL_AWAIT)){
-                            PreferencesUtils.getInstance(context).setString("locationMode", AppConst.MODEL_AWAIT);//修改为待机模式
                             PreferencesUtils.getInstance(context).setString("locationModeOld", PreferencesUtils.getInstance(context).getString("locationMode",  AppConst.MODEL_BALANCE));
+                            PreferencesUtils.getInstance(context).setString("locationMode", AppConst.MODEL_AWAIT);//修改为待机模式
+                            //上报一次位置
+                            BaseSDK.getInstance().canalAlarm(context, BroadcastConstant.GPS, 0);
+                            BaseSDK.getInstance().setAlarmTime(context, System.currentTimeMillis(), BroadcastConstant.GPS, 0, 0);
+
                             LogUtil.e("上报设备模式4");
                             BaseSDK.getInstance().send_device_status(AppConst.MODEL_AWAIT);
-                            BaseSDK.getInstance().stopTcp();
+//                            BaseSDK.getInstance().stopTcp();
+                            BaseSDK.getInstance().setAwait_stoptcp(true);
+
                         }
                     } else {
                         if(locationModeNow.equals(AppConst.MODEL_AWAIT)) {
@@ -137,17 +150,24 @@ public class TimeTickReceiver extends BroadcastReceiver {
                     }
                 } else {//不同天
                     if (timeNowInt > awaitstartInt || timeNowInt < awaitendInt) {
+                        String WAKEUPTime = PreferencesUtils.getInstance(context).getString("WAKEUPTime", "");
+                        if(!TextUtils.isEmpty(WAKEUPTime) && TimeUtils.getNowTimeString(TimeUtils.format8).equals(WAKEUPTime)){
+                            return;//被唤醒
+                        }
                         if(!locationModeNow.equals(AppConst.MODEL_AWAIT)) {
-                            PreferencesUtils.getInstance(context).setString("locationMode", AppConst.MODEL_AWAIT);//修改为待机模式
                             PreferencesUtils.getInstance(context).setString("locationModeOld", PreferencesUtils.getInstance(context).getString("locationMode", AppConst.MODEL_BALANCE));
+                            PreferencesUtils.getInstance(context).setString("locationMode", AppConst.MODEL_AWAIT);//修改为待机模式
+                            //上报一次位置
+                            BaseSDK.getInstance().canalAlarm(context, BroadcastConstant.GPS, 0);
+                            BaseSDK.getInstance().setAlarmTime(context, System.currentTimeMillis(), BroadcastConstant.GPS, 0, 0);
                             LogUtil.e("上报设备模式6");
                             BaseSDK.getInstance().send_device_status(AppConst.MODEL_AWAIT);
-                            BaseSDK.getInstance().stopTcp();
+//                            BaseSDK.getInstance().stopTcp();
+                            BaseSDK.getInstance().setAwait_stoptcp(true);
                         }
                     } else {
                         if(locationModeNow.equals(AppConst.MODEL_AWAIT)) {
-                            PreferencesUtils.getInstance(context).setString("locationMode",
-                                    PreferencesUtils.getInstance(context).getString("locationModeOld",  AppConst.MODEL_BALANCE));//从待机模式 还原
+                            PreferencesUtils.getInstance(context).setString("locationMode", PreferencesUtils.getInstance(context).getString("locationModeOld",  AppConst.MODEL_BALANCE));//从待机模式 还原
                             BaseSDK.getInstance().init(context);
                             PreferencesUtils.getInstance(context).setString("locationModeOld", AppConst.MODEL_AWAIT);
                             LogUtil.e("上报设备模式7");
@@ -164,12 +184,22 @@ public class TimeTickReceiver extends BroadcastReceiver {
                 String timeNow = TimeUtils.getNowTimeString(TimeUtils.format4);
                 int timeNowInt = Integer.parseInt(timeNow);
                 if (timeNowInt > awaitstartInt || timeNowInt < awaitendInt) {
+                    String WAKEUPTime = PreferencesUtils.getInstance(context).getString("WAKEUPTime", "");
+                    if(!TextUtils.isEmpty(WAKEUPTime) && TimeUtils.getNowTimeString(TimeUtils.format8).equals(WAKEUPTime)){
+                        return;//被唤醒
+                    }
                     if(!locationModeNow.equals(AppConst.MODEL_AWAIT)) {
                         PreferencesUtils.getInstance(context).setString("locationMode", AppConst.MODEL_AWAIT);//修改为待机模式
                         PreferencesUtils.getInstance(context).setString("locationModeOld", PreferencesUtils.getInstance(context).getString("locationMode", AppConst.MODEL_BALANCE));
+
+                        //上报一次位置
+                        BaseSDK.getInstance().canalAlarm(context, BroadcastConstant.GPS, 0);
+                        BaseSDK.getInstance().setAlarmTime(context, System.currentTimeMillis(), BroadcastConstant.GPS, 0, 0);
+
                         LogUtil.e("上报设备模式6");
                         BaseSDK.getInstance().send_device_status(AppConst.MODEL_AWAIT);
-                        BaseSDK.getInstance().stopTcp();
+//                        BaseSDK.getInstance().stopTcp();
+                        BaseSDK.getInstance().setAwait_stoptcp(true);
                     }
                 } else {
                     if(locationModeNow.equals(AppConst.MODEL_AWAIT)) {
@@ -232,7 +262,7 @@ public class TimeTickReceiver extends BroadcastReceiver {
                 }
             }
             //每天最后一分钟，定时上报 步数，然后清空步数
-            if("1722".equals(TimeUtils.getNowTimeString(TimeUtils.format4))) {
+            if("2359".equals(TimeUtils.getNowTimeString(TimeUtils.format4))) {
                 //上报
                 int step = StepUtils.getStep();
                 BaseSDK.getInstance().sendHealth(
