@@ -315,20 +315,20 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
         int wall_selected_index = PreferencesUtils.getInstance(mContext).getInt("wall_selected_index", 0);
         main_ll.setBackground(getResources().getDrawable(WallpaperActivity.WALL_PAPER_ITEM_ICON[wall_selected_index]));
         //未接电话
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                CallsUtil.getContentCallLogNoRecieve(mContext, mHandler);
-            }
-        }).start();
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                CallsUtil.getContentCallLogNoRecieve(mContext, mHandler);
+//            }
+//        }).start();
         //未读短信
-        SmsMessageDao smsMessageDao = DaoManager.getInstance().getDaoSession().getSmsMessageDao();
-        List<SmsMessage> smsMessageList = smsMessageDao.queryBuilder().where(SmsMessageDao.Properties.Status.eq(0)).orderDesc(SmsMessageDao.Properties.Time).list();
-        if (smsMessageList.size() > 0) {
-            new_sms.setVisibility(View.VISIBLE);
-        } else {
-            new_sms.setVisibility(View.GONE);
-        }
+//        SmsMessageDao smsMessageDao = DaoManager.getInstance().getDaoSession().getSmsMessageDao();
+//        List<SmsMessage> smsMessageList = smsMessageDao.queryBuilder().where(SmsMessageDao.Properties.Status.eq(0)).orderDesc(SmsMessageDao.Properties.Time).list();
+//        if (smsMessageList.size() > 0) {
+//            new_sms.setVisibility(View.VISIBLE);
+//        } else {
+//            new_sms.setVisibility(View.GONE);
+//        }
     }
 
     @Override
@@ -397,6 +397,19 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
             String action = intent.getAction();
 //            LogUtil.e("onReceive: signalStrength: ===" + intent.getExtras().getInt("signalStrength"));
             if (action.equals(BroadcastConstant.LASTSTRENGTH_STATE)) {//Action
+                String state = GSMCellLocation.getNetType(mContext);
+                if (state.equals("1")) {
+                    signalStrengthText.setText("中国移动");
+                } else if (state.equals("2")) {
+                    signalStrengthText.setText("中国联通");
+                } else if (state.equals("3")) {
+                    signalStrengthText.setText("中国电信");
+                }else {
+                    signalStrengthText.setText("未插卡");
+                    signalStrength.setWillNotDraw(true);
+                    return;
+                }
+                signalStrength.setWillNotDraw(false);
                 //>=-90是ok的
                 int signalStrenghtint = intent.getExtras().getInt("signalStrength");
                 LogUtil.e( "onReceive: signalStrenghtint: " + signalStrenghtint);
@@ -409,16 +422,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
                         signalStrength.setImageResource(R.drawable.normal);
                     }
                 }
-                String state = GSMCellLocation.getNetType(mContext);
-                if (state.equals("1")) {
-                    signalStrengthText.setText("中国移动");
-                } else if (state.equals("2")) {
-                    signalStrengthText.setText("中国联通");
-                } else if (state.equals("3")) {
-                    signalStrengthText.setText("中国电信");
-                }else {
-                    signalStrengthText.setText("未插卡");
-                }
+
             }
         }
     }

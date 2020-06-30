@@ -94,6 +94,7 @@ public class CallTimeObserver extends ContentObserver {
                 break;
             }
         }
+        cursor.close();
         Message msg = Message.obtain();
         msg.what = handlerWhat;
         msg.obj = durationLong;

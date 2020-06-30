@@ -121,7 +121,7 @@ public class CallLogObserver extends ContentObserver {
             mHandler.sendMessage(msg);
             break;
         }
-
+        cursor.close();
         return retStr;
     }
 

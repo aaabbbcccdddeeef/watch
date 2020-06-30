@@ -6,7 +6,11 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
+import com.ctop.studentcard.base.BaseSDK;
+import com.ctop.studentcard.util.AppConst;
 import com.ctop.studentcard.util.LogUtil;
+import com.ctop.studentcard.util.NetworkUtil;
+import com.ctop.studentcard.util.PreferencesUtils;
 
 public class NetworkReceiver extends BroadcastReceiver {
     @Override
@@ -16,15 +20,21 @@ public class NetworkReceiver extends BroadcastReceiver {
             ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
             if (activeNetwork != null) { // connected to the internet
-                LogUtil.d("activeNetwork != null");
-                LogUtil.d("activeNetwork:" + activeNetwork.getType());
+                LogUtil.d("net changed connected");
                 if (activeNetwork.getType() == ConnectivityManager.TYPE_WIFI
                         || activeNetwork.getType() == ConnectivityManager.TYPE_MOBILE
                         || activeNetwork.getType() == ConnectivityManager.TYPE_ETHERNET) {
-//                    connect();
+                    //当没连接，不是待机模式时候，去链接
+                    if(!BaseSDK.getInstance().getConnectStatus()){
+                        String locationModeNow = PreferencesUtils.getInstance(context).getString("locationMode", AppConst.MODEL_BALANCE);
+                        if(!locationModeNow.equals(AppConst.MODEL_AWAIT)){//待机模式时候，不链接平台
+                            BaseSDK.getInstance().connect();
+                        }
+                    }
                 }
             } else {
-                LogUtil.d("activeNetwork == null");
+                LogUtil.d("net changed  disconnected");
+                BaseSDK.getInstance().stopTcp();
             }
         }
 

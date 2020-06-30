@@ -45,6 +45,7 @@ public class CallsUtil {
                 break;
             }
         }
+        cursor.close();
         mHandler.sendEmptyMessage(7);
     }
 

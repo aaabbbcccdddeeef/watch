@@ -31,6 +31,7 @@ import com.ctop.studentcard.netty.NettyClient;
 import com.ctop.studentcard.util.GSMCellLocation;
 import com.ctop.studentcard.util.GpsUtil;
 import com.ctop.studentcard.util.LogUtil;
+import com.ctop.studentcard.util.NetworkUtil;
 import com.ctop.studentcard.util.PreferencesUtils;
 import com.ctop.studentcard.util.PropertiesUtil;
 import com.ctop.studentcard.broadcast.BroadcastReceiverInCall;
@@ -118,7 +119,9 @@ public class BaseApplication extends Application implements InstructionCallBack 
                     }
                 }.start();
             } else if (msg.what == 1) {//WAKEUP
-                BaseSDK.getInstance().connect();
+                if (NetworkUtil.isConnected(mContext)) {
+                    BaseSDK.getInstance().connect();
+                }
             } else if (msg.what == 2) {//setSERVER
                 String param = (String) msg.obj;
                 //第一位：固定SETSEVER
@@ -348,7 +351,7 @@ public class BaseApplication extends Application implements InstructionCallBack 
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            LogUtil.e("onReceive: action: " + action);
+            LogUtil.e("app BootReceiver: action: " + action);
             Intent intent1 = new Intent(context, ServerService.class);
             startService(intent1);
 

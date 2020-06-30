@@ -192,6 +192,7 @@ public class CallRecordActivity extends BaseActivity {
                 }
             }
         }
+        cursor.close();
         for (int i = 0; i < callList.size(); i++) {
             //是否已经包含
             CallPhoneBean callPhoneBean = callList.get(i);

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.text.TextUtils;
 
 import com.ctop.studentcard.base.BaseSDK;
+import com.ctop.studentcard.feature.step.StepUtils;
 import com.ctop.studentcard.greendao.DaoManager;
 import com.ctop.studentcard.greendao.TemBean;
 import com.ctop.studentcard.greendao.TemBeanDao;
@@ -24,7 +25,6 @@ public class TemReceiver extends BroadcastReceiver {
         if (action.equals(BroadcastConstant.TEMPERATURE_RESULT)) {
             String valueTem = intent.getExtras().getString("value");
             LogUtil.e("valueTem===" + valueTem);
-
             if (!TextUtils.isEmpty(AppConst.ISSUED_TEM_WATERNUMBER)) {//下发：获取实时温度
                 String str = PackDataUtil.packRequestStr(BaseSDK.getBaseContext(), AppConst.ISSUED_TEM_WATERNUMBER, AppConst.SET_HEALTH,
                         AppConst.RESPONSE_OF_ISSUED, "0@21@" + valueTem);
@@ -33,12 +33,11 @@ public class TemReceiver extends BroadcastReceiver {
                 //存本地数据库
                 TemBeanDao temBeanDao = DaoManager.getInstance().getDaoSession().getTemBeanDao();
                 temBeanDao.insert(new TemBean(valueTem, 1, System.currentTimeMillis()));
-
             } else {//上报：实时温度
                 //上报
                 BaseSDK.getInstance().sendHealth(
                         TimeUtils.getNowTimeString(TimeUtils.format4) + "-" + TimeUtils.getNowTimeString(TimeUtils.format4) +
-                                "@0@" + valueTem + "@0");
+                                "@0@" + valueTem + "@" + StepUtils.getStep());
                 //测温页面显示温度
                 Intent intentTem = new Intent();
                 intentTem.putExtra("value", valueTem);
@@ -54,10 +53,7 @@ public class TemReceiver extends BroadcastReceiver {
                     TemBeanDao temBeanDao = DaoManager.getInstance().getDaoSession().getTemBeanDao();
                     temBeanDao.insert(new TemBean(valueTem, 1, System.currentTimeMillis()));
                 }
-
-
             }
-
         }
     }
 }

@@ -21,9 +21,9 @@ public class ServerService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-//        if (NetworkUtil.isAvailable(this)) {
+        if (NetworkUtil.isConnected(this)) {
             BaseSDK.getInstance().init(getApplicationContext());
-//        }
+        }
         return Service.START_STICKY;
     }
 

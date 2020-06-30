@@ -21,8 +21,10 @@ import com.ctop.studentcard.feature.MainActivity;
 import com.ctop.studentcard.feature.step.StepUtils;
 import com.ctop.studentcard.netty.NettyClient;
 import com.ctop.studentcard.util.AppConst;
+import com.ctop.studentcard.util.DeviceUtil;
 import com.ctop.studentcard.util.JsonUtil;
 import com.ctop.studentcard.util.LogUtil;
+import com.ctop.studentcard.util.ModeUtils;
 import com.ctop.studentcard.util.NetworkUtil;
 import com.ctop.studentcard.util.PackDataUtil;
 import com.ctop.studentcard.util.PreferencesUtils;
@@ -55,6 +57,10 @@ public class TimeTickReceiver extends BroadcastReceiver {
                     }
                 });
             }
+        }
+        //非课堂模式，响铃
+        if(!ModeUtils.inclassmode(context)){
+            DeviceUtil.silentSwitchOff(context);
         }
 
         LogUtil.e("TimeTickReceiver===" + TimeUtils.getNowTimeString(TimeUtils.format5));
@@ -261,16 +267,16 @@ public class TimeTickReceiver extends BroadcastReceiver {
 
                 }
             }
-            //每天最后一分钟，定时上报 步数，然后清空步数
-            if("2359".equals(TimeUtils.getNowTimeString(TimeUtils.format4))) {
+            //每天最后一次，定时上报 步数，然后清空步数
+            if("2255".equals(TimeUtils.getNowTimeString(TimeUtils.format4))) {
                 //上报
                 int step = StepUtils.getStep();
-                BaseSDK.getInstance().sendHealth(
-                        TimeUtils.getNowTimeString(TimeUtils.format4) + "-" + TimeUtils.getNowTimeString(TimeUtils.format4) +
-                                "@0@0@"+ step);
                 StepUtils.clearStep();
+                //如果是待机模式  不发送报文，
+                if(!locationModeNow.equals(AppConst.MODEL_AWAIT)) {
+                    BaseSDK.getInstance().sendHealth(TimeUtils.getNowTimeString(TimeUtils.format4) + "-" + TimeUtils.getNowTimeString(TimeUtils.format4) + "@0@0@"+ step);
+                }
             }
-
         }
     }
 }
