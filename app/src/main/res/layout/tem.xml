@@ -42,7 +42,7 @@
 
     </RelativeLayout>
 
-    <com.ctop.studentcard.feature.temperature.RippleView
+    <com.wisdomin.studentcard.feature.temperature.RippleView
         android:layout_centerInParent="true"
         android:id="@+id/rippleView"
         android:layout_width="match_parent"
@@ -52,7 +52,7 @@
         app:cIsAlpha="false"
         app:cSpeed="2" />
 
-    <com.ctop.studentcard.feature.temperature.PercentCircle
+    <com.wisdomin.studentcard.feature.temperature.PercentCircle
         android:id="@+id/percentCircle"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

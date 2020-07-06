@@ -30,7 +30,7 @@
             android:textColor="@color/white"
             android:textSize="16sp" />
 
-        <com.ctop.studentcard.view.BatteryView
+        <com.wisdomin.studentcard.view.BatteryView
             android:id="@+id/battery_view"
             android:layout_width="20px"
             android:layout_height="5px"

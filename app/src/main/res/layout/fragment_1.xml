@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:textColor="@color/white" />
 
-        <com.ctop.studentcard.view.BatteryView
+        <com.wisdomin.studentcard.view.BatteryView
             android:id="@+id/battery_view"
             android:layout_marginLeft="3dp"
             android:layout_width="20px"
