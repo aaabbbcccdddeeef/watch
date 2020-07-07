@@ -1,9 +1,10 @@
 package com.wisdomin.studentcard.feature;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.KeyEvent;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 import com.wisdomin.studentcard.R;
 
@@ -17,35 +18,23 @@ public class SecondActivity extends Activity {
 //        getWindow().addPrivateFlags(WindowManager.LayoutParams.PRIVATE_FLAG_HOMEKEY_DISPATCHED);
         setContentView(R.layout.second);
 
+        WebView mWebView = findViewById(R.id.webView);
+        mWebView.loadUrl("https://www.baidu.com");
+        mWebView.getSettings().setJavaScriptEnabled(true);
+        mWebView.setWebViewClient(new WebViewClient(){
+            public boolean shouldOverrideUrlLoading(WebView view, String url){
+                view.loadUrl(url);
+                return true;
+            }
+        });
+
+        //不使用缓存:
+        mWebView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
 
     }
 
-    @Override
-    public boolean dispatchKeyEvent(KeyEvent event) {
-        if(event.getKeyCode() ==  KeyEvent.KEYCODE_HOME){
-            startActivity(new Intent(SecondActivity.this, MainActivity.class));
-        }
-        return super.dispatchKeyEvent(event);
-    }
 
 
-    @Override
-    public boolean onKeyDown (int keyCode, KeyEvent event) {
-        System.out.println(" -->onKeyDown: keyCode: " + keyCode);
-        if (KeyEvent.KEYCODE_HOME == keyCode) {
-            System.out.println("HOME has been pressed yet ...");
-        }
-        return super.onKeyDown(keyCode, event);
-    }
-
-
-    public static final int FLAG_HOMEKEY_DISPATCHED = 0x80000000;
-    @Override
-    public void onAttachedToWindow() {
-        //关键：在onAttachedToWindow中设置FLAG_HOMEKEY_DISPATCHED
-        this.getWindow().addFlags(FLAG_HOMEKEY_DISPATCHED);
-        super.onAttachedToWindow();
-    }
 
 }
 

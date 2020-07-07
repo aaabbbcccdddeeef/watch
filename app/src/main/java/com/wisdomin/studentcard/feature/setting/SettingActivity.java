@@ -5,7 +5,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -17,6 +19,7 @@ import com.wisdomin.studentcard.api.OnReceiveListener;
 import com.wisdomin.studentcard.base.BaseActivity;
 import com.wisdomin.studentcard.base.BaseSDK;
 import com.wisdomin.studentcard.broadcast.BroadcastConstant;
+import com.wisdomin.studentcard.feature.SecondActivity;
 import com.wisdomin.studentcard.feature.setting.about.AboutActivity;
 import com.wisdomin.studentcard.feature.setting.sound.SoundActivity;
 import com.wisdomin.studentcard.feature.setting.wallpaper.WallpaperActivity;
@@ -29,6 +32,7 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
     private RelativeLayout rl_wall_paper;
     private RelativeLayout rl_update_version;
     private RelativeLayout rl_about;
+    private RelativeLayout rl_setting;
 
     private Context mContext;
     private UpdateReceiver mUpdateReceiver;
@@ -61,10 +65,12 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
         rl_wall_paper = findViewById(R.id.rl_wall_paper);
         rl_update_version = findViewById(R.id.rl_update_version);
         rl_about = findViewById(R.id.rl_about);
+        rl_setting = findViewById(R.id.rl_setting);
         rl_voice.setOnClickListener(this);
         rl_wall_paper.setOnClickListener(this);
         rl_update_version.setOnClickListener(this);
         rl_about.setOnClickListener(this);
+        rl_setting.setOnClickListener(this);
 
     }
 
@@ -101,7 +107,23 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
         } else if (id == R.id.back_top) {
 
             finish();
+        } else if (id == R.id.rl_setting) {
+
+//            startActivity(new Intent(mContext, SecondActivity.class));
+//            startActivity(new Intent(Settings.ACTION_SETTINGS));
+            callPhone("10000");
         }
+    }
+
+    /**
+     * 拨打电话（直接拨打电话）
+     * @param phoneNum 电话号码
+     */
+    public void callPhone(String phoneNum){
+        Intent intent = new Intent(Intent.ACTION_CALL);
+        Uri data = Uri.parse("tel:" + phoneNum);
+        intent.setData(data);
+        startActivity(intent);
     }
 
 

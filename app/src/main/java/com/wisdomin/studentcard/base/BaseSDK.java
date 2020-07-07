@@ -58,6 +58,7 @@ import com.wisdomin.studentcard.util.PreferencesUtils;
 import com.wisdomin.studentcard.util.PropertiesUtil;
 import com.wisdomin.studentcard.util.SmsManagerUtils;
 import com.wisdomin.studentcard.util.TimeUtils;
+import com.wisdomin.studentcard.util.UIUtil;
 import com.wisdomin.studentcard.util.ai.KdxfSpeechSynthesizerUtil;
 
 /**
@@ -875,6 +876,15 @@ public class BaseSDK implements ChannelListener {
                                 }
                             });
                         }
+                        if (AppConst.TO_UPDATE) {
+                            AppConst.TO_UPDATE = false;
+                            //请求更新apk
+                            BaseSDK.getInstance().geUpdate(UIUtil.getVersionName(mContext)+"@", new OnReceiveListener() {
+                                @Override
+                                public void onResponse(final String msg) {
+                                }
+                            });
+                        }
                         //端口获取
                         BaseSDK.getInstance().getSmsPort("1", new OnReceiveListener() {
                             @Override
@@ -928,9 +938,11 @@ public class BaseSDK implements ChannelListener {
                     LogUtil.e("heart return");
                 } else if (response.getCmd().equals(AppConst.GET_SERVICE_MSG)) {//更新
                     try {
-                        if (data.substring(0, data.length() - 1).length() > 1) {
+                        //第一位是更新apk
+                        String[] strings = data.split("@");//apk地址@
+                        if (!"0".equals(strings[0])) {
                             Intent intent = new Intent(mContext, APKDownloadService.class);
-                            intent.putExtra("downloadUrl", data.substring(0, data.length() - 1));
+                            intent.putExtra("downloadUrl", strings[0]);
                             intent.putExtra("apkName", "iot");
                             mContext.startService(intent);
                             sendupdateBrocast(false);

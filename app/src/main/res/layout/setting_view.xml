@@ -81,7 +81,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16.0px"
-                    android:src="@drawable/wallpaper"
                     android:visibility="gone" />
 
                 <TextView
@@ -117,7 +116,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16.0px"
-                    android:src="@drawable/updata"
                     android:visibility="gone" />
 
                 <TextView
@@ -153,7 +151,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16.0px"
-                    android:src="@drawable/about"
                     android:visibility="gone" />
 
                 <TextView
@@ -175,6 +172,44 @@
                     android:src="@drawable/menu_go" />
 
             </RelativeLayout>
+
+
+            <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/rl_setting"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/item_pressed_bg2"
+                android:visibility="gone"
+                android:paddingTop="10px"
+                android:paddingBottom="10px">
+
+                <ImageView
+                    android:id="@+id/image5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16.0px"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/text5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="20.0px"
+                    android:layout_toRightOf="@id/image5"
+                    android:text="设置"
+                    android:textColor="#ffffffff"
+                    android:textSize="28.0px" />
+
+                <ImageView
+                    android:layout_marginRight="20px"
+                    android:layout_alignParentRight="true"
+                    android:layout_width="30px"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/menu_go" />
+
+            </RelativeLayout>
+
 
         </LinearLayout>
 

@@ -421,9 +421,10 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
         }
     }
 
-    // 监听KeyEventKey.KEYCODE_ENTER键（右下角确定键）,当此键按下的时候，隐藏输入法软键盘，编写相关逻辑。
+
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
+        LogUtil.e( "event.getKeyCode(): " + event.getKeyCode());
 //        //物理键确定，并且是按下的行为（避免两次响应）
         if (event.getKeyCode() == 74 || event.getKeyCode() == 4 || event.getKeyCode() == 23 || event.getKeyCode() == 7) {
             keyUtil = new KeyUtil(MainActivity.this, mHandler);

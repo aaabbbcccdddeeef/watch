@@ -77,10 +77,17 @@ public class AppConst {
     public static final String REPORT_THE_REQUEST = "3";//(上)上报请求
     public static final String RESPONSE_OF_REPORT = "4";//(下)上报的响应
 
-    //设置标记：检测到设备开机的发送上报
-    public static boolean BOOTBROADCAST = false;
     //登陆是否成功
     public static boolean LOGIN_SUCCESS = false;
+
+    //设置标记：检测到设备开机的发送上报
+    public static boolean BOOTBROADCAST = false;
+
+    //设置标记：更新apk
+    //待机模式时候，添加标记，先连接平台，连接成功后，在更新apk，更新完apk，再次进去待机模式
+    public static boolean TO_UPDATE = false;
+    //设置标记：更新apk
+    public static String TO_UPDATE_TIME = "";
 
 
     //平台下发获取测温数据时候，设置标记，测温结束后，标记复位

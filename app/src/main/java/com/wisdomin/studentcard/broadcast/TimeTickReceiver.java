@@ -31,27 +31,31 @@ public class TimeTickReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         String timeNowUpdate = TimeUtils.getNowTimeString(TimeUtils.format4);
+        if("0000".equals(timeNowUpdate)){
+            int randomSecond=(int)(Math.random()*60);
+            AppConst.TO_UPDATE_TIME = "14"+randomSecond;
+        }
         //电量
         int status = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1);
         if (status == BatteryManager.BATTERY_STATUS_CHARGING ||//充电中
                 MainActivity.getSystemBattery(context) >= 50) {//电量大于50%
-            int randomSecond=(int)(Math.random()*60);
-//            if (timeNowUpdate.equals("1147")) {//凌晨2点到3点之间
-            if (timeNowUpdate.equals("02"+randomSecond)) {//凌晨2点到3点之间
+            if (timeNowUpdate.equals(AppConst.TO_UPDATE_TIME)) {//凌晨2点到3点之间
                 LogUtil.e("timeNowUpdate==="+timeNowUpdate);
-                LogUtil.e("randomSecond==="+("02"+randomSecond));
+                LogUtil.e("randomSecond==="+AppConst.TO_UPDATE_TIME);
                 //如果现在是待机模式，需要开启tcp
                 String state = PreferencesUtils.getInstance(context).getString("","");
                 if(state.equals(AppConst.MODEL_AWAIT)){
+                    //连接平台是为了更新apk，所以这里做标记
+                    AppConst.TO_UPDATE = true;
                     BaseSDK.getInstance().connect();
                 }
 //
                 //请求更新apk
-                BaseSDK.getInstance().geUpdate("1@", new OnReceiveListener() {
-                    @Override
-                    public void onResponse(final String msg) {
-                    }
-                });
+//                BaseSDK.getInstance().geUpdate("1@", new OnReceiveListener() {
+//                    @Override
+//                    public void onResponse(final String msg) {
+//                    }
+//                });
             }
         }
         //非课堂模式，响铃
