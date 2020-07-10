@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 
+import com.wisdomin.studentcard.util.LogUtil;
 import com.wisdomin.studentcard.util.NetworkUtil;
 
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.List;
 public class WifiReceiver extends BroadcastReceiver {
 
     public void onReceive(Context context, Intent intent) {
-//        LogUtil.e("WifiReceiver=="+intent.getAction());
+        LogUtil.e("WifiReceiver=="+intent.getAction());
         if (intent.getAction().equals(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)) {//当扫描结果后，进行刷新列表
             refreshLocalWifiListData(context);
 //        } else if (intent.getAction().equals(WifiManager.NETWORK_STATE_CHANGED_ACTION)) {//wifi连接网络状态变化

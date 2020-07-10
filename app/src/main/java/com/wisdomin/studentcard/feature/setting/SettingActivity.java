@@ -109,9 +109,9 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
             finish();
         } else if (id == R.id.rl_setting) {
 
-//            startActivity(new Intent(mContext, SecondActivity.class));
+            startActivity(new Intent(mContext, SecondActivity.class));
 //            startActivity(new Intent(Settings.ACTION_SETTINGS));
-            callPhone("10000");
+//            callPhone("10000");
         }
     }
 
