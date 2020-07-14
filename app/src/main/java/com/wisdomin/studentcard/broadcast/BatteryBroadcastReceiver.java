@@ -3,6 +3,7 @@ package com.wisdomin.studentcard.broadcast;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.BatteryManager;
 
 import com.wisdomin.studentcard.api.OnReceiveListener;
@@ -10,45 +11,79 @@ import com.wisdomin.studentcard.util.DeviceUtil;
 import com.wisdomin.studentcard.util.LogUtil;
 
 import com.wisdomin.studentcard.base.BaseSDK;
+import com.wisdomin.studentcard.util.PreferencesUtils;
 
 public class BatteryBroadcastReceiver extends BroadcastReceiver {
 
-    private boolean flag = false;//从高电量 到 低电量
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        Intent batteryInfoIntent = context.getApplicationContext().registerReceiver(null,
+                new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+        int ret = batteryInfoIntent.getIntExtra("level", 0);
+        long POWER_CONNECTED = PreferencesUtils.getInstance(context).getLong("POWER_CONNECTED", 0);
+        long POWER_DISCONNECTED = PreferencesUtils.getInstance(context).getLong("POWER_DISCONNECTED", 0);
+        long POWER_FULL = PreferencesUtils.getInstance(context).getLong("POWER_FULL", 0);
+
+        //接通电源
+        if(intent.getAction().equals(Intent.ACTION_POWER_CONNECTED)){
+            LogUtil.d("ACTION_POWER_CONNECTED");
+            LogUtil.d(""+POWER_CONNECTED+(1000 * 60 *10));
+            LogUtil.d(""+System.currentTimeMillis());
+
+            if((POWER_CONNECTED+new Long(1000 * 60 *10))<System.currentTimeMillis()){
+                PreferencesUtils.getInstance(context).setLong("POWER_CONNECTED", System.currentTimeMillis());
+                BaseSDK.getInstance().sendAlarmPower("5@"+ret+"%",null);
+            }
+
+        }else if(intent.getAction().equals(Intent.ACTION_POWER_DISCONNECTED)){//拔掉电源
+            LogUtil.d("ACTION_POWER_DISCONNECTED");
+            LogUtil.d("BATTERY==="+ret);
+            if((POWER_DISCONNECTED+new Long(1000 * 60 *10))<System.currentTimeMillis()){
+                PreferencesUtils.getInstance(context).setLong("POWER_DISCONNECTED", System.currentTimeMillis());
+                BaseSDK.getInstance().sendAlarmPower("6@"+ret+"%", null);
+            }
+
+        }else if(intent.getAction().equals(Intent.ACTION_BATTERY_LOW)){//电量低
+            LogUtil.d("ACTION_BATTERY_LOW==="+ret);
+        }
         if (intent.getAction().equals(Intent.ACTION_BATTERY_CHANGED)) {
-            // 当前电量
-            int level =intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 1)*100;
-            // 最大电量
-            int scale = intent.getIntExtra(BatteryManager.EXTRA_SCALE, 1);
-            int ret =  level/scale;
+            LogUtil.d("ACTION_BATTERY_CHANGED");
+            //更新电量数字
             sendBrodcast(context,ret+"%");
-            if(ret<=5){//自动关机
-                BaseSDK.getInstance().sendAlarmPower("3@"+ret+"%", new OnReceiveListener() {
-                    @Override
-                    public void onResponse(final String msg) {
-                        LogUtil.d("自动关机的return: " + msg);
+            //电量已经充满
+            if(100==ret){
+                boolean butteryFullNow = PreferencesUtils.getInstance(context).getBoolean("butteryFullNow", false);
+                if(!butteryFullNow){
+                    if((POWER_FULL+new Long(1000 * 60 *10))<System.currentTimeMillis()){
+                        PreferencesUtils.getInstance(context).setBoolean("butteryFullNow", true);
+                        PreferencesUtils.getInstance(context).setLong("POWER_FULL", System.currentTimeMillis());
+                        BaseSDK.getInstance().sendAlarmPower("7@"+ret+"%", null);
                     }
-                });
-                DeviceUtil.shutDowm();
-            }else if(ret<=10){//低电量报警
-                LogUtil.d("flag："+flag+"");
-                if(flag==false){
-                    flag = true;
-                    LogUtil.d("发送sendAlarmPower");
-                    BaseSDK.getInstance().sendAlarmPower("1@"+ret+"%", new OnReceiveListener() {
-                        @Override
-                        public void onResponse(final String msg) {
-                            LogUtil.d("低电量报警的return: " + msg);
-                        }
-                    });
+
                 }
             }else {
-                flag = false;//电量高于10时，恢复false
+                PreferencesUtils.getInstance(context).setBoolean("butteryFullNow", false);
+            }
+            if(ret<=5){//自动关机
+                boolean belowFiveNow = PreferencesUtils.getInstance(context).getBoolean("belowFiveNow", false);
+                if(!belowFiveNow){//电量持续低于5%时候，只有第一次关机
+                    PreferencesUtils.getInstance(context).setBoolean("belowFiveNow", true);
+                    BaseSDK.getInstance().sendAlarmPower("3@"+ret+"%", null);
+                    DeviceUtil.shutDowm();
+                }
+            }else if(ret<=10){//低电量报警
+                boolean belowTenNow = PreferencesUtils.getInstance(context).getBoolean("belowTenNow", false);
+                if(!belowTenNow){
+                    PreferencesUtils.getInstance(context).setBoolean("belowTenNow", true);
+                    LogUtil.d("发送sendAlarmPower");
+                    BaseSDK.getInstance().sendAlarmPower("1@"+ret+"%", null);
+                }
+            }else {
+                PreferencesUtils.getInstance(context).setBoolean("belowFiveNow", false);
+                PreferencesUtils.getInstance(context).setBoolean("belowTenNow", false);
             }
         }
-
     }
 
     private void sendBrodcast(Context context,String ret) {

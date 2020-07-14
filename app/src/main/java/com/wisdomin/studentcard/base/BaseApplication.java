@@ -210,6 +210,11 @@ public class BaseApplication extends Application implements InstructionCallBack 
 
         IntentFilter filter1 = new IntentFilter();
         filter1.addAction(Intent.ACTION_BATTERY_CHANGED);
+        filter1.addAction(Intent.ACTION_BATTERY_LOW);
+        filter1.addAction(Intent.ACTION_BATTERY_OKAY);
+        filter1.addAction(Intent.ACTION_POWER_CONNECTED);
+        filter1.addAction(Intent.ACTION_POWER_DISCONNECTED);
+        filter1.addAction(Intent.ACTION_POWER_USAGE_SUMMARY);
         batteryBroadcastReceiver = new BatteryBroadcastReceiver();
         mContext.registerReceiver(batteryBroadcastReceiver, filter1);
 

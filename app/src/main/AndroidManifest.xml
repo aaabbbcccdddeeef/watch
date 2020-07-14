@@ -145,12 +145,6 @@
             </intent-filter>
         </receiver>
 
-        <receiver android:name="com.wisdomin.studentcard.broadcast.BatteryBroadcastReceiver">
-            <intent-filter android:priority="1">
-                <action android:name="android.intent.action.BATTERY_CHANGED" />
-            </intent-filter>
-        </receiver>
-
         <receiver android:name="com.wisdomin.studentcard.broadcast.BootBroadcastReceiver">
             <intent-filter>
                 <!-- 开机广播 -->

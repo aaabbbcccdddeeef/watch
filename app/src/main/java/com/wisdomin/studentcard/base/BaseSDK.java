@@ -111,7 +111,7 @@ public class BaseSDK implements ChannelListener {
                     }
                 }.start();
             } else if (msg.what == 4) {
-                new CountDownTimer(300 * 1000, 1000) {
+                new CountDownTimer(5 * 60 * 1000, 1000) {
                     @Override
                     public void onTick(long millisUntilFinished) {
                     }
