@@ -41,6 +41,7 @@ import com.wisdomin.studentcard.util.LogUtil;
 import com.wisdomin.studentcard.util.PreferencesUtils;
 import com.wisdomin.studentcard.util.TimeUtils;
 import com.wisdomin.studentcard.util.ToastUtils;
+import com.wisdomin.studentcard.util.WifiUtil;
 import com.wisdomin.studentcard.util.ai.KdxfSpeechSynthesizerUtil;
 
 import java.text.SimpleDateFormat;
@@ -198,10 +199,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
 
         initData();
 
-        WifiManager wifi = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        if (!wifi.isWifiEnabled()) {
-            wifi.setWifiEnabled(true);
-        }
+
     }
 
     private void initData() {
@@ -308,6 +306,15 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
         registerReceiver(this);
         int wall_selected_index = PreferencesUtils.getInstance(mContext).getInt("wall_selected_index", 0);
         main_ll.setBackground(getResources().getDrawable(WallpaperActivity.WALL_PAPER_ITEM_ICON[wall_selected_index]));
+
+        //待机模式，关闭wifi
+        String locationMode = PreferencesUtils.getInstance(mContext).getString("locationMode", AppConst.MODEL_BALANCE);
+        if (locationMode.equals(AppConst.MODEL_AWAIT)) {//待机
+            WifiUtil.closeWifi(mContext);
+        }else {
+            WifiUtil.openWifi(mContext);
+        }
+
         //未接电话
 //        new Thread(new Runnable() {
 //            @Override

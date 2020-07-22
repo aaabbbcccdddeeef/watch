@@ -17,7 +17,7 @@ public class GpsReceiver extends BroadcastReceiver {
         String action = intent.getAction();
         if (action.equals(BroadcastConstant.GPS)) {
 
-            if(BaseSDK.getInstance().getConnectStatus()){//定时上报
+            if(BaseSDK.getInstance().getConnectStatus()){//上报地理位置
                 BaseSDK.getInstance().findWifi();
             }
 

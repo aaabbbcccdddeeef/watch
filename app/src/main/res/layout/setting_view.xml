@@ -197,7 +197,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="20.0px"
                     android:layout_toRightOf="@id/image5"
-                    android:text="设置"
+                    android:text="test"
                     android:textColor="#ffffffff"
                     android:textSize="28.0px" />
 

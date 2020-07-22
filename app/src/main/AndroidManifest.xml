@@ -31,6 +31,9 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <!-- wifi状态 -->
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <!-- 扫描其他的热点信息 -->
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+
     <!-- 关机 -->
     <uses-permission android:name="android.permission.SHUTDOWN" />
     <!-- 重启的广播 -->
@@ -38,8 +41,6 @@
     <!-- 重启 -->
 
     <uses-permission android:name="android.permission.REBOOT" />
-    <!-- 扫描其他的热点信息 -->
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />

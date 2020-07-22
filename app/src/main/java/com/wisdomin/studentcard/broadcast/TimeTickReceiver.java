@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.net.wifi.WifiManager;
 import android.os.BatteryManager;
 import android.os.Vibrator;
 import android.text.TextUtils;
@@ -25,6 +26,7 @@ import com.wisdomin.studentcard.util.LogUtil;
 import com.wisdomin.studentcard.util.ModeUtils;
 import com.wisdomin.studentcard.util.PreferencesUtils;
 import com.wisdomin.studentcard.util.TimeUtils;
+import com.wisdomin.studentcard.util.WifiUtil;
 
 
 public class TimeTickReceiver extends BroadcastReceiver {
@@ -132,20 +134,21 @@ public class TimeTickReceiver extends BroadcastReceiver {
                             return;//被唤醒
                         }
                         if(!locationModeNow.equals(AppConst.MODEL_AWAIT)){
+                            WifiUtil.closeWifi(context);
                             PreferencesUtils.getInstance(context).setString("locationModeOld", PreferencesUtils.getInstance(context).getString("locationMode",  AppConst.MODEL_BALANCE));
                             PreferencesUtils.getInstance(context).setString("locationMode", AppConst.MODEL_AWAIT);//修改为待机模式
+
+                            //待机模式，上报完位置后，才切换模式
+                            PreferencesUtils.getInstance(context).setString("changeMode", AppConst.MODEL_AWAIT);
+
                             //上报一次位置
                             BaseSDK.getInstance().canalAlarm(context, BroadcastConstant.GPS, 0);
                             BaseSDK.getInstance().setAlarmTime(context, System.currentTimeMillis(), BroadcastConstant.GPS, 0, 0);
 
-                            LogUtil.e("上报设备模式4");
-                            BaseSDK.getInstance().send_device_status(AppConst.MODEL_AWAIT);
-//                            BaseSDK.getInstance().stopTcp();
-                            BaseSDK.getInstance().setAwait_stoptcp(true);
-
                         }
                     } else {
                         if(locationModeNow.equals(AppConst.MODEL_AWAIT)) {
+                            WifiUtil.openWifi(context);
                             PreferencesUtils.getInstance(context).setString("locationMode",
                                     PreferencesUtils.getInstance(context).getString("locationModeOld",  AppConst.MODEL_BALANCE));//从待机模式 还原
                             BaseSDK.getInstance().init(context);
@@ -161,18 +164,21 @@ public class TimeTickReceiver extends BroadcastReceiver {
                             return;//被唤醒
                         }
                         if(!locationModeNow.equals(AppConst.MODEL_AWAIT)) {
+                            WifiUtil.closeWifi(context);
                             PreferencesUtils.getInstance(context).setString("locationModeOld", PreferencesUtils.getInstance(context).getString("locationMode", AppConst.MODEL_BALANCE));
                             PreferencesUtils.getInstance(context).setString("locationMode", AppConst.MODEL_AWAIT);//修改为待机模式
+
+                            //待机模式，上报完位置后，才切换模式
+                            PreferencesUtils.getInstance(context).setString("changeMode", AppConst.MODEL_AWAIT);
+
                             //上报一次位置
                             BaseSDK.getInstance().canalAlarm(context, BroadcastConstant.GPS, 0);
                             BaseSDK.getInstance().setAlarmTime(context, System.currentTimeMillis(), BroadcastConstant.GPS, 0, 0);
-                            LogUtil.e("上报设备模式6");
-                            BaseSDK.getInstance().send_device_status(AppConst.MODEL_AWAIT);
-//                            BaseSDK.getInstance().stopTcp();
-                            BaseSDK.getInstance().setAwait_stoptcp(true);
+
                         }
                     } else {
                         if(locationModeNow.equals(AppConst.MODEL_AWAIT)) {
+                            WifiUtil.openWifi(context);
                             PreferencesUtils.getInstance(context).setString("locationMode", PreferencesUtils.getInstance(context).getString("locationModeOld",  AppConst.MODEL_BALANCE));//从待机模式 还原
                             BaseSDK.getInstance().init(context);
                             PreferencesUtils.getInstance(context).setString("locationModeOld", AppConst.MODEL_AWAIT);
@@ -195,6 +201,7 @@ public class TimeTickReceiver extends BroadcastReceiver {
                         return;//被唤醒
                     }
                     if(!locationModeNow.equals(AppConst.MODEL_AWAIT)) {
+                        WifiUtil.closeWifi(context);
                         PreferencesUtils.getInstance(context).setString("locationMode", AppConst.MODEL_AWAIT);//修改为待机模式
                         PreferencesUtils.getInstance(context).setString("locationModeOld", PreferencesUtils.getInstance(context).getString("locationMode", AppConst.MODEL_BALANCE));
 
@@ -209,6 +216,7 @@ public class TimeTickReceiver extends BroadcastReceiver {
                     }
                 } else {
                     if(locationModeNow.equals(AppConst.MODEL_AWAIT)) {
+                        WifiUtil.openWifi(context);
                         PreferencesUtils.getInstance(context).setString("locationMode",
                                 PreferencesUtils.getInstance(context).getString("locationModeOld",  AppConst.MODEL_BALANCE));//从待机模式 还原
                         BaseSDK.getInstance().init(context);

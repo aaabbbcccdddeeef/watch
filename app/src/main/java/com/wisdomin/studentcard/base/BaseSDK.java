@@ -22,6 +22,7 @@ import android.util.ArrayMap;
 
 import com.wisdomin.studentcard.api.OnReceiveListener;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -532,6 +533,18 @@ public class BaseSDK implements ChannelListener {
         }).start();
     }
 
+    //设备参数上报
+    public void sendDevice(String data) {
+        //组装报文
+        final String request = PackDataUtil.packRequestStr(mContext, PackDataUtil.createWaterNumber(), AppConst.REPORT_DEVICE_INFO, AppConst.REPORT_THE_REQUEST, data);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                NettyClient.getInstance(mContext).sendMsgToServer(request, null);
+            }
+        }).start();
+    }
+
 
     //收到的消息
     @Override
@@ -846,6 +859,25 @@ public class BaseSDK implements ChannelListener {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+                }else if (response.getCmd().equals(AppConst.SET_DEVICE_INFO)) {//设备参数下发
+                    //WIFI信息@预留功能@预留功能
+                    //家庭WIFI MAC地址!学校WIFI MAC地址
+                    //AC:BC:32:78:A2:5F#AC:BC:32:78:A2:52!AC:BC:32:78:A2:5F#AC:BC:32:78:A2:51
+                    //开发时间：2020.7.14，后续还需加功能
+                    try {
+                        String[] datas = data.split("!");
+                        String[] homeWifis = datas[0].split("#");
+                        String[] schoolWifis = datas[1].split("#");
+
+                        PreferencesUtils.getInstance(mContext).setString("homeWifis", Arrays.toString(homeWifis));
+                        PreferencesUtils.getInstance(mContext).setString("schoolWifis", Arrays.toString(schoolWifis));
+
+                        String str = PackDataUtil.packRequestStr(BaseSDK.getBaseContext(), waterNumber, AppConst.SET_DEVICE_INFO, AppConst.RESPONSE_OF_ISSUED, "0");
+                        NettyClient.getInstance(mContext).sendMsgToServer(str, null);
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
 
 
@@ -983,6 +1015,14 @@ public class BaseSDK implements ChannelListener {
                     } else {
                         IncomingCall incomingCallNew = IncomingCall.parseJson(data);
                         PreferencesUtils.getInstance(mContext).setString("incomingCall", JsonUtil.toJSONString(incomingCallNew));
+                    }
+                }else if (response.getCmd().equals(AppConst.REPORT_LOCATION_INFO)) {//上报完成位置后，如果是进入待机模式，就切换模式
+                    String chaneMode = PreferencesUtils.getInstance(mContext).getString("changeMode", "");
+                    if(AppConst.MODEL_AWAIT.equals(chaneMode)){
+                        PreferencesUtils.getInstance(mContext).setString("changeMode", "");
+                        LogUtil.e("设备 进入  待机模式");
+                        BaseSDK.getInstance().send_device_status(AppConst.MODEL_AWAIT);
+                        BaseSDK.getInstance().setAwait_stoptcp(true);
                     }
                 } else {
                     OnReceiveListener listener = listenerArrayMap.remove(waterNumber);
