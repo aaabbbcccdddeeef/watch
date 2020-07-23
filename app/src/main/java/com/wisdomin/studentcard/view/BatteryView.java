@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.BatteryManager;
@@ -25,7 +26,7 @@ public class BatteryView extends View {
     private RectF mHeadRect;
     private float mRadius = 0f;   //圆角
     private float mPower;
-
+    private Path path;
     private boolean mIsCharging;    //是否在充电
 
 
@@ -75,26 +76,52 @@ public class BatteryView extends View {
         Paint paint = new Paint();
         if (mIsCharging) {
             paint.setColor(Color.GREEN);
+            int width   = (int) (mPower * (mMainRect.width() - mMargin*2));
+            int left    = (int) (mMainRect.right - mMargin - width);
+            int right   = (int) (mMainRect.right - mMargin*2);
+            int top     = (int) (mMainRect.top + mMargin);
+            int bottom  = (int) (mMainRect.bottom - mMargin*2);
+            Rect rect = new Rect(left,top,right, bottom);
+            canvas.drawRect(rect, paint);
+
+            Paint paintLight = new Paint();
+            paintLight.setColor(Color.WHITE);
+            paintLight.setStyle(Paint.Style.FILL_AND_STROKE);
+            canvas.drawPath(path, paintLight);//绘制完全的闪电
         } else {
             if (mPower < 0.1) {
                 paint.setColor(Color.RED);
             } else {
                 paint.setColor(Color.WHITE);
             }
+            int width   = (int) (mPower * (mMainRect.width() - mMargin*2));
+            int left    = (int) (mMainRect.right - mMargin - width);
+            int right   = (int) (mMainRect.right - mMargin*2);
+            int top     = (int) (mMainRect.top + mMargin);
+            int bottom  = (int) (mMainRect.bottom - mMargin*2);
+            Rect rect = new Rect(left,top,right, bottom);
+            canvas.drawRect(rect, paint);
         }
 
-        int width   = (int) (mPower * (mMainRect.width() - mMargin*2));
-        int left    = (int) (mMainRect.right - mMargin - width);
-        int right   = (int) (mMainRect.right - mMargin*2);
-        int top     = (int) (mMainRect.top + mMargin);
-        int bottom  = (int) (mMainRect.bottom - mMargin*2);
-        Rect rect = new Rect(left,top,right, bottom);
-        canvas.drawRect(rect, paint);
+
+
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         setMeasuredDimension(mWidth, mHeight);
+
+        //使用path绘制闪电形状
+        path = new Path();
+        path.moveTo(mWidth * 4 / 7, 0);
+
+        path.lineTo(mWidth * 5 / 14, 4 * mHeight / 7);
+        path.lineTo(mWidth * 3 / 7, 4 * mHeight / 7);
+        path.lineTo(mWidth * 3 / 7, mHeight);
+        path.lineTo(mWidth  * 9 / 14, 3 * mHeight / 7);
+        path.lineTo(mWidth * 4 / 7, 3 * mHeight / 7);
+        path.close();
+
     }
 
     private void setPower(float power) {
