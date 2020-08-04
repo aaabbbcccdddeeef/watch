@@ -211,6 +211,35 @@
             </RelativeLayout>
 
 
+            <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/item_pressed_bg2"
+                android:visibility="visible"
+                android:paddingTop="10px"
+                android:onClick="test_engine"
+                android:paddingBottom="10px">
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="20.0px"
+                    android:text="引擎测试"
+                    android:textColor="#ffffffff"
+                    android:textSize="28.0px" />
+
+                <ImageView
+                    android:layout_marginRight="20px"
+                    android:layout_alignParentRight="true"
+                    android:layout_width="30px"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/menu_go" />
+
+            </RelativeLayout>
+
+
         </LinearLayout>
 
     </ScrollView>

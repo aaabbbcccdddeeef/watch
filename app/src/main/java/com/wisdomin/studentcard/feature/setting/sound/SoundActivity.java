@@ -160,7 +160,7 @@ public class SoundActivity extends BaseActivity implements View.OnClickListener 
         }
         try {
             this.mMediaPlayer = new MediaPlayer();
-            this.mMediaPlayer.setDataSource(this, RingtoneManager.getActualDefaultRingtoneUri(this,  RingtoneManager.TYPE_RINGTONE));
+            this.mMediaPlayer.setDataSource(this, RingtoneManager.getActualDefaultRingtoneUri(this,  RingtoneManager.TYPE_ALARM));
 //            this.mMediaPlayer.setDataSource(this, Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.ring1));
             this.mMediaPlayer.prepare();
             this.mMediaPlayer.start();

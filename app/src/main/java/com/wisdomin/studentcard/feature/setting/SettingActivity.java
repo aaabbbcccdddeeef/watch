@@ -7,7 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.Settings;
+import android.speech.tts.TextToSpeech;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -19,11 +19,13 @@ import com.wisdomin.studentcard.api.OnReceiveListener;
 import com.wisdomin.studentcard.base.BaseActivity;
 import com.wisdomin.studentcard.base.BaseSDK;
 import com.wisdomin.studentcard.broadcast.BroadcastConstant;
-import com.wisdomin.studentcard.feature.SecondActivity;
 import com.wisdomin.studentcard.feature.setting.about.AboutActivity;
 import com.wisdomin.studentcard.feature.setting.sound.SoundActivity;
 import com.wisdomin.studentcard.feature.setting.wallpaper.WallpaperActivity;
+import com.wisdomin.studentcard.util.DeviceUtil;
 import com.wisdomin.studentcard.util.LogUtil;
+
+import java.util.Locale;
 
 public class SettingActivity extends BaseActivity implements View.OnClickListener {
 
@@ -37,6 +39,8 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
     private Context mContext;
     private UpdateReceiver mUpdateReceiver;
 
+    TextToSpeech textToSpeech;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,6 +50,25 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
 
         mContext = this;
         initView();
+        textToSpeech=new TextToSpeech(mContext, new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if (status == TextToSpeech.SUCCESS) {
+                    Locale language = textToSpeech.getLanguage();
+                    LogUtil.e("getCountry=="+language.getCountry());
+                    LogUtil.e("getLanguage=="+language.getLanguage());
+//                    int result = textToSpeech.setLanguage(Locale.CHINA);
+//                    if (result == TextToSpeech.LANG_MISSING_DATA
+//                            || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+//                        Toast.makeText(mContext, "数据丢失或不支持", Toast.LENGTH_SHORT).show();
+//                    }else {
+//                        Toast.makeText(mContext, "支持", Toast.LENGTH_SHORT).show();
+//
+//                    }
+                }
+            }
+        });
+
 
     }
 
@@ -110,8 +133,12 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
         } else if (id == R.id.rl_setting) {
 
 //            startActivity(new Intent(mContext, SecondActivity.class));
-            startActivity(new Intent(Settings.ACTION_SETTINGS));
+//            startActivity(new Intent(Settings.ACTION_SETTINGS));
 //            callPhone("10000");
+
+//            startActivity(new Intent("com.android.settings.TTS_SETTINGS"));
+
+            DeviceUtil.shutDowmMore(mContext);
         }
     }
 
@@ -124,6 +151,14 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
         Uri data = Uri.parse("tel:" + phoneNum);
         intent.setData(data);
         startActivity(intent);
+    }
+
+    public void test_engine(View view) {
+                LogUtil.e("tv_time== OnClickListener");
+
+                textToSpeech.speak("小羊智斗狐狸小羊一家住在河的旁边，而河对面住着一只坏狐狸。\n" , TextToSpeech.QUEUE_FLUSH, null);
+//                textToSpeech.speak("哈哈哈，大家记得科技路反馈结果金风科技个接口", TextToSpeech.QUEUE_FLUSH, null,null);
+
     }
 
 
@@ -150,6 +185,8 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
     protected void onPause() {
         super.onPause();
         unregisterReceiver();
+        textToSpeech.stop(); // 不管是否正在朗读TTS都被打断
+        textToSpeech.shutdown(); // 关闭，释放资源
     }
 
     private void unregisterReceiver() {

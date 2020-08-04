@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.PowerManager;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
@@ -13,10 +14,8 @@ import android.text.TextUtils;
 import com.wisdomin.studentcard.base.BaseApplication;
 import com.wisdomin.studentcard.bean.PhoneNumber;
 
-import java.lang.reflect.Method;
 import java.net.NetworkInterface;
 import java.net.SocketException;
-
 
 import static android.content.Context.TELEPHONY_SERVICE;
 
@@ -167,40 +166,60 @@ public class DeviceUtil {
     /**
      * 关机
      */
-    public static void shutDowm() {
-//        Intent intent = new Intent();
-//        intent.setAction(BroadcastConstant.SHUT_DOWN);
-//        BaseApplication.getAppContext().sendBroadcast(intent);// 发送
+//    public static void shutDowm() {
+////        Intent intent = new Intent();
+////        intent.setAction(BroadcastConstant.SHUT_DOWN);
+////        BaseApplication.getAppContext().sendBroadcast(intent);// 发送
+//
+//        LogUtil.v("shutDowm");
+//        try {
+//            //获得ServiceManager类
+//            Class ServiceManager = Class
+//                    .forName("android.os.ServiceManager");
+//            //获得ServiceManager的getService方法
+//            Method getService = ServiceManager.getMethod("getService", String.class);
+//            //调用getService获取RemoteService
+//            Object oRemoteService = getService.invoke(null, Context.POWER_SERVICE);
+//            //获得IPowerManager.Stub类
+//            Class cStub = Class.forName("android.os.IPowerManager$Stub");
+//            //获得asInterface方法
+//            Method asInterface = cStub.getMethod("asInterface", android.os.IBinder.class);
+//            //调用asInterface方法获取IPowerManager对象
+//            Object oIPowerManager = asInterface.invoke(null, oRemoteService);
+//            //获得shutdown()方法
+//            Method shutdown = oIPowerManager.getClass().getMethod("shutdown", boolean.class, boolean.class);
+//            //调用shutdown()方法
+//            shutdown.invoke(oIPowerManager, false, true);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
+//    }
 
-        LogUtil.v("shutDowm");
+    /**
+     * 关机
+     * 适配android7.0后的关机
+     */
+    public static void shutDowmMore(Context mContext) {
+        //shutdown now
+        String action = "com.android.internal.intent.action.REQUEST_SHUTDOWN";
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.N) {
+            action = "android.intent.action.ACTION_REQUEST_SHUTDOWN";
+        }
+        Intent shutdown = new Intent(action);
+        shutdown.putExtra("android.intent.extra.KEY_CONFIRM", false);
+        shutdown.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         try {
-            //获得ServiceManager类
-            Class ServiceManager = Class
-                    .forName("android.os.ServiceManager");
-            //获得ServiceManager的getService方法
-            Method getService = ServiceManager.getMethod("getService", String.class);
-            //调用getService获取RemoteService
-            Object oRemoteService = getService.invoke(null, Context.POWER_SERVICE);
-            //获得IPowerManager.Stub类
-            Class cStub = Class.forName("android.os.IPowerManager$Stub");
-            //获得asInterface方法
-            Method asInterface = cStub.getMethod("asInterface", android.os.IBinder.class);
-            //调用asInterface方法获取IPowerManager对象
-            Object oIPowerManager = asInterface.invoke(null, oRemoteService);
-            //获得shutdown()方法
-            Method shutdown = oIPowerManager.getClass().getMethod("shutdown", boolean.class, boolean.class);
-            //调用shutdown()方法
-            shutdown.invoke(oIPowerManager, false, true);
+            mContext.startActivity(shutdown);
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     //重启
     public static void reboot(Context context) {
 
-        PowerManager pManager=(PowerManager) context.getSystemService(Context.POWER_SERVICE);
+        PowerManager pManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
         pManager.reboot("");
 
 
@@ -212,8 +231,8 @@ public class DeviceUtil {
 
     public static void callSOSPhone(Context context) {
         String phoneNumberString = PreferencesUtils.getInstance(context).getString("phoneNumber", "");
-        if (!phoneNumberString.equals("")  && !phoneNumberString.equals("null")) {
-        PhoneNumber phoneNumber = JsonUtil.parseObject(phoneNumberString, PhoneNumber.class);
+        if (!phoneNumberString.equals("") && !phoneNumberString.equals("null")) {
+            PhoneNumber phoneNumber = JsonUtil.parseObject(phoneNumberString, PhoneNumber.class);
             //如果需要手动拨号将Intent.ACTION_CALL改为Intent.ACTION_DIAL（跳转到拨号界面，用户手动点击拨打）
             Intent intent = new Intent(Intent.ACTION_CALL);
             Uri data = Uri.parse("tel:" + phoneNumber.getSosNumber());

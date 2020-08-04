@@ -4,13 +4,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.BatteryManager;
-
-import com.wisdomin.studentcard.api.OnReceiveListener;
-import com.wisdomin.studentcard.util.DeviceUtil;
-import com.wisdomin.studentcard.util.LogUtil;
 
 import com.wisdomin.studentcard.base.BaseSDK;
+import com.wisdomin.studentcard.util.DeviceUtil;
+import com.wisdomin.studentcard.util.LogUtil;
 import com.wisdomin.studentcard.util.PreferencesUtils;
 
 public class BatteryBroadcastReceiver extends BroadcastReceiver {
@@ -70,7 +67,7 @@ public class BatteryBroadcastReceiver extends BroadcastReceiver {
                 if(!belowFiveNow){//电量持续低于5%时候，只有第一次关机
                     PreferencesUtils.getInstance(context).setBoolean("belowFiveNow", true);
                     BaseSDK.getInstance().sendAlarmPower("3@"+ret+"%", null);
-                    DeviceUtil.shutDowm();
+                    DeviceUtil.shutDowmMore(context);
                 }
             }else if(ret<=10){//低电量报警
                 boolean belowTenNow = PreferencesUtils.getInstance(context).getBoolean("belowTenNow", false);
